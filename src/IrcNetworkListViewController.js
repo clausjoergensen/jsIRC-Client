@@ -7,9 +7,9 @@ const { Menu, BrowserWindow, app } = remote
 const events = require('events')
 const { EventEmitter } = events
 
-const IrcNetworkController = require('./IrcNetworkController.js')
+const IrcNetworkViewController = require('./IrcNetworkViewController.js')
 
-class IrcNetworkListController extends EventEmitter {
+class IrcNetworkListViewController extends EventEmitter {
   constructor () {
     super()
 
@@ -28,7 +28,7 @@ class IrcNetworkListController extends EventEmitter {
   }
 
   addServer(client) {
-    let networkController = new IrcNetworkController(client)
+    let networkController = new IrcNetworkViewController(client)
     networkController.on('viewChannel', this.viewChannel.bind(this))
     networkController.on('viewServer', this.viewServer.bind(this))
     this.connections[client.id] = networkController
@@ -77,4 +77,4 @@ class IrcNetworkListController extends EventEmitter {
   }
 }
 
-module.exports = IrcNetworkListController
+module.exports = IrcNetworkListViewController

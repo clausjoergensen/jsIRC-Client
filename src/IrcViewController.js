@@ -1,28 +1,29 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
-const { IrcClient, IrcFloodPreventer, CtcpClient } = require('jsIRC')
+const { IrcClient, IrcFloodPreventer } = require('jsIRC')
 
-const IrcNetworkListController = require('./IrcNetworkListController.js')
-const IrcChatController = require('./IrcChatController.js')
+const IrcNetworkListViewController = require('./IrcNetworkListViewController.js')
+const IrcChatListViewController = require('./IrcChatListViewController.js')
 
 class IrcViewController {
   constructor () {
-    this.networkListController = new IrcNetworkListController()
+    this.networkListViewController = new IrcNetworkListViewController()
+    this.chatListViewController = new IrcChatListViewController()
   }
 
   connectToServer (server, port, registrationInfo, channels) {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
-    
-    this.chatController = new IrcChatController(client)
 
-    this.networkListController.addServer(client)    
-    this.networkListController.on('viewChannel', (client, channel) => {
-        this.chatController.viewChannel(channel)
+    this.chatListViewController.addServer(client)
+
+    this.networkListViewController.addServer(client)
+    this.networkListViewController.on('viewChannel', (client, channel) => {
+      this.chatListViewController.viewChannel(client, channel)
     })
-    this.networkListController.on('viewServer', (client, serverName) => {
-        this.chatController.viewServer()
+    this.networkListViewController.on('viewServer', (client, serverName) => {
+      this.chatListViewController.viewServer(client, serverName)
     })
 
     client.on('registered', () => {

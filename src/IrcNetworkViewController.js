@@ -7,7 +7,7 @@ const { Menu, BrowserWindow, app } = remote
 const events = require('events')
 const { EventEmitter } = events
 
-class IrcNetworkController extends EventEmitter {
+class IrcNetworkViewController extends EventEmitter {
   constructor (client) {
     super()
 
@@ -107,9 +107,8 @@ class IrcNetworkController extends EventEmitter {
     Array.from(document.getElementsByClassName('network'))
       .forEach(e => e.classList.remove('network-selected'))
 
-    Object.keys(this.channels).forEach((key, index) => {
-      this.channels[key].channelView.classList.remove('channel-selected')
-    })
+    Array.from(document.getElementsByClassName('channel'))
+      .forEach(e => e.classList.remove('channel-selected'))
 
     this.channels[channel.name].channelView.classList.remove('nav-unread')
     this.channels[channel.name].channelView.classList.add('channel-selected')
@@ -121,12 +120,11 @@ class IrcNetworkController extends EventEmitter {
   }
 
   viewServer () {
-    Object.keys(this.channels).forEach((key, index) => {
-      this.channels[key].channelView.classList.remove('channel-selected')
-    })
-
     Array.from(document.getElementsByClassName('network'))
       .forEach(e => e.classList.remove('network-selected'))
+
+    Array.from(document.getElementsByClassName('channel'))
+      .forEach(e => e.classList.remove('channel-selected'))
 
     this.serverView.firstChild.classList.remove('nav-unread')
     this.serverView.firstChild.classList.add('network-selected')
@@ -234,4 +232,4 @@ class IrcNetworkController extends EventEmitter {
   }
 }
 
-module.exports = IrcNetworkController
+module.exports = IrcNetworkViewController
