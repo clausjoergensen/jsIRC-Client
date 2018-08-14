@@ -81,6 +81,10 @@ class IrcChannelViewController extends EventEmitter {
     this.channelView.style.display = 'none'
   }
 
+  remove () {
+    this.channelView.parentElement.removeChild(this.channelView)
+  }
+
   sendMessage (message) {
     this.channel.sendMessage(message)
   }

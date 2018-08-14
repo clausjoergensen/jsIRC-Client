@@ -31,6 +31,7 @@ class IrcChatViewController extends EventEmitter {
       })
 
       this.client.localUser.on('partedChannel', (channel) => {
+        this.channels[channel.name].remove()
         delete this.channels[channel.name]
       })
     })
