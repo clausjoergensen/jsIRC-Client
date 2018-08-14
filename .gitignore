@@ -63,3 +63,6 @@ typings/
 # jsdoc output
 out
 docs
+
+# local files
+TODO.md
