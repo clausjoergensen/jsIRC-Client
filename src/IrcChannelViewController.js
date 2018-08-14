@@ -381,7 +381,7 @@ class IrcChannelViewController extends EventEmitter {
           click: () => {
             let slapMessage = `slaps ${user.nickName} around a bit with a large trout`
             this.ctcpClient.action([this.channel.name], slapMessage)
-            this.displayAction(this.channel.name, this.client.localUser, slapMessage)
+            this.displayAction(this.client.localUser, slapMessage)
           }
         }
       ])
