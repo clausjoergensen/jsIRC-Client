@@ -90,6 +90,7 @@ class IrcChannelViewController extends EventEmitter {
 
   show () {
     this.channelView.style.display = 'table'
+    this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
   hide () {

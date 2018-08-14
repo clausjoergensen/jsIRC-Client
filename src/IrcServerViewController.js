@@ -145,6 +145,7 @@ class IrcServerViewController extends EventEmitter {
 
   show () {
     this.serverView.style.display = 'block'
+    this.serverView.scrollTop = this.serverView.scrollHeight
   }
 
   hide () {
