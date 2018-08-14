@@ -9,7 +9,6 @@ const { EventEmitter } = events
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
-const prompt = require('electron-prompt')
 const $ = require('jquery')
 
 $.fn.onEnter = function (func) {
