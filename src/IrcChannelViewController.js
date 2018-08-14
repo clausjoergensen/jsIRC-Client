@@ -2,11 +2,12 @@
 'use strict'
 
 const { remote } = require('electron')
-const { Menu } = remote
+const { Menu, BrowserWindow } = remote
 
 const events = require('events')
 const { EventEmitter } = events
 
+const path = require('path')
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const prompt = require('electron-prompt')
@@ -415,7 +416,33 @@ class IrcChannelViewController extends EventEmitter {
     })
   }
 
-  createChannelView (channel) {
+  displayChannelModes () {
+    let prompt = new BrowserWindow({
+      width: 500,
+      height: 300,
+      resizable: false,
+      parent: null,
+      skipTaskbar: true,
+      alwaysOnTop: false,
+      useContentSize: false,
+      modal: true,
+      title: `[${this.channel.name}] Channel Modes`
+    })
+
+    prompt.setMenu(null)
+    prompt.loadURL(path.join('file://', __dirname, '/ChannelModesViewController.html'))
+    prompt.on('keyup', (e) => {
+      if (e.keyCode === 27) {
+        prompt.close()
+      }
+    })
+
+    prompt.once('ready-to-show', () => {
+      prompt.show()
+    })
+  }
+
+  createChannelView () {
     let channelTableView = document.createElement('table')
     channelTableView.style.display = 'none'
     channelTableView.cellSpacing = 0
@@ -444,7 +471,7 @@ class IrcChannelViewController extends EventEmitter {
     const channelTitleMenu = Menu.buildFromTemplate([{
       label: 'Set Topic',
       click: () => {
-        this.showChannelModes(channel)
+        this.displayChannelModes()
       }
     }])
 
@@ -460,7 +487,7 @@ class IrcChannelViewController extends EventEmitter {
     const channelMessageViewMenu = Menu.buildFromTemplate([{
       label: 'Channel Modes',
       click: () => {
-        this.showChannelModes(channel)
+        this.displayChannelModes()
       }
     }])
 
