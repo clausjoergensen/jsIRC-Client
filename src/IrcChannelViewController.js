@@ -2,15 +2,15 @@
 'use strict'
 
 const { remote } = require('electron')
-const { Menu, BrowserWindow, ipcMain } = remote
+const { Menu } = remote
 
 const events = require('events')
 const { EventEmitter } = events
 
-const path = require('path')
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const prompt = require('electron-prompt')
+const $ = require('jquery')
 
 class IrcChannelViewController extends EventEmitter {
   constructor (client, ctcpClient, channel) {
@@ -417,115 +417,98 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayChannelModes () {
-    let container = document.createElement('div')
-    container.id = 'channel-modes'
+    // "Window"
+    let inlineWindow = $('<div />', { 'id': 'channel-modes' }).appendTo('body')
 
-    let title = document.createElement('div')
-    title.classList.add('channel-modes-title')
-    title.appendChild(document.createTextNode(`[${this.channel.name}] Channel Modes`))
+    // Title
+    $('<div />', {
+      'class': 'channel-modes-title',
+      'text': `[${this.channel.name}] Channel Modes`
+    }).append(
+      $('<span />', {
+        'class': 'close',
+        'click': () => inlineWindow.remove()
+      })
+    ).appendTo(inlineWindow)
 
-    var close = document.createElement('span')
-    close.classList.add('close')
-    close.addEventListener('click', (e) => {
-      document.body.removeChild(container)
-    })
-    title.appendChild(close)    
-    
-    container.appendChild(title)
+    // Container
+    let innerView = $('<div />', { 'style': 'padding: 10px' }).appendTo(inlineWindow)
 
-    var innerBox = document.createElement('div')
-    innerBox.style.padding = '10px'
-    container.appendChild(innerBox)
+    // Topic
+    $('<div />', { 'text': 'Topic' }).appendTo(innerView)
 
-    var topicTitle = document.createElement('div')
-    topicTitle.innerText = 'Topic'
-    innerBox.appendChild(topicTitle)
-
-    var topicInput = document.createElement('input')
-    topicInput.type = 'text'
-    topicInput.value = this.channel.topic
-    topicInput.addEventListener('keyup', e => {
-      let key = e.which || e.keyCode
-      if (key === 13) {
-        if (topicInput.value != this.channel.topic) {
-          this.channel.setTopic(topicInput.value)
+    let topic = $('<input />', {
+      'type': 'text',
+      'value': this.channel.topic,
+      'keyup': (e) => {
+        if ((e.which || e.keyCode) === 13) {
+          let value = topic.val()
+          if (value !== this.channel.topic) {
+            this.channel.setTopic(value)
+          }
+          inlineWindow.remove()
         }
-        document.body.removeChild(container)
       }
-    })
-    innerBox.appendChild(topicInput)
+    }).appendTo(innerView)
 
-    var modesBox = document.createElement('div')
-    modesBox.id = 'modes-box'
+    // Channel Mode
+    let template = document.querySelector('#template-channel-modes-table')
+    $('<div />', { 'id': 'modes-box' })
+      .append($('<div />', { 'text': 'Channel Mode' }))
+      .append(document.importNode(template.content, true))
+      .appendTo(innerView)
 
-    var modesBoxTitle = document.createElement('div')
-    modesBoxTitle.innerText = 'Channel Mode'
+    // Ban List
+    $('<div />', { 'text': 'Ban List' }).appendTo(innerView)
 
-    var template = document.querySelector('#template-channel-modes-table')
-    var modesBoxTable = document.importNode(template.content, true)
+    let banList = $('<ul />', { 'class': 'banList' }).appendTo(innerView)
 
-    modesBox.appendChild(modesBoxTitle)
-    modesBox.appendChild(modesBoxTable)
+    let unbanButton = $('<button />', {
+      'text': 'Unban',
+      'style': 'float: left; margin-left: 0px;',
+      'disabled': 'disabled'
+    }).appendTo(innerView)
 
-    innerBox.appendChild(modesBox)
-
-    var banListTitle = document.createElement('div')
-    banListTitle.innerText = 'Bans List'
-    innerBox.appendChild(banListTitle)
-
-    var ul = document.createElement('ul')
-    ul.classList.add('banList')
-    innerBox.appendChild(ul)
-
-    var unbanButton = document.createElement('button')
-    unbanButton.appendChild(document.createTextNode("Unban"))
-    unbanButton.style.float = 'left'
-    unbanButton.style.marginLeft = '0px'
-    unbanButton.disabled = true    
-    innerBox.appendChild(unbanButton)
-
-    var saveButton = document.createElement('button')
-    saveButton.type = 'submit'
-    saveButton.appendChild(document.createTextNode("Save"))
-    saveButton.addEventListener('click', (e) => {
-      if (topicInput.value != this.channel.topic) {
-        this.channel.setTopic(topicInput.value)
+    $('<button />', {
+      'text': 'Save',
+      'type': 'submit',
+      'click': (e) => {
+        let value = topic.val()
+        if (value !== this.channel.topic) {
+          this.channel.setTopic(value)
+        }
+        inlineWindow.remove()
       }
-      document.body.removeChild(container)
-    })
-    innerBox.appendChild(saveButton)
+    }).appendTo(innerView)
 
-    var cancelButton = document.createElement('button')
-    cancelButton.appendChild(document.createTextNode("Cancel"))
-    cancelButton.addEventListener('click', (e) => {
-      document.body.removeChild(container)
-    })
-    innerBox.appendChild(cancelButton)
+    $('<button />', {
+      'text': 'Cancel',
+      'click': (e) => {
+        inlineWindow.remove()
+      }
+    }).appendTo(innerView)
 
-    document.body.appendChild(container)
-
-    this.channel.once('banList', (banList) => {
-      banList.forEach(ban => {
-        var li = document.createElement('li')
-        ul.appendChild(li)
-
-        li.innerText = ban.banMask
-        li.addEventListener('click', (e) => {
-          Array.from(ul.getElementsByClassName('selected'))
-            .forEach(e => e.classList.remove('selected'))
-          li.classList.add('selected')
-        })
+    this.channel.once('banList', (bans) => {
+      bans.forEach(ban => {
+        let li = $('<li />', {
+          'text': ban.banMask,
+          'click': (e) => {
+            $('.selected').each(e => e.removeClass('selected'))
+            li.addClass('selected')
+            unbanButton.attr('disabled', false)
+          }
+        }).appendTo(banList)
       })
     })
 
-    let handler = null;
+    let handler = null
     handler = (e) => {
-      let key = e.which || e.keyCode
-      if (key === 27) {
+      if ((e.which || e.keyCode) === 27) {
         window.removeEventListener('keyup', handler)
-        document.body.removeChild(container)
+        inlineWindow.remove()
       }
     }
+
     window.addEventListener('keyup', handler)
 
     this.channel.getModes('b')
