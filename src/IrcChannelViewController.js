@@ -311,14 +311,15 @@ class IrcChannelViewController extends EventEmitter {
             {
               label: 'Kick (Why)',
               click: () => {
-                prompt({
+                // @TODO
+                /*prompt({
                   title: `Kick ${user.nickName}`,
                   label: 'Reason:'
                 }).then((r) => {
                   if (r) {
                     channelUser.kick(r)
                   }
-                }).catch(console.error)
+                }).catch(console.error)*/
               }
             },
             {
@@ -337,7 +338,8 @@ class IrcChannelViewController extends EventEmitter {
             {
               label: 'Ban, Kick (Why)',
               click: () => {
-                prompt({
+                // @TODO
+                /*prompt({
                   title: `Ban & Kick ${user.nickName}`,
                   label: 'Reason:'
                 }).then((r) => {
@@ -346,6 +348,7 @@ class IrcChannelViewController extends EventEmitter {
                     channelUser.kick(r)
                   }
                 }).catch(console.error)
+                */
               }
             }
           ]
@@ -357,20 +360,17 @@ class IrcChannelViewController extends EventEmitter {
               label: 'Ping',
               click: () => {
                 this.ctcpClient.ping([user.nickName])
-                this.displayServerAction(`[${user.nickName} PING]`)
               }
             },
             {
               label: 'Time',
               click: () => {
                 this.ctcpClient.time([user.nickName])
-                this.displayServerAction(`[${user.nickName} TIME]`)
               }
             }, {
               label: 'Version',
               click: () => {
                 this.ctcpClient.version([user.nickName])
-                this.displayServerAction(`[${user.nickName} VERSION]`)
               }
             }
           ]

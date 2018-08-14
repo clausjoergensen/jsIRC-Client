@@ -22,6 +22,7 @@ class IrcChatViewController extends EventEmitter {
     this.ctcpClient.clientVersion = packageInfo.version
 
     this.serverViewController = new IrcServerViewController(this.client, this.ctcpClient)
+
     this.channels = {}
     this.selectedChannel = null
 

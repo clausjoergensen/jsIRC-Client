@@ -136,6 +136,10 @@ class IrcServerViewController extends EventEmitter {
       this.displayAction(`[${source.nickName} CLIENTINFO reply]: ${info}.`)
     })
 
+    this.ctcpClient.on('rawMessageSent', (message) => {
+      this.displayAction(`[${message.targets[0]} ${message.tag}]`)
+    })
+
     this.createServerView()
   }
 
@@ -196,6 +200,8 @@ class IrcServerViewController extends EventEmitter {
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight
+
+    this.markAsUnread()
   }
 
   displaySeperator () {
@@ -206,6 +212,16 @@ class IrcServerViewController extends EventEmitter {
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight
+  }
+
+  markAsUnread () {
+    let network = Array.from(
+      document.getElementById('network-list').querySelectorAll('ul.network')
+    ).find(x => x.clientId == this.client.id)
+
+    if (network) {
+      network.firstChild.classList.add('nav-unread')
+    }
   }
 
   createServerView () {

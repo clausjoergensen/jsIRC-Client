@@ -146,6 +146,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     let serverListElement = document.createElement('ul')
     serverListElement.classList.add('network')
+    serverListElement.clientId = this.client.id
 
     let serverListItemElement = document.createElement('li')
     serverListItemElement.classList.add('network')

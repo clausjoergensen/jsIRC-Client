@@ -83,8 +83,7 @@ li.channel-selected
 
 .nav-unread
 {
-    color: red;
-    border: 1px solid red;
+    color: red !important;
 }
 
 .channel-view
