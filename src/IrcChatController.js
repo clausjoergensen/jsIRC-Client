@@ -7,7 +7,7 @@ const { Menu, app, shell } = remote
 const events = require('events')
 const { EventEmitter } = events
 
-const { IrcError, CtcpClient } = require('jsIRC')
+const { CtcpClient } = require('jsirc')
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
@@ -46,7 +46,7 @@ class IrcChatController extends EventEmitter {
       this.displayServerError('* ' + errorMessage)
     })
 
-    this.client.on('protocolError', (command, errorParameters, errorMessage) => {
+    this.client.on('protocolError', (command, errorName, errorParameters, errorMessage) => {
       switch (command) {
         case 433: // ERR_NICKNAMEINUSE
           this.displayServerError(`Nickname '${errorParameters[0]}' is already in use.`)
@@ -57,7 +57,6 @@ class IrcChatController extends EventEmitter {
           this.displayChannelError(errorParameters[0], errorMessage)
           break
         default:
-          let errorName = IrcError[command]
           console.log(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
           break
       }
