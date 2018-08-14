@@ -8,24 +8,7 @@ const IrcChatController = require('./IrcChatController.js')
 
 class IrcViewController {
   constructor () {
-
     this.networkListController = new IrcNetworkListController()
-    
-    /*this.networkListController.on('viewChannel', (channel) => {
-      this.chatController.viewChannel(channel)
-    })
-
-    this.networkListController.on('viewServer', () => {
-      this.chatController.viewServer()
-    })
-
-    this.client.on('connected', () => {
-      this.client.localUser.on('joinedChannel', (channel) => {
-        this.networkListController.viewChannel(this.client, channel)
-      })
-    })
-
-    this.client.connect(server, port, registrationInfo)*/
   }
 
   connectToServer (server, port, registrationInfo, channels) {
