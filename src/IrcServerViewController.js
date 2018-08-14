@@ -104,8 +104,6 @@ class IrcServerViewController extends EventEmitter {
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight
-
-    this.navigationController.markAsUnread()
   }
 
   displayError (text) {
