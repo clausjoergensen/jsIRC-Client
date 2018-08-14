@@ -561,7 +561,7 @@ class IrcChannelViewController extends EventEmitter {
           $('#m-key').val(newModeParameters[1])
         }
       }
-      
+
       $('#m-key').prop('disabled', !isChannelOperator)
 
       if (!isChannelOperator) {
@@ -577,7 +577,7 @@ class IrcChannelViewController extends EventEmitter {
   saveChannelModes (newTopic) {
     let mode = (m, v) => {
       if (this.channel.modes.includes(m) && !v) {
-        return `-${m}` 
+        return `-${m}`
       } else if (!this.channel.modes.includes(m) && v) {
         return `+${m}`
       }
@@ -601,7 +601,7 @@ class IrcChannelViewController extends EventEmitter {
     let isInviteOnly = $('#m-inviteonly').is(':checked')
     let noExternalMessages = $('#m-no-extmsg').is(':checked')
     let onlyOpsSetTopic = $('#m-opstopic').is(':checked')
-    
+
     let newModes = ''
     newModes += mode('p', isPrivate)
     newModes += mode('m', isModerated)
@@ -611,15 +611,15 @@ class IrcChannelViewController extends EventEmitter {
     newModes += mode('t', onlyOpsSetTopic)
 
     if (newModes) {
-      this.channel.setModes(newModes)      
+      this.channel.setModes(newModes)
     }
 
     // @TODO: Only set these if their value have changed.
 
     let maxUsers = parseInt($('#m-max-users').val())
-    if (maxUsers && maxUsers != 0) {
+    if (maxUsers && maxUsers !== 0) {
       this.channel.setModes('+l', [maxUsers])
-    } 
+    }
 
     let channelKey = $('#m-key').val()
     if (channelKey) {

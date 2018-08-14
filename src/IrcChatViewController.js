@@ -101,7 +101,7 @@ class IrcChatViewController extends EventEmitter {
         {
           let newChannel = content.substr(content.indexOf(' ') + 1).trim()
           if (this.selectedChannel) {
-            var name = this.selectedChannel.name
+            let name = this.selectedChannel.name
             this.selectedChannel.part()
             if (newChannel.length !== 0) {
               this.client.joinChannel(newChannel)

@@ -1,7 +1,6 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
-const { IrcClient } = require('jsIRC')
 const IrcViewController = require('./IrcViewController.js')
 
 let viewController = null // eslint-disable-line no-unused-vars

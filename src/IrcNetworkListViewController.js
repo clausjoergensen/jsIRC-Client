@@ -1,8 +1,5 @@
--// Copyright (c) 2018 Claus Jørgensen
+// Copyright (c) 2018 Claus Jørgensen
 'use strict'
-
-const { remote } = require('electron')
-const { Menu, BrowserWindow, app } = remote
 
 const events = require('events')
 const { EventEmitter } = events
@@ -29,7 +26,7 @@ class IrcNetworkListViewController extends EventEmitter {
 
   addServer (client) {
     let networkController = new IrcNetworkViewController(client)
-    
+
     networkController.on('viewChannel', (client, channel) => {
       this.hideOthers(networkController)
       this.selectedConnection = networkController
@@ -39,12 +36,12 @@ class IrcNetworkListViewController extends EventEmitter {
     networkController.on('viewServer', (client, serverName) => {
       this.hideOthers(networkController)
       this.selectedConnection = networkController
-      this.emit('viewServer', client, serverName)  
+      this.emit('viewServer', client, serverName)
     })
-    
+
     this.connections[client.id] = networkController
     this.selectedConnection = networkController
-  }  
+  }
 
   hideOthers (selected) {
     Object.keys(this.connections).forEach((key, index) => {
@@ -61,7 +58,7 @@ class IrcNetworkListViewController extends EventEmitter {
   }
 
   viewNextChannel () {
-    var connection = this.selectedConnection
+    let connection = this.selectedConnection
     let keys = Object.keys(connection.channels)
     if (connection.selectedChannel) {
       let index = keys.indexOf(connection.selectedChannel.name)
@@ -84,7 +81,7 @@ class IrcNetworkListViewController extends EventEmitter {
   viewNextServer () {
     let keys = Object.keys(this.connections)
     let index = keys.indexOf(this.selectedConnection.client.id)
-    
+
     let nextConnection = null
     if (index === (keys.length - 1)) {
       nextConnection = this.connections[keys[0]]
