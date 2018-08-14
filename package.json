@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "autolinker": "^1.7.1",
-    "electron-prompt": "^1.1.0-1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",
     "max-listeners-exceeded-warning": "0.0.1",
     "pretty-ms": "^3.2.0",
