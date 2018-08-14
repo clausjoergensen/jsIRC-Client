@@ -311,15 +311,7 @@ class IrcChannelViewController extends EventEmitter {
             {
               label: 'Kick (Why)',
               click: () => {
-                // @TODO
-                /*prompt({
-                  title: `Kick ${user.nickName}`,
-                  label: 'Reason:'
-                }).then((r) => {
-                  if (r) {
-                    channelUser.kick(r)
-                  }
-                }).catch(console.error)*/
+                this.displayKickPrompt(channelUser)
               }
             },
             {
@@ -338,17 +330,7 @@ class IrcChannelViewController extends EventEmitter {
             {
               label: 'Ban, Kick (Why)',
               click: () => {
-                // @TODO
-                /*prompt({
-                  title: `Ban & Kick ${user.nickName}`,
-                  label: 'Reason:'
-                }).then((r) => {
-                  if (r) {
-                    channelUser.ban()
-                    channelUser.kick(r)
-                  }
-                }).catch(console.error)
-                */
+                this.displayKickPrompt(channelUser, true)
               }
             }
           ]
@@ -432,11 +414,11 @@ class IrcChannelViewController extends EventEmitter {
     let isChannelOperator = channelUser.modes.includes('o')
 
     // "Window"
-    let inlineWindow = $('<div />', { 'id': 'channel-modes' }).appendTo('body')
+    let inlineWindow = $('<div />', { 'id': 'channel-modes', 'class': 'prompt-window' }).appendTo('body')
 
     // Title
     $('<div />', {
-      'class': 'channel-modes-title',
+      'class': 'prompt-title',
       'text': `${this.channel.name}`
     }).append(
       $('<span />', {
@@ -715,6 +697,69 @@ class IrcChannelViewController extends EventEmitter {
     this.usersView = channelUsersView
 
     document.getElementById('right-column').appendChild(channelTableView)
+  }
+
+  displayKickPrompt (channelUser, shouldBan = false) {
+    // "Window"
+    let inlineWindow = $('<div />', { 'id': 'kick-prompt', 'class': 'prompt-window' }).appendTo('body')
+
+    // Title
+    $('<div />', {
+      'class': 'prompt-title',
+      'text': `Kick ${shouldBan ? '& Ban ' : ''}${channelUser.user.name}`
+    }).append(
+      $('<span />', {
+        'class': 'close',
+        'click': () => inlineWindow.remove()
+      })
+    ).appendTo(inlineWindow)
+
+    // Container
+    let innerView = $('<div />', { 'style': 'padding: 10px' }).appendTo(inlineWindow)
+
+    // NickName
+    $('<div />', { 'text': 'Message' }).appendTo(innerView)
+
+    let message = $('<input />', {
+      'type': 'text',
+      'style': 'width: 276px; margin-top: 3px; margin-bottom: 10px;',
+      'onEnter': (e) => {
+        if (shouldBan) {
+          channelUser.ban()
+        }
+        channelUser.kick(message.val().trim())
+        inlineWindow.remove()
+      }
+    }).appendTo(innerView)
+
+    $('<button />', {
+      'text': 'Kick',
+      'type': 'submit',
+      'click': (e) => {
+        if (shouldBan) {
+          channelUser.ban()
+        }
+        channelUser.kick(message.val().trim())
+        inlineWindow.remove()
+      }
+    }).appendTo(innerView)
+
+    $('<button />', {
+      'text': 'Cancel',
+      'click': (e) => {
+        inlineWindow.remove()
+      }
+    }).appendTo(innerView)
+
+    // Close the Window on Esc
+    let handler = null
+    handler = (e) => {
+      if ((e.which || e.keyCode) === 27) {
+        window.removeEventListener('keyup', handler)
+        inlineWindow.remove()
+      }
+    }
+    window.addEventListener('keyup', handler)
   }
 }
 

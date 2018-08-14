@@ -301,21 +301,17 @@ input#chat-input:focus
     font-size: 12px;
 }
 
-#channel-modes
+.prompt-window
 {
     font-size: 13px;
     font-family: "Segoe UI", "San Francisco", "Helvetica Neue", "Helvetica";
-    width: 500px;
-    height: 300px;
     border: 1px solid #ddd;
     position: absolute;
-    top: calc(50vh - (300px / 2));
-    left: calc(50vw - (500px / 2));
     background-color: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)  
 }
 
-.channel-modes-title
+.prompt-title
 {
     border-bottom: 1px solid #ddd;
     text-align: center;
@@ -324,6 +320,29 @@ input#chat-input:focus
     padding-left: 6px;
     background-color: #68768A;
     color: white;
+}
+
+#kick-prompt
+{
+    width: 300px !important;
+    height: 124px !important;
+    top: calc(50vh - (124px / 2));
+    left: calc(50vw - (300px / 2));
+}
+
+#kick-prompt button
+{
+    float: right;
+    margin-left: 5px;
+    width: 80px;  
+}
+
+#channel-modes
+{
+    width: 500px !important;
+    height: 300px !important;
+    top: calc(50vh - (300px / 2));
+    left: calc(50vw - (500px / 2));
 }
 
 #channel-modes input
