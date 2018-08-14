@@ -8,6 +8,7 @@ const events = require('events')
 const { EventEmitter } = events
 
 const strftime = require('strftime')
+const prettyMs = require('pretty-ms')
 
 class IrcServerViewController extends EventEmitter {
   constructor (client, ctcpClient) {
@@ -17,11 +18,13 @@ class IrcServerViewController extends EventEmitter {
     this.ctcpClient = ctcpClient
 
     this.client.on('connecting', (hostName, port) => {
-      this.displayMessage(null, `* Connecting to ${hostName} (${port})`)
+      this.displayText(`* Connecting to ${hostName} (${port})`)
+      this.displaySeperator()
     })
 
     this.client.on('disconnected', (reason) => {
-      this.displayMessage(null, `* Disconnected (${reason})`)
+      this.displayText(`* Disconnected (${reason})`)
+      this.displaySeperator()
     })
 
     this.client.on('connected', () => {
@@ -46,21 +49,63 @@ class IrcServerViewController extends EventEmitter {
       }
     })
 
+    this.client.on('whoIsReply', (user) => {
+      this.displayText(`${user.nickName} is ${user.userName}@${user.hostName} * ${user.realName}`)
+
+      let channels = user.getChannelUsers().map(cu => cu.channel.name).join(' ')
+      this.displayText(`${user.nickName} is on ${channels}`)
+
+      if (user.isAway) {
+        this.displayText(`${user.nickName} is away: ${user.awayMessage}`)
+      }
+
+      this.displayText(`${user.nickName} is using ${user.serverName} ${user.serverInfo}`)
+
+      if (user.idleDuration > 0) {
+        this.displayText(`${user.nickName} is has been idle ${prettyMs(user.idleDuration * 1000, { verbose: true })}`)
+      }
+
+      this.displayText(`${user.nickName} End of /WHOIS list.`)
+      this.displaySeperator()
+    })
+
     this.client.on('motd', messageOfTheDay => {
-      this.displayMessage(null, ` - ${this.client.serverName} Message of the Day - `)
+      this.displayText(` - ${this.client.serverName} Message of the Day - `)
       messageOfTheDay
         .split('\r\n')
-        .forEach(l => this.displayMessage(null, l))
+        .forEach(line => this.displayText(line))
+      this.displaySeperator()
     })
 
     this.client.on('connectionError', error => {
       if (error.code === 'ECONNREFUSED') {
         this.displayError(`* Couldn't connect to server (Connection refused)`)
       } else if (error.code === 'ECONNRESET') {
-        this.displayMessage(null, `* Disconnected (Connection Reset)`)
+        this.displayText(`* Disconnected (Connection Reset)`)
       } else {
         console.error(error)
       }
+    })
+
+    this.client.on('networkInfo', networkInfo => {
+      console.log(networkInfo)
+      if (networkInfo.visibleUsersCount !== undefined &&
+          networkInfo.invisibleUsersCount !== undefined &&
+          networkInfo.serversCount !== undefined &&
+          networkInfo.channelsCount !== undefined &&
+          networkInfo.serverClientsCount !== undefined &&
+          networkInfo.serverServersCount !== undefined) {
+        // Only display when all information been loaded
+        this.displayText(`There are ${networkInfo.visibleUsersCount} users and ${networkInfo.invisibleUsersCount} invisible on ${networkInfo.serversCount} servers`)
+        this.displayText(`${networkInfo.channelsCount} channels formed`)
+        this.displayText(`I have ${networkInfo.serverClientsCount} clients and ${networkInfo.serverServersCount} servers`)
+        this.displaySeperator()
+      }
+    })
+
+    this.client.on('serverTime', (server, dateTime) => {
+      this.displayText(dateTime)
+      this.displaySeperator()
     })
 
     this.ctcpClient.on('ping', (source, pingTime) => {
@@ -95,19 +140,13 @@ class IrcServerViewController extends EventEmitter {
   }
 
   displayAction (text) {
-    let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${text}`
-
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('server-message')
-    paragraph.innerText = formattedText
-
-    this.serverView.appendChild(paragraph)
-    this.serverView.scrollTop = this.serverView.scrollHeight
+    this.displayText(text)
+    this.displaySeperator()
   }
 
   displayError (text) {
-    this.displayMessage(null, text, ['server-error'])
+    this.displayText(text)
+    this.displaySeperator()
   }
 
   displayMessage (source, text, styles = []) {
@@ -120,19 +159,7 @@ class IrcServerViewController extends EventEmitter {
       }
     }
 
-    text = text.replace(/[^\x20-\xFF]/g, '')
-
-    let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${senderName} ${text}`
-
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('server-message')
-    paragraph.innerText = formattedText
-
-    styles.forEach(s => paragraph.classList.add(s))
-
-    this.serverView.appendChild(paragraph)
-    this.serverView.scrollTop = this.serverView.scrollHeight
+    this.displayText(`${senderName} ${text}`)
   }
 
   displayNotice (source, text) {
@@ -145,14 +172,28 @@ class IrcServerViewController extends EventEmitter {
       }
     }
 
+    this.displayText(`${senderName} ${text}`)
+    this.displaySeperator()
+  }
+
+  displayText (text) {
     text = text.replace(/[^\x20-\xFF]/g, '')
 
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${senderName} ${text}`
+    let formattedText = `[${strftime('%H:%M', now)}] ${text}`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('server-message')
     paragraph.innerText = formattedText
+
+    this.serverView.appendChild(paragraph)
+    this.serverView.scrollTop = this.serverView.scrollHeight
+  }
+
+  displaySeperator () {
+    let paragraph = document.createElement('p')
+    paragraph.classList.add('server-message')
+    paragraph.innerText = '-'
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight

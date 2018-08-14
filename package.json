@@ -25,6 +25,7 @@
     "electron-prompt": "^1.1.0-1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",
     "max-listeners-exceeded-warning": "0.0.1",
+    "pretty-ms": "^3.2.0",
     "strftime": "^0.10.0"
   }
 }
