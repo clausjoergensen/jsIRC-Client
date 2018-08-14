@@ -13,7 +13,6 @@ class IrcNetworkListViewController extends EventEmitter {
   constructor () {
     super()
 
-    this.selectedView = null
     this.connections = {}
 
     window.addEventListener('keyup', e => {
