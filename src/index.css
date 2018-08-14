@@ -169,6 +169,12 @@ li.channel-selected
     font-size: 11pt;
 }
 
+.seperator
+{
+  margin-top: -5px;
+  margin-bottom: -3px;
+}
+
 .server-error
 {
     color: red;

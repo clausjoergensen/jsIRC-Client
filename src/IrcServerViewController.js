@@ -49,6 +49,15 @@ class IrcServerViewController extends EventEmitter {
       }
     })
 
+    this.client.on('clientInfo', (welcomeMessage) => {
+      this.displayText(this.client.welcomeMessage || '')
+      this.displayText(this.client.yourHostMessage || '')
+      this.displayText(this.client.serverCreatedMessage || '')
+      this.displaySeperator()
+      this.displayText(`${this.client.localUser.hostName} is now your displayed host.`)
+      this.displaySeperator()
+    })
+
     this.client.on('whoIsReply', (user) => {
       this.displayText(`${user.nickName} is ${user.userName}@${user.hostName} * ${user.realName}`)
 
@@ -88,14 +97,13 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('networkInfo', networkInfo => {
-      console.log(networkInfo)
       if (networkInfo.visibleUsersCount !== undefined &&
           networkInfo.invisibleUsersCount !== undefined &&
           networkInfo.serversCount !== undefined &&
           networkInfo.channelsCount !== undefined &&
           networkInfo.serverClientsCount !== undefined &&
           networkInfo.serverServersCount !== undefined) {
-        // Only display when all information been loaded
+        // First display when all information been recieved.
         this.displayText(`There are ${networkInfo.visibleUsersCount} users and ${networkInfo.invisibleUsersCount} invisible on ${networkInfo.serversCount} servers`)
         this.displayText(`${networkInfo.channelsCount} channels formed`)
         this.displayText(`I have ${networkInfo.serverClientsCount} clients and ${networkInfo.serverServersCount} servers`)
@@ -193,6 +201,7 @@ class IrcServerViewController extends EventEmitter {
   displaySeperator () {
     let paragraph = document.createElement('p')
     paragraph.classList.add('server-message')
+    paragraph.classList.add('seperator')
     paragraph.innerText = '-'
 
     this.serverView.appendChild(paragraph)
