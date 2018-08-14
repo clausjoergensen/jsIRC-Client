@@ -14,6 +14,7 @@ class IrcNetworkListViewController extends EventEmitter {
     super()
 
     this.connections = {}
+    this.selectedConnection = null
 
     window.addEventListener('keyup', e => {
       if (e.ctrlKey) {
@@ -26,36 +27,41 @@ class IrcNetworkListViewController extends EventEmitter {
     })
   }
 
-  addServer(client) {
+  addServer (client) {
     let networkController = new IrcNetworkViewController(client)
-    networkController.on('viewChannel', this.viewChannel.bind(this))
-    networkController.on('viewServer', this.viewServer.bind(this))
+    
+    networkController.on('viewChannel', (client, channel) => {
+      this.hideOthers(networkController)
+      this.selectedConnection = networkController
+      this.emit('viewChannel', client, channel)
+    })
+
+    networkController.on('viewServer', (client, serverName) => {
+      this.hideOthers(networkController)
+      this.selectedConnection = networkController
+      this.emit('viewServer', client, serverName)  
+    })
+    
     this.connections[client.id] = networkController
-  }
+    this.selectedConnection = networkController
+  }  
 
-  viewChannel (client, channel) {
-    this.emit('viewChannel', client, channel)
-  }
-
-  viewServer (client, serverName) {
-    this.emit('viewServer', client, serverName)
+  hideOthers (selected) {
+    Object.keys(this.connections).forEach((key, index) => {
+      if (this.connections[key] !== selected) {
+        this.connections[key].deselect()
+      }
+    })
   }
 
   partCurrentChannel () {
-    // Only implemented for the first connection atm.
-    var clientId = Object.keys(this.connections)[0]
-    var connection = this.connections[clientId]
-
-    if (connection.selectedChannel) {
-      connection.selectedChannel.part()
+    if (this.selectedConnection.selectedChannel) {
+      this.selectedConnection.selectedChannel.part()
     }
   }
 
   viewNextChannel () {
-    // Only implemented for the first connection atm.
-    var clientId = Object.keys(this.connections)[0]
-    var connection = this.connections[clientId]
-
+    var connection = this.selectedConnection
     let keys = Object.keys(connection.channels)
     if (connection.selectedChannel) {
       let index = keys.indexOf(connection.selectedChannel.name)
@@ -63,7 +69,7 @@ class IrcNetworkListViewController extends EventEmitter {
       if (nextChannel) {
         connection.viewChannel(nextChannel.channel)
       } else {
-        connection.viewServer()
+        this.viewNextServer()
       }
     } else {
       let firstChannel = connection.channels[keys[0]]
@@ -72,6 +78,22 @@ class IrcNetworkListViewController extends EventEmitter {
       } else {
         connection.viewServer()
       }
+    }
+  }
+
+  viewNextServer () {
+    let keys = Object.keys(this.connections)
+    let index = keys.indexOf(this.selectedConnection.client.id)
+    
+    let nextConnection = null
+    if (index === (keys.length - 1)) {
+      nextConnection = this.connections[keys[0]]
+    } else {
+      nextConnection = this.connections[keys[index + 1]]
+    }
+
+    if (nextConnection) {
+      nextConnection.viewServer()
     }
   }
 }

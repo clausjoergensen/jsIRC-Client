@@ -59,7 +59,6 @@ li.network:hover
 
 li.channel
 {
-    color: black;
     font-size: 10pt;
     border: 1px solid #F8F8F2;
     border-radius: 8px;
@@ -80,6 +79,12 @@ li.channel-selected
 {
     background-color: #dcdfe1;
     cursor: pointer;
+}
+
+.nav-unread
+{
+    color: red;
+    border: 1px solid red;
 }
 
 .channel-view
@@ -289,11 +294,6 @@ input#chat-input:focus
     padding-top: 1px;
     height: 17px;
     font-size: 12px;
-}
-
-.nav-unread
-{
-  color: red;
 }
 
 /* Imported from the Photon Library */

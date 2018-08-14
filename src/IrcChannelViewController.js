@@ -69,6 +69,10 @@ class IrcChannelViewController extends EventEmitter {
     this.createChannelView()
   }
 
+  get name () {
+    return this.channel.name
+  }
+
   show () {
     this.channelView.style.display = 'table'
   }
@@ -79,6 +83,10 @@ class IrcChannelViewController extends EventEmitter {
 
   sendMessage (message) {
     this.channel.sendMessage(message)
+  }
+
+  part () {
+    this.channel.part()
   }
 
   displayError (errorMessage) {
@@ -413,7 +421,7 @@ class IrcChannelViewController extends EventEmitter {
     let row = channelTableView.insertRow()
     let messagesCell = row.insertCell()
     messagesCell.classList.add('messages-panel')
-    
+
     let channelUsersView = row.insertCell()
     channelUsersView.classList.add('users-panel')
 
