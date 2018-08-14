@@ -2,7 +2,7 @@
 'use strict'
 
 const { remote } = require('electron')
-const { Menu, BrowserWindow } = remote
+const { Menu, BrowserWindow, ipcMain } = remote
 
 const events = require('events')
 const { EventEmitter } = events
@@ -421,8 +421,8 @@ class IrcChannelViewController extends EventEmitter {
       width: 500,
       height: 300,
       resizable: false,
-      parent: null,
-      skipTaskbar: true,
+      parent: remote.getCurrentWindow(),
+      skipTaskbar: false,
       alwaysOnTop: false,
       useContentSize: false,
       modal: true,
@@ -431,10 +431,17 @@ class IrcChannelViewController extends EventEmitter {
 
     prompt.setMenu(null)
     prompt.loadURL(path.join('file://', __dirname, '/ChannelModesViewController.html'))
-    prompt.on('keyup', (e) => {
-      if (e.keyCode === 27) {
-        prompt.close()
+    
+    ipcMain.once('reply', (event, message) => {
+      if (message.topic !== this.channel.topic) {
+        this.channel.setTopic(message.topic)        
       }
+    })
+
+    prompt.webContents.once('did-finish-load', () => {
+      prompt.webContents.send('message', {
+        topic: this.channel.topic
+      })
     })
 
     prompt.once('ready-to-show', () => {
