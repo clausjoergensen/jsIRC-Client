@@ -12,7 +12,7 @@ class IrcViewController {
     this.chatListViewController = new IrcChatListViewController()
   }
 
-  connectToServer (server, port, registrationInfo, channels) {
+  connectToServer (server, port, registrationInfo) {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
 
@@ -27,7 +27,7 @@ class IrcViewController {
     })
 
     client.on('registered', () => {
-      channels.forEach(channel => client.joinChannel(channel))
+      client.joinChannel('#UnseenUniversity', 'luggage')
     })
 
     client.connect(server, port, registrationInfo)

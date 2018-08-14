@@ -24,50 +24,52 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView = null
     this.titleView = null
 
-    channel.on('message', (source, messageText) => {
-      this.displayMessage(channel, source, messageText)
+    this.channel.on('message', (source, messageText) => {
+      this.displayMessage(source, messageText)
     })
 
-    channel.on('action', (source, messageText) => {
-      this.displayMessage(channel, null, `* ${source.nickName} ${messageText}`)
+    this.channel.on('action', (source, messageText) => {
+      this.displayMessage(null, `* ${source.nickName} ${messageText}`)
     })
 
-    channel.on('topic', (source, topic) => {
-      this.displayTopic(channel, source)
+    this.channel.on('topic', (source, newTopic) => {
+      this.displayTopic(source, newTopic)
     })
 
-    channel.once('userList', () => {
-      channel.users.forEach(channelUser => {
+    this.channel.once('userList', () => {
+      this.channel.users.forEach(channelUser => {
         channelUser.user.on('nickName', () => {
-          this.displayUsers(channel)
+          this.displayUsers()
         })
 
         channelUser.on('modes', () => {
-          this.displayUsers(channel)
+          this.displayUsers()
         })
       })
-      this.displayUsers(channel)
+      this.displayUsers()
     })
 
-    channel.on('userJoinedChannel', (channelUser) => {
+    this.channel.on('userJoinedChannel', (channelUser) => {
       channelUser.user.on('nickName', () => {
-        this.displayUsers(channelUser.channel)
+        this.displayUsers()
       })
       channelUser.on('modes', () => {
-        this.displayUsers(channelUser.channel)
+        this.displayUsers()
       })
-      this.displayUsers(channel)
+      this.displayUsers()
     })
 
-    channel.on('userLeftChannel', (channelUser) => {
-      this.displayUsers(channel)
+    this.channel.on('userLeftChannel', (channelUser) => {
+      this.displayUsers()
     })
 
-    channel.on('userKicked', (_) => {
-      this.displayUsers(channel)
+    this.channel.on('userKicked', (_) => {
+      this.displayUsers()
     })
 
     this.createChannelView()
+    this.displayTopic()
+    this.displayUsers()
   }
 
   get name () {
@@ -108,7 +110,7 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
-  displayAction (channelName, source, text) {
+  displayAction (source, text) {
     text = text.replace(/[^\x20-\xFF]/g, '')
 
     let linkedText = Autolinker.link(text, {
@@ -116,7 +118,7 @@ class IrcChannelViewController extends EventEmitter {
       newWindow: false,
       replaceFn: (match) => {
         if (match.getType() === 'url') {
-          var tag = match.buildTag()
+          let tag = match.buildTag()
           tag.setAttr('title', match.getAnchorHref())
           return tag
         } else {
@@ -137,7 +139,7 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
-  displayMessage (channel, source, text) {
+  displayMessage (source, text) {
     let senderName = ''
     if (source) {
       if (source.nickName) {
@@ -154,7 +156,7 @@ class IrcChannelViewController extends EventEmitter {
       newWindow: false,
       replaceFn: (match) => {
         if (match.getType() === 'url') {
-          var tag = match.buildTag()
+          let tag = match.buildTag()
           tag.setAttr('title', match.getAnchorHref())
           return tag
         } else {
@@ -174,16 +176,16 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
-  displayTopic (channel, source = null) {
-    if (channel.topic == null || channel.topic.length === 0) {
+  displayTopic (source = null, newTopic = null) {
+    if (!newTopic) {
       this.titleView.innerHTML = '(No Channel Topic)'
     } else {
-      this.titleView.innerHTML = Autolinker.link(channel.topic, {
+      this.titleView.innerHTML = Autolinker.link(newTopic, {
         stripPrefix: false,
         newWindow: false,
         replaceFn: (match) => {
           if (match.getType() === 'url') {
-            var tag = match.buildTag()
+            let tag = match.buildTag()
             tag.setAttr('title', match.getAnchorHref())
             return tag
           } else {
@@ -194,16 +196,16 @@ class IrcChannelViewController extends EventEmitter {
     }
 
     if (source) {
-      this.displayAction(channel.name, source, `changed topic to '${channel.topic}'`)
+      this.displayAction(source, `changed topic to '${newTopic}'`)
     }
   }
 
-  displayUsers (channel) {
+  displayUsers () {
     while (this.usersView.firstChild) {
       this.usersView.removeChild(this.usersView.firstChild)
     }
 
-    let sortedUsers = channel.users.sort((a, b) => {
+    let sortedUsers = this.channel.users.sort((a, b) => {
       if (a.modes.includes('q') && b.modes.includes('q')) {
         return a.user.nickName.localeCompare(b.user.nickName)
       } else if (a.modes.includes('q')) {
@@ -369,8 +371,8 @@ class IrcChannelViewController extends EventEmitter {
           label: 'Slap',
           click: () => {
             let slapMessage = `slaps ${user.nickName} around a bit with a large trout`
-            this.ctcpClient.action([channel.name], slapMessage)
-            this.displayAction(channel.name, this.client.localUser, slapMessage)
+            this.ctcpClient.action([this.channel.name], slapMessage)
+            this.displayAction(this.channel.name, this.client.localUser, slapMessage)
           }
         }
       ])
@@ -417,13 +419,16 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayChannelModes () {
+    let channelUser = this.channel.getChannelUser(this.client.localUser)
+    let isChannelOperator = channelUser.modes.includes('o')
+
     // "Window"
     let inlineWindow = $('<div />', { 'id': 'channel-modes' }).appendTo('body')
 
     // Title
     $('<div />', {
       'class': 'channel-modes-title',
-      'text': `[${this.channel.name}] Channel Modes`
+      'text': `${this.channel.name}`
     }).append(
       $('<span />', {
         'class': 'close',
@@ -461,22 +466,29 @@ class IrcChannelViewController extends EventEmitter {
     // Ban List
     $('<div />', { 'text': 'Ban List' }).appendTo(innerView)
 
-    let banList = $('<ul />', { 'class': 'banList' }).appendTo(innerView)
+    let banList = $('<ul />', { 'id': 'ban-list' }).appendTo(innerView)
 
+    // Buttons
     let unbanButton = $('<button />', {
       'text': 'Unban',
       'style': 'float: left; margin-left: 0px;',
-      'disabled': 'disabled'
+      'disabled': 'disabled',
+      'click': (e) => {
+        if (!isChannelOperator) {
+          return
+        }
+        let selected = $('#ban-list').find('.selected').first()
+        let banMask = selected.data('banMask')
+        this.channel.unban(banMask)
+        selected.remove()
+      }
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'Save',
+      'text': 'OK',
       'type': 'submit',
       'click': (e) => {
-        let value = topic.val()
-        if (value !== this.channel.topic) {
-          this.channel.setTopic(value)
-        }
+        this.saveChannelModes(topic.val())
         inlineWindow.remove()
       }
     }).appendTo(innerView)
@@ -488,19 +500,24 @@ class IrcChannelViewController extends EventEmitter {
       }
     }).appendTo(innerView)
 
+    // Add Bans to the List
     this.channel.once('banList', (bans) => {
       bans.forEach(ban => {
         let li = $('<li />', {
           'text': ban.banMask,
           'click': (e) => {
+            if (!isChannelOperator) {
+              return
+            }
             $('.selected').each(e => e.removeClass('selected'))
             li.addClass('selected')
-            unbanButton.attr('disabled', false)
+            unbanButton.prop('disabled', false)
           }
-        }).appendTo(banList)
+        }).data('banMask', ban.banMask).appendTo(banList)
       })
     })
 
+    // Close the Window on Esc
     let handler = null
     handler = (e) => {
       if ((e.which || e.keyCode) === 27) {
@@ -508,10 +525,106 @@ class IrcChannelViewController extends EventEmitter {
         inlineWindow.remove()
       }
     }
-
     window.addEventListener('keyup', handler)
 
+    // Configure the inputs based on the actual Channel Modes
+    this.channel.once('modes', (source, newModes, newModeParameters) => {
+      topic.prop('disabled', this.channel.modes.includes('t') && !isChannelOperator)
+
+      $('#m-private').prop('disabled', !isChannelOperator)
+      $('#m-private').prop('checked', this.channel.modes.includes('p'))
+
+      $('#m-moderated').prop('disabled', !isChannelOperator)
+      $('#m-moderated').prop('checked', this.channel.modes.includes('m'))
+
+      $('#m-secret').prop('disabled', !isChannelOperator)
+      $('#m-secret').prop('checked', this.channel.modes.includes('s'))
+
+      $('#m-inviteonly').prop('disabled', !isChannelOperator)
+      $('#m-inviteonly').prop('checked', this.channel.modes.includes('i'))
+
+      $('#m-no-extmsg').prop('disabled', !isChannelOperator)
+      $('#m-no-extmsg').prop('checked', this.channel.modes.includes('n'))
+
+      $('#m-opstopic').prop('disabled', !isChannelOperator)
+      $('#m-opstopic').prop('checked', this.channel.modes.includes('t'))
+
+      if (this.channel.modes.includes('l')) {
+        $('#m-max-users').val(newModeParameters[1])
+      }
+      $('#m-max-users').prop('disabled', !isChannelOperator)
+
+      if (this.channel.modes.includes('k')) {
+        if (this.channel.modes.includes('l')) {
+          $('#m-key').val(newModeParameters[2])
+        } else {
+          $('#m-key').val(newModeParameters[1])
+        }
+      }
+      
+      $('#m-key').prop('disabled', !isChannelOperator)
+
+      if (!isChannelOperator) {
+        banList.css('backgroundColor', '#EBEBE4')
+      }
+    })
+
+    // Request the Channel Modes from the Server
+    this.channel.getModes()
     this.channel.getModes('b')
+  }
+
+  saveChannelModes (newTopic) {
+    let mode = (m, v) => {
+      if (this.channel.modes.includes(m) && !v) {
+        return `-${m}` 
+      } else if (!this.channel.modes.includes(m) && v) {
+        return `+${m}`
+      }
+      return ''
+    }
+
+    if (newTopic !== (this.channel.topic || '')) {
+      this.channel.setTopic(newTopic)
+    }
+
+    let channelUser = this.channel.getChannelUser(this.client.localUser)
+    let isChannelOperator = channelUser.modes.includes('o')
+
+    if (!isChannelOperator) {
+      return
+    }
+
+    let isPrivate = $('#m-private').is(':checked')
+    let isModerated = $('#m-moderated').is(':checked')
+    let isSecret = $('#m-secret').is(':checked')
+    let isInviteOnly = $('#m-inviteonly').is(':checked')
+    let noExternalMessages = $('#m-no-extmsg').is(':checked')
+    let onlyOpsSetTopic = $('#m-opstopic').is(':checked')
+    
+    let newModes = ''
+    newModes += mode('p', isPrivate)
+    newModes += mode('m', isModerated)
+    newModes += mode('s', isSecret)
+    newModes += mode('i', isInviteOnly)
+    newModes += mode('n', noExternalMessages)
+    newModes += mode('t', onlyOpsSetTopic)
+
+    if (newModes) {
+      this.channel.setModes(newModes)      
+    }
+
+    // @TODO: Only set these if their value have changed.
+
+    let maxUsers = parseInt($('#m-max-users').val())
+    if (maxUsers && maxUsers != 0) {
+      this.channel.setModes('+l', [maxUsers])
+    } 
+
+    let channelKey = $('#m-key').val()
+    if (channelKey) {
+      this.channel.setModes('+k', [channelKey])
+    }
   }
 
   createChannelView () {

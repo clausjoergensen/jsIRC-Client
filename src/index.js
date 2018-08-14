@@ -15,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
     'userName': 'mustrum.ridcully@uu.edu',
     'realName': 'Mustrum Ridcully',
     'userModes': []
-  }, ['#AnkhMorpork', '#UnseenUniversity', '#MendedDrum', '#OblongOffice', "#WatchHouse"])
-  
-  viewController.connectToServer('localhost', 6667, {
+  })
+
+  /*viewController.connectToServer('localhost', 6667, {
     'nickName': 'Bursar',
     'userName': 'bursar@uu.edu',
     'realName': 'A. A. Dimwiddle',
     'userModes': []
-  }, ['#AnkhMorpork', '#UnseenUniversity', '#MendedDrum', '#OblongOffice'])  
+  })*/
 })

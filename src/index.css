@@ -330,7 +330,7 @@ input#chat-input:focus
     font-family: "Segoe UI", "San Francisco", "Helvetica Neue", "Helvetica";
 }
 
-#channel-modes ul.banList
+#channel-modes ul#ban-list
 {
     list-style: none;
     width: 200px;
@@ -342,14 +342,14 @@ input#chat-input:focus
     overflow-x: hidden;
 }
 
-#channel-modes ul.banList li
+#channel-modes ul#ban-list li
 {
     user-select: none;
     cursor: default;
     font-size: 13px;
 }
 
-#channel-modes ul.banList li.selected
+#channel-modes ul#ban-list li.selected
 {
     background-color: #0078D7;
     color: white;
