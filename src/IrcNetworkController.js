@@ -38,14 +38,19 @@ class IrcNetworkController extends EventEmitter {
         this.viewChannel(channel)
       })
       
-      client.localUser.on('partedChannel', () => {
+      client.localUser.on('partedChannel', (channel) => {
         let channelView = this.channels[channel.name].channelView
         channelView.parentElement.removeChild(channelView)
 
         if (Object.keys(this.channels).length === 0) {
           this.viewServer(client.serverName)
         } else if (this.selectedChannel === channel) {
-          this.viewPreviousChannel(channel)
+          let previousChannel = this.getPreviousChannel(channel)
+          if (previousChannel) {
+            this.viewChannel(previousChannel)
+          } else {
+            this.viewServer(client.serverName)
+          }
         }
 
         delete this.channels[channel.name]        
@@ -63,6 +68,12 @@ class IrcNetworkController extends EventEmitter {
 
   get selectedChannel () {
     return this.selectedView ? this.selectedView.channel : null
+  }
+
+  getPreviousChannel (channel) {
+    let keys = Object.keys(this.channels)
+    let index = keys.indexOf(channel.name)
+    return this.channels[keys[index - 1]].channel
   }
 
   viewChannel (channel) {

@@ -44,17 +44,6 @@ class IrcNetworkListController extends EventEmitter {
     this.emit('viewServer', client, serverName)
   }
 
-  viewPreviousChannel (client, channel) {
-    /*let keys = Object.keys(this.connections[client.id].channels)
-    let index = keys.indexOf(channel.name)
-    let previousChannelElement = this.connections[client.id].channels[keys[index - 1]]
-    if (previousChannelElement) {
-      this.viewChannel(client, previousChannelElement.channel)
-    } else {
-      this.viewServer(client, client.serverName)
-    }*/
-  }
-
   viewNextChannel (client) {
     /*if (this.selectedChannel) {
       let keys = Object.keys(this.connections[client.id].channels)

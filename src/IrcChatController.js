@@ -57,7 +57,7 @@ class IrcChatController extends EventEmitter {
           this.displayChannelError(errorParameters[0], errorMessage)
           break
         default:
-          console.log(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
+          console.error(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
           break
       }
     })
@@ -75,7 +75,7 @@ class IrcChatController extends EventEmitter {
       } else if (error.code === 'ECONNRESET') {
         this.displayServerMessage(null, `* Disconnected (Connection Reset)`)
       } else {
-        console.log(error)
+        console.error(error)
       }
     })
 
@@ -180,6 +180,11 @@ class IrcChatController extends EventEmitter {
   localUserPartedChannel (channel) {
     let channelView = this.channelViews[channel.name]
     channelView.parentElement.removeChild(channelView)
+
+    if (this.selectedChannel == channel) {
+      this.selectedChannel = null
+    }
+
     delete this.channelViews[channel.name]
   }
 
@@ -306,8 +311,6 @@ class IrcChatController extends EventEmitter {
   }
 
   displayServerAction (text) {
-    console.log(text)
-
     let now = new Date()
     let formattedText = `[${strftime('%H:%M', now)}] ${text}`
 
@@ -348,10 +351,6 @@ class IrcChatController extends EventEmitter {
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight
-
-    if (this.serverView.style.display === 'none') {
-      this.navigationServerView.firstChild.classList.add('nav-unread')
-    }
   }
 
   displayServerNotice (source, text) {
@@ -375,10 +374,6 @@ class IrcChatController extends EventEmitter {
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight
-
-    if (this.serverView.style.display === 'none') {
-      this.navigationServerView.firstChild.classList.add('nav-unread')
-    }
   }
 
   displayChannelError (channelName, errorMessage) {
