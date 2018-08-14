@@ -417,36 +417,118 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayChannelModes () {
-    let prompt = new BrowserWindow({
-      width: 500,
-      height: 300,
-      resizable: false,
-      parent: remote.getCurrentWindow(),
-      skipTaskbar: false,
-      alwaysOnTop: false,
-      useContentSize: false,
-      modal: true,
-      title: `[${this.channel.name}] Channel Modes`
-    })
+    let container = document.createElement('div')
+    container.id = 'channel-modes'
 
-    prompt.setMenu(null)
-    prompt.loadURL(path.join('file://', __dirname, '/ChannelModesViewController.html'))
+    let title = document.createElement('div')
+    title.classList.add('channel-modes-title')
+    title.appendChild(document.createTextNode(`[${this.channel.name}] Channel Modes`))
+
+    var close = document.createElement('span')
+    close.classList.add('close')
+    close.addEventListener('click', (e) => {
+      document.body.removeChild(container)
+    })
+    title.appendChild(close)    
     
-    ipcMain.once('reply', (event, message) => {
-      if (message.topic !== this.channel.topic) {
-        this.channel.setTopic(message.topic)        
+    container.appendChild(title)
+
+    var innerBox = document.createElement('div')
+    innerBox.style.padding = '10px'
+    container.appendChild(innerBox)
+
+    var topicTitle = document.createElement('div')
+    topicTitle.innerText = 'Topic'
+    innerBox.appendChild(topicTitle)
+
+    var topicInput = document.createElement('input')
+    topicInput.type = 'text'
+    topicInput.value = this.channel.topic
+    topicInput.addEventListener('keyup', e => {
+      let key = e.which || e.keyCode
+      if (key === 13) {
+        if (topicInput.value != this.channel.topic) {
+          this.channel.setTopic(topicInput.value)
+        }
+        document.body.removeChild(container)
       }
     })
+    innerBox.appendChild(topicInput)
 
-    prompt.webContents.once('did-finish-load', () => {
-      prompt.webContents.send('message', {
-        topic: this.channel.topic
+    var modesBox = document.createElement('div')
+    modesBox.id = 'modes-box'
+
+    var modesBoxTitle = document.createElement('div')
+    modesBoxTitle.innerText = 'Channel Mode'
+
+    var template = document.querySelector('#template-channel-modes-table')
+    var modesBoxTable = document.importNode(template.content, true)
+
+    modesBox.appendChild(modesBoxTitle)
+    modesBox.appendChild(modesBoxTable)
+
+    innerBox.appendChild(modesBox)
+
+    var banListTitle = document.createElement('div')
+    banListTitle.innerText = 'Bans List'
+    innerBox.appendChild(banListTitle)
+
+    var ul = document.createElement('ul')
+    ul.classList.add('banList')
+    innerBox.appendChild(ul)
+
+    var unbanButton = document.createElement('button')
+    unbanButton.appendChild(document.createTextNode("Unban"))
+    unbanButton.style.float = 'left'
+    unbanButton.style.marginLeft = '0px'
+    unbanButton.disabled = true    
+    innerBox.appendChild(unbanButton)
+
+    var saveButton = document.createElement('button')
+    saveButton.type = 'submit'
+    saveButton.appendChild(document.createTextNode("Save"))
+    saveButton.addEventListener('click', (e) => {
+      if (topicInput.value != this.channel.topic) {
+        this.channel.setTopic(topicInput.value)
+      }
+      document.body.removeChild(container)
+    })
+    innerBox.appendChild(saveButton)
+
+    var cancelButton = document.createElement('button')
+    cancelButton.appendChild(document.createTextNode("Cancel"))
+    cancelButton.addEventListener('click', (e) => {
+      document.body.removeChild(container)
+    })
+    innerBox.appendChild(cancelButton)
+
+    document.body.appendChild(container)
+
+    this.channel.once('banList', (banList) => {
+      banList.forEach(ban => {
+        var li = document.createElement('li')
+        ul.appendChild(li)
+
+        li.innerText = ban.banMask
+        li.addEventListener('click', (e) => {
+          Array.from(ul.getElementsByClassName('selected'))
+            .forEach(e => e.classList.remove('selected'))
+          li.classList.add('selected')
+        })
       })
     })
 
-    prompt.once('ready-to-show', () => {
-      prompt.show()
-    })
+    let handler = null;
+    handler = (e) => {
+      let key = e.which || e.keyCode
+      if (key === 27) {
+        window.removeEventListener('keyup', handler)
+        document.body.removeChild(container)
+      }
+    }
+    window.addEventListener('keyup', handler)
+
+    this.channel.getModes('b')
   }
 
   createChannelView () {

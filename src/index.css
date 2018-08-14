@@ -35,7 +35,7 @@ ul#network-list
 ul.network
 {
     margin: 0px;
-    padding: 0px;    
+    padding: 0px;
     list-style: none;
 }
 
@@ -249,7 +249,7 @@ input#chat-input:focus
     background: #C81B00;
     color: white;
     border: 1px solid #C81B00;
-    font-size: 16px;  
+    font-size: 16px;
 }
 
 .user-mode-admin
@@ -275,7 +275,7 @@ input#chat-input:focus
     border: 1px solid #268248;
     font-size: 12px;
     padding-top: 1px;
-    height: 17px;    
+    height: 17px;
 }
 
 .user-mode-voice
@@ -294,6 +294,145 @@ input#chat-input:focus
     padding-top: 1px;
     height: 17px;
     font-size: 12px;
+}
+
+#channel-modes
+{
+    font-size: 13px;
+    font-family: "Segoe UI", "San Francisco", "Helvetica Neue", "Helvetica";
+    width: 500px;
+    height: 300px;
+    border: 1px solid #ddd;
+    position: absolute;
+    top: calc(50vh - (300px / 2));
+    left: calc(50vw - (500px / 2));
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
+
+.channel-modes-title
+{
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    background-color: #68768A;
+    color: white;
+}
+
+#channel-modes input
+{
+    width: 478px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-family: "Segoe UI", "San Francisco", "Helvetica Neue", "Helvetica";
+}
+
+#channel-modes ul.banList
+{
+    list-style: none;
+    width: 200px;
+    height: 145px;
+    border: 1px solid #A9A9A9;
+    margin: 10px 0px 10px 0px;
+    padding: 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#channel-modes ul.banList li
+{
+    user-select: none;
+    cursor: default;
+    font-size: 13px;
+}
+
+#channel-modes ul.banList li.selected
+{
+    background-color: #0078D7;
+    color: white;
+}
+
+#modes-box
+{
+    width: 260px;
+    height: 165px;
+    margin-top: 2px;
+    float: right;
+    font-size: 13px;
+}
+
+#modes-box .title
+{ 
+    text-align: left;
+    margin-top: -2px;
+    font-size: 13px;
+    color: black;
+}
+
+#modes-box table
+{
+    margin-top: 1px;
+}
+
+#modes-box input[type='checkbox']
+{
+    margin: 0px;
+    padding: 0px;
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    margin-top: 4px;
+}
+
+#modes-box label.input
+{
+    margin-left: 16px;
+}
+
+#channel-modes button
+{
+    float: right;
+    margin-left: 5px;
+    width: 80px;
+}
+
+.close 
+{
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 40px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.close:hover 
+{
+    background-color: red;
+}
+
+.close:before, .close:after 
+{
+    position: absolute;
+    left: 20px;
+    content: ' ';
+    height: 14px;
+    width: 2px;
+    top: 6px;
+    background-color: white;
+}
+
+.close:before 
+{
+    transform: rotate(45deg);
+}
+
+.close:after 
+{
+    transform: rotate(-45deg);
 }
 
 /* Imported from the Photon Library */
