@@ -12,6 +12,15 @@ const Autolinker = require('autolinker')
 const prompt = require('electron-prompt')
 const $ = require('jquery')
 
+$.fn.onEnter = function (func) {
+  this.bind('keypress', function (e) {
+    if (e.keyCode === 13) {
+      func.apply(this, [e])
+    }
+  })
+  return this
+}
+
 class IrcChannelViewController extends EventEmitter {
   constructor (client, ctcpClient, channel) {
     super()
@@ -445,14 +454,9 @@ class IrcChannelViewController extends EventEmitter {
     let topic = $('<input />', {
       'type': 'text',
       'value': this.channel.topic,
-      'keyup': (e) => {
-        if ((e.which || e.keyCode) === 13) {
-          let value = topic.val()
-          if (value !== this.channel.topic) {
-            this.channel.setTopic(value)
-          }
-          inlineWindow.remove()
-        }
+      'onEnter': (e) => {
+        this.saveChannelModes(topic.val())
+        inlineWindow.remove()
       }
     }).appendTo(innerView)
 
@@ -462,6 +466,16 @@ class IrcChannelViewController extends EventEmitter {
       .append($('<div />', { 'text': 'Channel Mode' }))
       .append(document.importNode(template.content, true))
       .appendTo(innerView)
+
+    $('#m-key').onEnter((e) => {
+      this.saveChannelModes(topic.val())
+      inlineWindow.remove()
+    })
+
+    $('#m-max-users').onEnter((e) => {
+      this.saveChannelModes(topic.val())
+      inlineWindow.remove()
+    })
 
     // Ban List
     $('<div />', { 'text': 'Ban List' }).appendTo(innerView)
@@ -572,6 +586,8 @@ class IrcChannelViewController extends EventEmitter {
         banList.css('backgroundColor', '#EBEBE4')
       }
     })
+
+    topic.focus()
 
     // Request the Channel Modes from the Server
     this.channel.getModes()
