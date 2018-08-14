@@ -459,7 +459,7 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channelView = channelTableView
     this.messageView = channelMessageView
-    this.titleView = channelTitleView
+    this.titleView = channelTitleLabel
     this.usersView = channelUsersView
 
     document.getElementById('right-column').appendChild(channelTableView)
