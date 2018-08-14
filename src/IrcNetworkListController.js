@@ -16,17 +16,15 @@ class IrcNetworkListController extends EventEmitter {
     this.selectedView = null
     this.connections = {}
 
-    /*window.addEventListener('keyup', e => {
+    window.addEventListener('keyup', e => {
       if (e.ctrlKey) {
         if (e.keyCode === 78) { // ctrl+n
-          this.viewNextChannel(client)
+          this.viewNextChannel()
         } else if (e.keyCode === 87) { // ctrl+w
-          if (this.selectedChannel) {
-            this.selectedChannel.part()
-          }
+          this.partCurrentChannel()
         }
       }
-    })*/
+    })
   }
 
   addServer(client) {
@@ -44,25 +42,38 @@ class IrcNetworkListController extends EventEmitter {
     this.emit('viewServer', client, serverName)
   }
 
-  viewNextChannel (client) {
-    /*if (this.selectedChannel) {
-      let keys = Object.keys(this.connections[client.id].channels)
-      let index = keys.indexOf(this.selectedChannel.name)
-      let nextChannelElement = this.connections[client.id].channels[keys[index + 1]]
-      if (nextChannelElement) {
-        this.viewChannel(client, nextChannelElement.channel)
+  partCurrentChannel () {
+    // Only implemented for the first connection atm.
+    var clientId = Object.keys(this.connections)[0]
+    var connection = this.connections[clientId]
+
+    if (connection.selectedChannel) {
+      connection.selectedChannel.part()
+    }
+  }
+
+  viewNextChannel () {
+    // Only implemented for the first connection atm.
+    var clientId = Object.keys(this.connections)[0]
+    var connection = this.connections[clientId]
+
+    let keys = Object.keys(connection.channels)
+    if (connection.selectedChannel) {
+      let index = keys.indexOf(connection.selectedChannel.name)
+      let nextChannel = connection.channels[keys[index + 1]]
+      if (nextChannel) {
+        connection.viewChannel(nextChannel.channel)
       } else {
-        this.viewServer(client, client.serverName)
+        connection.viewServer()
       }
     } else {
-      let keys = Object.keys(this.connections[client.id].channels)
-      let firstChannelElement = this.connections[client.id].channels[keys[0]]
-      if (firstChannelElement) {
-        this.viewChannel(client, firstChannelElement.channel)
+      let firstChannel = connection.channels[keys[0]]
+      if (firstChannel) {
+        connection.viewChannel(firstChannel.channel)
       } else {
-        this.viewServer(client, client.serverName)
+        connection.viewServer()
       }
-    }*/
+    }
   }
 }
 

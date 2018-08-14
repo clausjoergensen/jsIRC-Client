@@ -181,7 +181,7 @@ class IrcChatController extends EventEmitter {
     let channelView = this.channelViews[channel.name]
     channelView.parentElement.removeChild(channelView)
 
-    if (this.selectedChannel == channel) {
+    if (this.selectedChannel === channel) {
       this.selectedChannel = null
     }
 

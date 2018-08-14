@@ -16,7 +16,7 @@ class IrcNetworkController extends EventEmitter {
     this.serverView = null
 
     client.once('clientInfo', () => {
-      this.addServerToList(client.serverName)
+      this.addServerToList()
     })
 
     client.on('connected', () => {
@@ -43,13 +43,18 @@ class IrcNetworkController extends EventEmitter {
         channelView.parentElement.removeChild(channelView)
 
         if (Object.keys(this.channels).length === 0) {
-          this.viewServer(client.serverName)
+          this.viewServer()
         } else if (this.selectedChannel === channel) {
           let previousChannel = this.getPreviousChannel(channel)
           if (previousChannel) {
             this.viewChannel(previousChannel)
           } else {
-            this.viewServer(client.serverName)
+            let nextChannel = this.getNextChannel(channel)
+            if (nextChannel) {
+              this.viewChannel(nextChannel)
+            } else {
+              this.viewServer()              
+            }
           }
         }
 
@@ -73,7 +78,19 @@ class IrcNetworkController extends EventEmitter {
   getPreviousChannel (channel) {
     let keys = Object.keys(this.channels)
     let index = keys.indexOf(channel.name)
-    return this.channels[keys[index - 1]].channel
+    if (index > 0) {
+      return this.channels[keys[index - 1]].channel      
+    }
+    return null
+  }
+
+  getNextChannel (channel) {
+    let keys = Object.keys(this.channels)
+    let index = keys.indexOf(channel.name)
+    if (index < (keys.length - 1)) {
+      return this.channels[keys[index + 1]].channel      
+    }
+    return null    
   }
 
   viewChannel (channel) {
@@ -93,10 +110,10 @@ class IrcNetworkController extends EventEmitter {
     this.emit('viewChannel', this.client, channel)
   }
 
-  viewServer (serverName) {
-    if (this.selectedChannel) {
-      this.channels[this.selectedChannel.name].channelView.classList.remove('channel-selected')      
-    }
+  viewServer () {
+    Object.keys(this.channels).forEach((key, index) => {
+      this.channels[key].channelView.classList.remove('channel-selected')
+    })
 
     Array.from(document.getElementsByClassName('network'))
       .forEach(e => e.classList.remove('network-selected'))
@@ -107,25 +124,24 @@ class IrcNetworkController extends EventEmitter {
     this.selectedView = this.serverView
     this.setWindowTitleForServer()
 
-    this.emit('viewServer', this.client, serverName)
+    this.emit('viewServer', this.client, this.client.serverName)
   }
 
-  addServerToList (serverName) {
+  addServerToList () {
     if (this.serverView) {
       return
     }
 
     let serverNavigationElement = document.createElement('li')
     serverNavigationElement.classList.add('network')
-    serverNavigationElement.serverName = serverName
-    serverNavigationElement.innerText = serverName
+    serverNavigationElement.innerText = this.client.serverName
 
     let networkListElement = document.getElementById('network-list')
     networkListElement.appendChild(serverNavigationElement)
 
     serverNavigationElement.addEventListener('click', (e) => {
       e.preventDefault()
-      this.viewServer(serverName)
+      this.viewServer()
     }, false)
 
     this.serverView = serverNavigationElement
@@ -193,7 +209,7 @@ class IrcNetworkController extends EventEmitter {
   }
 
   markAsUnread (channel = null) {
-    if (channel == null) {
+    if (!channel) {
       this.serverView.classList.add('nav-unread')
     } else {
       this.serverView.classList.remove('nav-unread')
