@@ -322,6 +322,27 @@ input#chat-input:focus
     color: white;
 }
 
+#connect-to-server-prompt
+{
+    width: 230px !important;
+    height: 280px !important;
+    top: calc(50vh - (280px / 2));
+    left: calc(50vw - (230px / 2));
+}
+
+#connect-to-server-prompt input[type='text']
+{
+    width: 202px;
+}
+
+#connect-to-server-prompt button
+{
+    float: right;
+    margin-top: 10px;
+    margin-right: 5px;
+    width: 80px;  
+}
+
 #kick-prompt
 {
     width: 300px !important;

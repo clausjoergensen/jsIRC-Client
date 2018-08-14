@@ -219,7 +219,7 @@ class IrcServerViewController extends EventEmitter {
       document.getElementById('network-list').querySelectorAll('ul.network')
     ).find(x => x.clientId == this.client.id)
 
-    if (network) {
+    if (network && !network.firstChild.classList.contains('network-selected')) {
       network.firstChild.classList.add('nav-unread')
     }
   }

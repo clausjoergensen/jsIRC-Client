@@ -15,7 +15,7 @@ class IrcNetworkViewController extends EventEmitter {
     this.channels = {}
     this.serverView = null
 
-    client.once('clientInfo', () => {
+    client.once('connecting', () => {
       this.addServerToList()
     })
 
@@ -150,7 +150,11 @@ class IrcNetworkViewController extends EventEmitter {
 
     let serverListItemElement = document.createElement('li')
     serverListItemElement.classList.add('network')
-    serverListItemElement.innerText = `${this.client.serverName} (${this.client.localUser.nickName})`
+    serverListItemElement.innerText = this.client.hostName
+
+    this.client.once('clientInfo', () => {
+      serverListItemElement.innerText = `${this.client.serverName} (${this.client.localUser.nickName})`      
+    })
 
     serverListElement.appendChild(serverListItemElement)
 
@@ -201,15 +205,19 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   setWindowTitleForServer (networkName = null) {
-    let userModes = this.client.localUser.modes.join('')
-    userModes = userModes.length > 0 ? `+${userModes}` : ''
+    let userModes = ''
+    if (this.client.localUser) {
+      userModes = this.client.localUser.modes.join('')
+      userModes = userModes.length > 0 ? `[+${userModes}]` : ''
+    }
 
     let serverName = networkName || this.client.serverName
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
+      let nickName = this.client.localUser ? this.client.localUser.nickName : this.client.registrationInfo.nickName
       browserWindow.setTitle(
-        `${app.getName()} - [Status: ${this.client.localUser.nickName} [${userModes}] on ${serverName} (${this.client.hostName}:${this.client.port})]`)
+        `${app.getName()} - [Status: ${nickName} ${userModes} on ${serverName} (${this.client.hostName}:${this.client.port})]`)
     }
   }
 

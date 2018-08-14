@@ -84,6 +84,10 @@ class IrcChannelViewController extends EventEmitter {
     return this.channel.name
   }
 
+  setTopic (topic) {
+    this.channel.setTopic(topic)
+  }
+
   show () {
     this.channelView.style.display = 'table'
   }

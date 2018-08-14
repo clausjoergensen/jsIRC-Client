@@ -85,7 +85,7 @@ class IrcChatViewController extends EventEmitter {
       case 'me':
         if (this.selectedChannel) {
           this.ctcpClient.action([this.selectedChannel.name], content)
-          this.displayction(this.selectedChannel.name, this.client.localUser, content)
+          this.channels[this.selectedChannel.name].displayAction(this.client.localUser, content)
         } else {
           this.serverViewController.displayMessage(null, '* Cannot use /me in this view.')
         }
@@ -95,7 +95,7 @@ class IrcChatViewController extends EventEmitter {
         break
       case 'topic':
         if (this.selectedChannel) {
-          this.client.setTopic(this.selectedChannel.name, content)
+          this.selectedChannel.setTopic(content)
         }
         break
       case 'hop':
