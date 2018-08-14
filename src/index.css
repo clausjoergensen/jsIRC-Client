@@ -32,6 +32,13 @@ ul#network-list
     padding: 0px;
 }
 
+ul.network
+{
+    margin: 0px;
+    padding: 0px;    
+    list-style: none;
+}
+
 li.network
 {
     color: #666666;
