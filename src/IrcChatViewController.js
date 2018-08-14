@@ -168,7 +168,7 @@ class IrcChatViewController extends EventEmitter {
         }
         break
       default:
-        console.error(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
+        console.warn(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
         break
     }
   }
