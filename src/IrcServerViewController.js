@@ -91,6 +91,8 @@ class IrcServerViewController extends EventEmitter {
         this.displayError(`* Couldn't connect to server (Connection refused)`)
       } else if (error.code === 'ECONNRESET') {
         this.displayText(`* Disconnected (Connection Reset)`)
+      } else if (error.code === 'ENOTFOUND') {
+        this.displayText(`* Unable to resolve server`)
       } else {
         console.error(error)
       }
