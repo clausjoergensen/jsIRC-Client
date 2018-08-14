@@ -550,15 +550,19 @@ class IrcChannelViewController extends EventEmitter {
       $('#m-opstopic').prop('checked', this.channel.modes.includes('t'))
 
       if (this.channel.modes.includes('l')) {
+        this.channel.userLimit = newModeParameters[1]
         $('#m-max-users').val(newModeParameters[1])
       }
       $('#m-max-users').prop('disabled', !isChannelOperator)
 
       if (this.channel.modes.includes('k')) {
+        console.log(newModeParameters)
         if (this.channel.modes.includes('l')) {
           $('#m-key').val(newModeParameters[2])
+          this.channel.channelKey = newModeParameters[2]
         } else {
           $('#m-key').val(newModeParameters[1])
+          this.channel.channelKey = newModeParameters[1]
         }
       }
 
@@ -614,17 +618,25 @@ class IrcChannelViewController extends EventEmitter {
       this.channel.setModes(newModes)
     }
 
-    // @TODO: Only set these if their value have changed.
-
-    let maxUsers = parseInt($('#m-max-users').val())
-    if (maxUsers && maxUsers !== 0) {
-      this.channel.setModes('+l', [maxUsers])
+    let userLimit = parseInt($('#m-max-users').val())
+    if (userLimit && userLimit !== 0 && userLimit !== this.channel.userLimit) {
+      this.channel.setModes('+l', [userLimit])
+    } else if (this.channel.userLimit && userLimit !== this.channel.userLimit) {
+      this.channel.setModes('-l')
+    } else if (userLimit === 0) {
+      this.channel.setModes('-l')
     }
+
+    delete this.channel.userLimit
 
     let channelKey = $('#m-key').val()
-    if (channelKey) {
+    if (channelKey && channelKey !== this.channel.channelKey) {
       this.channel.setModes('+k', [channelKey])
+    } else if (this.channel.channelKey && channelKey !== this.channel.channelKey) {
+      this.channel.setModes('-k', [this.channel.channelKey])
     }
+
+    delete this.channel.channelKey
   }
 
   createChannelView () {
