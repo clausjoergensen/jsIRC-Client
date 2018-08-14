@@ -7,7 +7,7 @@ const log = require('electron-log')
 
 log.transports.file.level = 'verbose'
 log.transports.console.level = false
-//log.transports.rendererConsole.level = false
+log.transports.rendererConsole.level = false
 
 let mainWindow = null
 
