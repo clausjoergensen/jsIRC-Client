@@ -13,12 +13,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
   viewController.connectToServer('localhost', 6667, {
     'nickName': 'Archchancellor',
     'userName': 'mustrum.ridcully@uu.edu',
-    'realName': 'Mustrum Ridcully'
+    'realName': 'Mustrum Ridcully',
+    'userModes': []
   }, ['#AnkhMorpork', '#UnseenUniversity', '#MendedDrum', '#OblongOffice'])
   
   /*viewController.connectToServer('irc.quakenet.org', 6667, {
     'nickName': 'Windcape',
     'userName': 'bursar@uu.edu',
-    'realName': 'A. A. Dimwiddle'
+    'realName': 'A. A. Dimwiddle',
+    'userModes': []
   }, ['#wow', '#hearthstone'])*/
 })
