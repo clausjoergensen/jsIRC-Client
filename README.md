@@ -19,7 +19,7 @@ This project only been tested on Windows, but should run on MacOS and Linux as w
 
 # License
 
-[MIT License](blob/master/LICENSE.md)
+[MIT License](LICENSE.md)
 
 # Acknowledgements
 
