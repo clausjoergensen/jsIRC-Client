@@ -17,6 +17,10 @@ A IRC client built in [Electron](https://electronjs.org) and [Node.js](https://n
 
 This project only been tested on Windows, but should run on MacOS and Linux as well.
 
+# License
+
+[MIT License](blob/master/LICENSE.md)
+
 # Acknowledgements
 
 The project uses a range of Open Source components. 
