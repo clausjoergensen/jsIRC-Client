@@ -202,7 +202,7 @@ class IrcServerViewController extends EventEmitter {
       paragraph.addClass(messageClass)
     }
 
-    let timestamp = $('<span />', {
+    $('<span />', {
       'class': 'timestamp',
       'text': `[${strftime('%H:%M', now)}]`
     }).appendTo(paragraph)
@@ -227,7 +227,7 @@ class IrcServerViewController extends EventEmitter {
   markAsUnread () {
     let network = Array.from(
       document.getElementById('network-list').querySelectorAll('ul.network')
-    ).find(x => x.clientId == this.client.id)
+    ).find(x => x.clientId === this.client.id)
 
     if (network && !network.firstChild.classList.contains('network-selected')) {
       network.firstChild.classList.add('nav-unread')
@@ -312,7 +312,7 @@ class IrcServerViewController extends EventEmitter {
       'style': 'display: none',
       'contextmenu': (e) => {
         e.preventDefault()
-        serverMenu.popup({ window: remote.getCurrentWindow() })        
+        serverMenu.popup({ window: remote.getCurrentWindow() })
       }
     }).appendTo(rightColumn)
 
@@ -332,9 +332,9 @@ class IrcServerViewController extends EventEmitter {
       if (e.keyCode === 13) {
         this.sendUserInput(input.val())
         input.val('')
-      }        
+      }
     })
-    
+
     inputhistory(input)
   }
 }

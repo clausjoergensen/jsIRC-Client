@@ -62,7 +62,7 @@ class IrcViewController {
     // Input Fields
     $('<div />', { 'text': 'Address' }).appendTo(innerView)
 
-    let submit = () => { 
+    let submit = () => {
       this.connectToServer(server.val(), parseInt(port.val()), {
         'nickName': nickName.val(),
         'userName': email.val(),
@@ -70,12 +70,12 @@ class IrcViewController {
         'userModes': []
       })
       inlineWindow.remove()
-    } 
+    }
 
     let server = $('<input />', {
       'type': 'text',
       'style': '',
-      'onEnter': submit 
+      'onEnter': submit
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Port' }).appendTo(innerView)
@@ -83,7 +83,7 @@ class IrcViewController {
     let port = $('<input />', {
       'type': 'text',
       'style': '',
-      'onEnter': submit 
+      'onEnter': submit
     }).appendTo(innerView)
 
     port.val('6667')
@@ -93,7 +93,7 @@ class IrcViewController {
     let nickName = $('<input />', {
       'type': 'text',
       'style': '',
-      'onEnter': submit 
+      'onEnter': submit
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Name' }).appendTo(innerView)
@@ -101,21 +101,21 @@ class IrcViewController {
     let realName = $('<input />', {
       'type': 'text',
       'style': '',
-      'onEnter': submit 
+      'onEnter': submit
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Email' }).appendTo(innerView)
 
     let email = $('<input />', {
-      'type': 'text',      
+      'type': 'text',
       'style': '',
-      'onEnter': submit 
+      'onEnter': submit
     }).appendTo(innerView)
 
     $('<button />', {
       'text': 'Connect',
       'type': 'submit',
-      'click': submit 
+      'click': submit
     }).appendTo(innerView)
 
     // Close the Window on Esc

@@ -153,7 +153,7 @@ class IrcNetworkViewController extends EventEmitter {
     serverListItemElement.innerText = this.client.hostName
 
     this.client.once('clientInfo', () => {
-      serverListItemElement.innerText = `${this.client.serverName} (${this.client.localUser.nickName})`      
+      serverListItemElement.innerText = `${this.client.serverName} (${this.client.localUser.nickName})`
     })
 
     serverListElement.appendChild(serverListItemElement)
