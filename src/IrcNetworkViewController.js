@@ -29,6 +29,20 @@ class IrcNetworkViewController extends EventEmitter {
         this.setWindowTitleForServer(this.networkName)
       })
 
+      client.localUser.on('notice', (source, targets, noticeText) => {
+        let keys = Object.keys(this.channels)
+        if (keys.length > 0) {
+          keys.forEach(key => {
+            let channel = this.channels[key]
+            if (this.selectedChannel !== channel.channel) {
+              channel.channelView.addClass('nav-unread')
+            }
+          })
+        } else {
+          this.markAsUnread()
+        }
+      })
+
       client.localUser.on('joinedChannel', (channel) => {
         channel.on('message', (source, messageText) => {
           this.markAsUnread(channel)
@@ -239,7 +253,6 @@ class IrcNetworkViewController extends EventEmitter {
     if (!channel) {
       this.serverTitle.addClass('nav-unread')
     } else {
-      this.serverTitle.removeClass('nav-unread')
       if (this.selectedChannel !== channel) {
         this.channels[channel.name].channelView.addClass('nav-unread')
       }

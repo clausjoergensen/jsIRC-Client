@@ -37,7 +37,10 @@ class IrcServerViewController extends EventEmitter {
       })
 
       this.client.localUser.on('notice', (source, targets, noticeText) => {
-        this.displayNotice(source, noticeText)
+        let channelUsers = this.client.localUser.getChannelUsers()
+        if (channelUsers.length === 0) {
+          this.displayNotice(source, noticeText)          
+        }
       })
     })
 

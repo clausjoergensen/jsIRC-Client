@@ -35,10 +35,15 @@ class IrcChatViewController extends EventEmitter {
         this.channels[channel.name].remove()
         delete this.channels[channel.name]
       })
+
+      this.client.localUser.on('notice', (source, targets, noticeText) => {
+        Object.keys(this.channels).forEach((key, index) => {
+          this.channels[key].displayNotice(source, noticeText)
+        })
+      })
     })
 
     this.client.on('registered', () => { this.client.joinChannel('#testing') })
-
     this.client.on('protocolError', this.protocolError.bind(this))
   }
 

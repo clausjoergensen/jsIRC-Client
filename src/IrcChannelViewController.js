@@ -163,6 +163,59 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
+  displayNotice (source, text) {
+    let senderName = ''
+    if (source) {
+      if (source.nickName) {
+        senderName = `-${source.nickName}-`
+      } else if (source.hostName) {
+        senderName = source.hostName
+      }
+    }
+
+    let senderClass = ''
+    if (source) {
+      if (source.nickName) {
+        senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
+      } else if (source.hostName) {
+        senderClass = 'sender-server'
+      }
+    }
+
+    let messageClass = ''
+    if (source) {
+      if (source.nickName) {
+        messageClass = source.isLocalUser ? 'message-by-me' : 'message-by-other'
+      } else if (source.hostName) {
+        senderClass = 'message-by-server'
+      }
+    }
+
+    text = text.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
+
+    let linkedText = Autolinker.link(text, {
+      stripPrefix: false,
+      newWindow: false,
+      replaceFn: (match) => {
+        if (match.getType() === 'url') {
+          let tag = match.buildTag()
+          tag.setAttr('title', match.getAnchorHref())
+          return tag
+        } else {
+          return true
+        }
+      }
+    })
+
+    let now = new Date()
+    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
+
+    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
+    paragraph.html(formattedText)
+
+    this.messageView.scrollTop(this.messageView.scrollHeight)
+  }
+
   displayMessage (source, text) {
     let senderName = ''
     if (source) {
@@ -220,6 +273,7 @@ class IrcChannelViewController extends EventEmitter {
     if (!newTopic) {
       this.titleView.html('(No Channel Topic)')
     } else {
+      newtopic = newtopic.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
       let html = Autolinker.link(newTopic, {
         stripPrefix: false,
         newWindow: false,
