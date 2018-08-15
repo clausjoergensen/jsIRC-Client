@@ -18,12 +18,12 @@ class IrcServerViewController extends EventEmitter {
     this.ctcpClient = ctcpClient
 
     this.client.on('connecting', (hostName, port) => {
-      this.displayText(`* Connecting to ${hostName} (${port})`)
+      this.displayText(`* Connecting to ${hostName} (${port})`, 'client-event')
       this.displaySeperator()
     })
 
     this.client.on('disconnected', (reason) => {
-      this.displayText(`* Disconnected (${reason})`)
+      this.displayText(`* Disconnected (${reason})`, 'client-event')
       this.displaySeperator()
     })
 
@@ -39,14 +39,6 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('error', errorMessage => {
       this.displayError('* ' + errorMessage)
-    })
-
-    this.client.on('protocolError', (command, errorName, errorParameters, errorMessage) => {
-      switch (command) {
-        case 433: // ERR_NICKNAMEINUSE
-          this.displayError(`Nickname '${errorParameters[0]}' is already in use.`)
-          break
-      }
     })
 
     this.client.on('clientInfo', (welcomeMessage) => {
@@ -88,11 +80,11 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('connectionError', error => {
       if (error.code === 'ECONNREFUSED') {
-        this.displayError(`* Couldn't connect to server (Connection refused)`)
+        this.displayError(`* Couldn't connect to server (Connection refused)`, 'client-event')
       } else if (error.code === 'ECONNRESET') {
-        this.displayText(`* Disconnected (Connection Reset)`)
+        this.displayText(`* Disconnected (Connection Reset)`, 'client-event')
       } else if (error.code === 'ENOTFOUND') {
-        this.displayText(`* Unable to resolve server`)
+        this.displayText(`* Unable to resolve server`, 'client-event')
       } else {
         console.error(error)
       }
@@ -191,15 +183,23 @@ class IrcServerViewController extends EventEmitter {
     this.displaySeperator()
   }
 
-  displayText (text) {
+  displayText (text, messageClass = null) {
     text = text.replace(/[^\x20-\xFF]/g, '')
 
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${text}`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('server-message')
-    paragraph.innerText = formattedText
+    if (messageClass) {
+      paragraph.classList.add(messageClass)
+    }
+
+    let timestamp = document.createElement('span')
+    timestamp.classList.add('timestamp')
+    timestamp.innerText = `[${strftime('%H:%M', now)}]`
+
+    paragraph.appendChild(timestamp)
+    paragraph.appendChild(document.createTextNode(` ${text}`))
 
     this.serverView.appendChild(paragraph)
     this.serverView.scrollTop = this.serverView.scrollHeight

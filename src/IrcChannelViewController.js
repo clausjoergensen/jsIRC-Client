@@ -112,12 +112,17 @@ class IrcChannelViewController extends EventEmitter {
   displayError (errorMessage) {
     let senderName = '* ' + this.client.localUser.nickName
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${senderName}: ${errorMessage}`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('channel-message')
     paragraph.classList.add('channel-message-error')
-    paragraph.innerText = formattedText
+
+    let timestamp = document.createElement('span')
+    timestamp.classList.add('timestamp')
+    timestamp.innerText = `[${strftime('%H:%M', now)}]`
+
+    paragraph.appendChild(timestamp)
+    paragraph.appendChild(document.createTextNode(` ${senderName}: ${errorMessage}`))
 
     this.messageView.appendChild(paragraph)
     this.messageView.scrollTop = this.messageView.scrollHeight
@@ -142,11 +147,11 @@ class IrcChannelViewController extends EventEmitter {
 
     let senderName = '* ' + source.nickName
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${senderName} ${linkedText}`
+    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> ${senderName} ${linkedText}`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('channel-message')
-    paragraph.innerHTML = formattedText
+    paragraph.innerHTML += formattedText
 
     this.messageView.appendChild(paragraph)
     this.messageView.scrollTop = this.messageView.scrollHeight
@@ -159,6 +164,15 @@ class IrcChannelViewController extends EventEmitter {
         senderName = `&lt;${source.nickName}&gt;`
       } else if (source.hostName) {
         senderName = source.hostName
+      }
+    }
+
+    let senderClass = ''
+    if (source) {
+      if (source.nickName) {
+        senderClass = sender.isLocalUser ? 'sender-me' : 'sender-user'
+      } else if (source.hostName) {
+        senderClass = 'sender-server'
       }
     }
 
@@ -179,7 +193,7 @@ class IrcChannelViewController extends EventEmitter {
     })
 
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] ${senderName} ${linkedText}`
+    let formattedText = `[${strftime('%H:%M', now)}] <span class="${senderClass}">${senderName}</span> ${linkedText}`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('channel-message')

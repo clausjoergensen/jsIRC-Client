@@ -59,18 +59,31 @@ class IrcViewController {
     // Container
     let innerView = $('<div />', { 'style': 'padding: 10px' }).appendTo(inlineWindow)
 
+    // Input Fields
     $('<div />', { 'text': 'Address' }).appendTo(innerView)
+
+    let submit = () => { 
+      this.connectToServer(server.val(), parseInt(port.val()), {
+        'nickName': nickName.val(),
+        'userName': email.val(),
+        'realName': realName.val(),
+        'userModes': []
+      })
+      inlineWindow.remove()
+    } 
 
     let server = $('<input />', {
       'type': 'text',
-      'style': ''
+      'style': '',
+      'onEnter': submit 
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Port' }).appendTo(innerView)
 
     let port = $('<input />', {
       'type': 'text',
-      'style': ''
+      'style': '',
+      'onEnter': submit 
     }).appendTo(innerView)
 
     port.val('6667')
@@ -79,41 +92,31 @@ class IrcViewController {
 
     let nickName = $('<input />', {
       'type': 'text',
-      'style': ''
+      'style': '',
+      'onEnter': submit 
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Name' }).appendTo(innerView)
 
     let realName = $('<input />', {
       'type': 'text',
-      'style': ''
+      'style': '',
+      'onEnter': submit 
     }).appendTo(innerView)
 
     $('<div />', { 'text': 'Email' }).appendTo(innerView)
 
     let email = $('<input />', {
       'type': 'text',      
-      'style': ''
+      'style': '',
+      'onEnter': submit 
     }).appendTo(innerView)
 
     $('<button />', {
       'text': 'Connect',
       'type': 'submit',
-      'click': (e) => {
-        this.connectToServer(server.val(), parseInt(port.val()), {
-          'nickName': nickName.val(),
-          'userName': email.val(),
-          'realName': realName.val(),
-          'userModes': []
-        })
-        inlineWindow.remove()
-      }
+      'click': submit 
     }).appendTo(innerView)
-
-    server.val('localhost')
-    nickName.val('Windcape')
-    email.val('claus.joergensen@outlook.com')
-    realName.val('Claus Jørgensen')
 
     // Close the Window on Esc
     let handler = null
