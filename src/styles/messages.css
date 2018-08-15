@@ -1,0 +1,33 @@
+/* Message Styles */
+.client-event {
+    color: #0000A8;
+}
+
+.server-error {
+    color: red;
+}
+
+.seperator {
+    margin-top: -5px;
+    margin-bottom: -3px;
+}
+
+.timestamp {
+    color: #808080;
+}
+
+.sender-server {
+    color: black;
+}
+
+.sender-user {
+    color: black;
+}
+
+.sender-me {
+    color: black;
+}
+
+.channel-message a {
+    /* default */
+}
