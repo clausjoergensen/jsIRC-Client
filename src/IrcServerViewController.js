@@ -43,12 +43,15 @@ class IrcServerViewController extends EventEmitter {
       this.displayError('* ' + errorMessage)
     })
 
+    this.client.on('hostHidden', (hostName) => {
+      this.displayText(`${hostName} is now your displayed host.`)
+      this.displaySeperator()
+    })
+
     this.client.on('clientInfo', (welcomeMessage) => {
       this.displayText(this.client.welcomeMessage || '')
       this.displayText(this.client.yourHostMessage || '')
       this.displayText(this.client.serverCreatedMessage || '')
-      this.displaySeperator()
-      this.displayText(`${this.client.localUser.hostName} is now your displayed host.`)
       this.displaySeperator()
     })
 
