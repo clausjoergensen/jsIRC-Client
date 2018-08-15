@@ -1,3 +1,8 @@
+/** Errors */
+.error {
+    color: red !important;
+}
+
 /** Paragraphs */
 p.seperator {
     margin-top: -5px;
@@ -24,10 +29,6 @@ p.server-message {
     margin-left: 0px;
     margin-right: 0px;
     font-size: 11pt;
-}
-
-p.error-message {
-    color: red;
 }
 
 /** Timestamp **/
