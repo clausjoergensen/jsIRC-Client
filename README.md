@@ -12,6 +12,7 @@ A IRC client built in [Electron](https://electronjs.org) and [Node.js](https://n
 - Change user modes (op/deop/voice etc.) in channels.
 - 1:1 chats.
 - Standard CTCP actions.
+- Chat input history (on arrow-up)
 
 # Notes
 
