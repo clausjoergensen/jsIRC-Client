@@ -52,7 +52,7 @@ class IrcChatViewController extends EventEmitter {
 
       this.client.localUser.on('notice', (source, targets, noticeText) => {
         Object.keys(this.channels).forEach((key, index) => {
-          this.channels[key].displayNotice(source, noticeText)
+          this.channels[key].displayMessage(source, noticeText, true)
         })
       })
 

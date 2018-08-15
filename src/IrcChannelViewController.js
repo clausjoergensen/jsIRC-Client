@@ -163,11 +163,11 @@ class IrcChannelViewController extends EventEmitter {
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
-  displayNotice (source, text) {
+  displayMessage (source, text, isNotice = false) {
     let senderName = ''
     if (source) {
       if (source.nickName) {
-        senderName = `-${source.nickName}-`
+        senderName = isNotice ? `-${source.nickName}-` : `&lt;${source.nickName}&gt;`
       } else if (source.hostName) {
         senderName = source.hostName
       }
@@ -183,64 +183,12 @@ class IrcChannelViewController extends EventEmitter {
     }
 
     let messageClass = ''
+    let token = isNotice ? 'notice' : 'message' 
     if (source) {
       if (source.nickName) {
-        messageClass = source.isLocalUser ? 'message-by-me' : 'message-by-other'
+        messageClass = source.isLocalUser ? `${token}-by-me` : `${token}-by-other`
       } else if (source.hostName) {
-        senderClass = 'message-by-server'
-      }
-    }
-
-    text = text.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
-
-    let linkedText = Autolinker.link(text, {
-      stripPrefix: false,
-      newWindow: false,
-      replaceFn: (match) => {
-        if (match.getType() === 'url') {
-          let tag = match.buildTag()
-          tag.setAttr('title', match.getAnchorHref())
-          return tag
-        } else {
-          return true
-        }
-      }
-    })
-
-    let now = new Date()
-    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
-
-    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
-    paragraph.html(formattedText)
-
-    this.scrollToBottom()
-  }
-
-  displayMessage (source, text) {
-    let senderName = ''
-    if (source) {
-      if (source.nickName) {
-        senderName = `&lt;${source.nickName}&gt;`
-      } else if (source.hostName) {
-        senderName = source.hostName
-      }
-    }
-
-    let senderClass = ''
-    if (source) {
-      if (source.nickName) {
-        senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
-      } else if (source.hostName) {
-        senderClass = 'sender-server'
-      }
-    }
-
-    let messageClass = ''
-    if (source) {
-      if (source.nickName) {
-        messageClass = source.isLocalUser ? 'message-by-me' : 'message-by-other'
-      } else if (source.hostName) {
-        senderClass = 'message-by-server'
+        senderClass = `${token}-by-server`
       }
     }
 

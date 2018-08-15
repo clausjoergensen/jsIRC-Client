@@ -33,7 +33,7 @@ class IrcServerViewController extends EventEmitter {
       this.client.localUser.on('notice', (source, targets, noticeText) => {
         let channelUsers = this.client.localUser.getChannelUsers()
         if (channelUsers.length === 0) {
-          this.displayNotice(source, noticeText)
+          this.displayMessage(source, noticeText, true)
         }
       })
     })
@@ -172,31 +172,21 @@ class IrcServerViewController extends EventEmitter {
     this.displaySeperator()
   }
 
-  displayMessage (source, text, styles = []) {
+  displayMessage (source, text, isNotice = false) {
     let senderName = ''
     if (source) {
       if (source.nickName) {
-        senderName = `<${source.nickName}>`
+        senderName = isNotice ? `-${source.nickName}-` : `<${source.nickName}>`
       } else if (source.hostName) {
         senderName = source.hostName
       }
     }
 
     this.displayText(`${senderName} ${text}`)
-  }
-
-  displayNotice (source, text) {
-    let senderName = ''
-    if (source) {
-      if (source.nickName) {
-        senderName = ` - ${source.nickName} -`
-      } else if (source.hostName) {
-        senderName = source.hostName
-      }
+    
+    if (isNotice) {
+      this.displaySeperator()
     }
-
-    this.displayText(`${senderName} ${text}`)
-    this.displaySeperator()
   }
 
   displayText (text, messageClass = null) {
