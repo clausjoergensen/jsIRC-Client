@@ -7,6 +7,8 @@ const { Menu, BrowserWindow, app } = remote
 const events = require('events')
 const { EventEmitter } = events
 
+const $ = require('jquery')
+
 class IrcNetworkViewController extends EventEmitter {
   constructor (client) {
     super()
@@ -22,9 +24,7 @@ class IrcNetworkViewController extends EventEmitter {
     client.on('connected', () => {
       client.localUser.on('nickName', () => {
         if (this.serverView) {
-          console.log(this.networkName)
-          this.serverView.firstChild.innerText =
-            `${this.networkName || this.client.serverName} (${this.client.localUser.nickName})`
+          this.serverTitle.text(`${this.networkName || this.client.serverName} (${this.client.localUser.nickName})`)
         }
         this.setWindowTitleForServer(this.networkName)
       })
@@ -49,7 +49,7 @@ class IrcNetworkViewController extends EventEmitter {
 
       client.localUser.on('partedChannel', (channel) => {
         let channelView = this.channels[channel.name].channelView
-        channelView.parentElement.removeChild(channelView)
+        channelView.remove()
 
         if (Object.keys(this.channels).length === 0) {
           this.viewServer()
@@ -75,7 +75,7 @@ class IrcNetworkViewController extends EventEmitter {
       let networkName = serverSupportedFeatures['NETWORK']
       if (networkName) {
         this.networkName = networkName
-        this.serverView.firstChild.innerText = `${this.networkName} (${this.client.localUser.nickName})`
+        this.serverTitle.text(`${this.networkName} (${this.client.localUser.nickName})`)
         this.setWindowTitleForServer(this.networkName)
       }
     })
@@ -108,14 +108,11 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   viewChannel (channel) {
-    Array.from(document.getElementsByClassName('network'))
-      .forEach(e => e.classList.remove('network-selected'))
+    $('.network').removeClass('network-selected')
+    $('.channel').removeClass('channel-selected')
 
-    Array.from(document.getElementsByClassName('channel'))
-      .forEach(e => e.classList.remove('channel-selected'))
-
-    this.channels[channel.name].channelView.classList.remove('nav-unread')
-    this.channels[channel.name].channelView.classList.add('channel-selected')
+    this.channels[channel.name].channelView.removeClass('nav-unread')
+    this.channels[channel.name].channelView.addClass('channel-selected')
 
     this.selectedView = this.channels[channel.name].channelView
     this.setWindowTitleForChannel(channel)
@@ -124,14 +121,11 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   viewServer () {
-    Array.from(document.getElementsByClassName('network'))
-      .forEach(e => e.classList.remove('network-selected'))
+    $('.network').removeClass('network-selected')
+    $('.channel').removeClass('channel-selected')
 
-    Array.from(document.getElementsByClassName('channel'))
-      .forEach(e => e.classList.remove('channel-selected'))
-
-    this.serverView.firstChild.classList.remove('nav-unread')
-    this.serverView.firstChild.classList.add('network-selected')
+    this.serverTitle.removeClass('nav-unread')
+    this.serverTitle.addClass('network-selected')
 
     this.selectedView = this.serverView
     this.setWindowTitleForServer()
@@ -144,40 +138,30 @@ class IrcNetworkViewController extends EventEmitter {
       return
     }
 
-    let serverListElement = document.createElement('ul')
-    serverListElement.classList.add('network')
-    serverListElement.clientId = this.client.id
+    this.serverView = $('<ul />', {
+      'class': 'network'
+    }).appendTo($('#network-list'))
 
-    let serverListItemElement = document.createElement('li')
-    serverListItemElement.classList.add('network')
-    serverListItemElement.innerText = this.client.hostName
+    this.serverView.data('clientId', this.client.id)
+
+    this.serverTitle = $('<li />', {
+      'class': 'network',
+      'text': this.client.hostName,
+      'click': (e) => {
+        e.preventDefault()
+        this.viewServer()
+      }
+    }).appendTo(this.serverView)
 
     this.client.once('clientInfo', () => {
-      serverListItemElement.innerText = `${this.client.serverName} (${this.client.localUser.nickName})`
+      this.serverTitle.text(`${this.client.serverName} (${this.client.localUser.nickName})`)
     })
-
-    serverListElement.appendChild(serverListItemElement)
-
-    let networkListElement = document.getElementById('network-list')
-    networkListElement.appendChild(serverListElement)
-
-    serverListItemElement.addEventListener('click', (e) => {
-      e.preventDefault()
-      this.viewServer()
-    }, false)
-
-    this.serverView = serverListElement
   }
 
   addChannelToList (channel) {
     if (this.channels[channel.name]) {
       return
     }
-
-    let channelElement = document.createElement('li')
-    channelElement.classList.add('channel')
-    channelElement.channel = channel
-    channelElement.innerText = channel.name
 
     const channelMenu = Menu.buildFromTemplate([{
       label: 'Leave Channel',
@@ -186,21 +170,24 @@ class IrcNetworkViewController extends EventEmitter {
       }
     }])
 
-    channelElement.addEventListener('contextmenu', (e) => {
-      e.preventDefault()
-      channelMenu.popup({ window: remote.getCurrentWindow() })
-    }, false)
+    let channelView = $('<li />', {
+      'class': 'channel',
+      'text': channel.name,
+      'contextmenu': (e) => {
+        e.preventDefault()
+        channelMenu.popup({ window: remote.getCurrentWindow() })
+      },
+      'click': (e) => {
+        e.preventDefault()
+        this.viewChannel(channel)
+      }
+    }).appendTo(this.serverView)
 
-    channelElement.addEventListener('click', (e) => {
-      e.preventDefault()
-      this.viewChannel(channel)
-    }, false)
-
-    this.serverView.appendChild(channelElement)
+    channelView.data('channel', channel)
 
     this.channels[channel.name] = {
       'channel': channel,
-      'channelView': channelElement
+      'channelView': channelView
     }
   }
 
@@ -235,11 +222,11 @@ class IrcNetworkViewController extends EventEmitter {
 
   markAsUnread (channel = null) {
     if (!channel) {
-      this.serverView.firstChild.classList.add('nav-unread')
+      this.serverTitle.addClass('nav-unread')
     } else {
-      this.serverView.firstChild.classList.remove('nav-unread')
+      this.serverTitle.removeClass('nav-unread')
       if (this.selectedChannel !== channel) {
-        this.channels[channel.name].channelView.classList.add('nav-unread')
+        this.channels[channel.name].channelView.addClass('nav-unread')
       }
     }
   }

@@ -233,9 +233,7 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayUsers () {
-    while (this.usersView.firstChild) {
-      this.usersView.removeChild(this.usersView.firstChild)
-    }
+    this.usersView.empty()
 
     let sortedUsers = this.channel.users.sort((a, b) => {
       if (a.modes.includes('q') && b.modes.includes('q')) {
