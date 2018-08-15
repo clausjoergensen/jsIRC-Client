@@ -20,6 +20,7 @@ class IrcViewController {
     $(document).ready(() => {
       this.displayServerConnectionManager()
     })
+    })*/
   }
 
   connectToServer (server, port, registrationInfo) {

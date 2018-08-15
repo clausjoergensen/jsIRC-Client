@@ -7,6 +7,8 @@ const { Menu } = remote
 const events = require('events')
 const { EventEmitter } = events
 
+const { IrcUser } = require('jsirc') 
+
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
@@ -70,6 +72,12 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channel.on('userKicked', (_) => {
       this.displayUsers()
+    })
+
+    this.channel.on('modes', (source, newModes, newModeParameters) => {
+      if (source instanceof IrcUser) {
+        this.displayAction(source, `sets mode '${newModes.join('')} ${newModeParameters ? newModeParameters.join('') : ''}'`)        
+      }
     })
 
     this.createChannelView()
