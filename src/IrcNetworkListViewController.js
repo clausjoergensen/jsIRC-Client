@@ -4,8 +4,6 @@
 const events = require('events')
 const { EventEmitter } = events
 
-const log = require('electron-log')
-
 const IrcNetworkViewController = require('./IrcNetworkViewController.js')
 
 class IrcNetworkListViewController extends EventEmitter {

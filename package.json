@@ -1,5 +1,5 @@
 {
-  "name": "jsIRC-Client",
+  "name": "jsIRC",
   "version": "0.0.1",
   "description": "IRC Client",
   "main": "app.js",

@@ -5,8 +5,6 @@ const { app, shell, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 const log = require('electron-log')
 
-let mainWindow = null
-
 if (app.isPackaged) {
   log.transports.file.level = 'verbose'
   log.transports.console.level = false
@@ -16,6 +14,8 @@ if (app.isPackaged) {
   log.transports.console.level = false
   log.transports.rendererConsole.level = 'debug'
 }
+
+let mainWindow = null
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
