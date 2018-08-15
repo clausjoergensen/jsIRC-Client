@@ -1,6 +1,8 @@
-/*!
-* Modified version of https://github.com/erming/inputhistory for Node.js
-*/
+/**
+ * Modified version of https://github.com/erming/inputhistory for Node.js
+ *
+ * @license MIT
+ */
 module.exports = function (input) {
   let options = {
     history: [],
