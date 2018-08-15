@@ -212,7 +212,7 @@ class IrcChannelViewController extends EventEmitter {
     if (!newTopic) {
       this.titleView.html('(No Channel Topic)')
     } else {
-      this.titleView.html(Autolinker.link(newTopic, {
+      let html = Autolinker.link(newTopic, {
         stripPrefix: false,
         newWindow: false,
         replaceFn: (match) => {
@@ -224,7 +224,8 @@ class IrcChannelViewController extends EventEmitter {
             return true
           }
         }
-      }))
+      })      
+      this.titleView.html(`<span title="${newTopic}">${html}</span>`)
     }
 
     if (source) {
