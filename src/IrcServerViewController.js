@@ -141,14 +141,18 @@ class IrcServerViewController extends EventEmitter {
 
   show () {
     this.serverView.css('display', 'block')
-    this.serverView.scrollTop(this.serverView.scrollHeight)
     this.serverToolbar.css('display', 'block')
     this.serverToolbar.find('.chat-input')[0].focus()
+    this.scrollToBottom()
   }
 
   hide () {
     this.serverView.css('display', 'none')
     this.serverToolbar.css('display', 'none')
+  }
+
+  scrollToBottom () {
+    this.serverView.scrollTop(this.serverView.prop('scrollHeight'))
   }
 
   displayAction (text) {
@@ -209,6 +213,7 @@ class IrcServerViewController extends EventEmitter {
     this.serverView.scrollTop(this.serverView.scrollHeight)
 
     this.markAsUnread()
+    this.scrollToBottom()
   }
 
   displaySeperator () {
@@ -216,6 +221,7 @@ class IrcServerViewController extends EventEmitter {
 
     this.serverView.append(paragraph)
     this.serverView.scrollTop(this.serverView.scrollHeight)
+    this.scrollToBottom()
   }
 
   markAsUnread () {
@@ -229,6 +235,10 @@ class IrcServerViewController extends EventEmitter {
   }
 
   sendUserInput (text) {
+    if (!text) {
+      return
+    }
+
     if (text[0] === '/') {
       this.sendAction(text)
     } else {
@@ -267,35 +277,7 @@ class IrcServerViewController extends EventEmitter {
   }
 
   createServerView () {
-    let rightColumn = $('#right-column')
-
-    let serverView = $('<div />', {
-      'class': 'server-view',
-      'style': 'display: none'
-    }).appendTo(rightColumn)
-
-    let serverToolbar = $('<div />', {
-      class: 'toolbar toolbar-footer',
-      style: 'height: 40px; display: none'
-    }).appendTo(rightColumn)
-
-    let input = $('<input />', {
-      'type': 'text',
-      'class': 'chat-input',
-      'placeholder': 'Send Message …',
-      'autofocus': true
-    }).appendTo(serverToolbar)
-
-    input.keyup((e) => {
-      if (e.keyCode === 13) {
-        this.sendUserInput(input.val())
-        input.val('')
-      }        
-    })
-    
-    inputhistory(input)
-
-    const serverMenuTemplate = [
+    const serverMenu = Menu.buildFromTemplate([
       {
         label: 'Network Info',
         click: () => {
@@ -321,17 +303,39 @@ class IrcServerViewController extends EventEmitter {
           app.quit()
         }
       }
-    ]
+    ])
 
-    const serverMenu = Menu.buildFromTemplate(serverMenuTemplate)
+    let rightColumn = $('#right-column')
 
-    serverView.on('contextmenu', (e) => {
-      e.preventDefault()
-      serverMenu.popup({ window: remote.getCurrentWindow() })
-    }, false)
+    this.serverView = $('<div />', {
+      'class': 'server-view',
+      'style': 'display: none',
+      'contextmenu': (e) => {
+        e.preventDefault()
+        serverMenu.popup({ window: remote.getCurrentWindow() })        
+      }
+    }).appendTo(rightColumn)
 
-    this.serverView = serverView
-    this.serverToolbar = serverToolbar
+    this.serverToolbar = $('<div />', {
+      class: 'toolbar toolbar-footer',
+      style: 'height: 40px; display: none'
+    }).appendTo(rightColumn)
+
+    let input = $('<input />', {
+      'type': 'text',
+      'class': 'chat-input',
+      'placeholder': 'Send Message …',
+      'autofocus': true
+    }).appendTo(this.serverToolbar)
+
+    input.keyup((e) => {
+      if (e.keyCode === 13) {
+        this.sendUserInput(input.val())
+        input.val('')
+      }        
+    })
+    
+    inputhistory(input)
   }
 }
 

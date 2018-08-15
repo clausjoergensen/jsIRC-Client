@@ -87,9 +87,9 @@ class IrcChannelViewController extends EventEmitter {
 
   show () {
     this.channelView.css('display', 'block')
-    this.messageView.scrollTop(this.messageView.scrollHeight)
     this.channelToolbar.css('display', 'block')
     this.channelToolbar.find('.chat-input')[0].focus()
+    this.scrollToBottom()
   }
 
   hide () {
@@ -98,7 +98,12 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   remove () {
-    this.channelView.parentElement.removeChild(this.channelView)
+    this.channelView.remove()
+    this.channelToolbar.remove()
+  }
+
+  scrollToBottom () {
+    this.messageView.scrollTop(this.messageView.prop('scrollHeight'))
   }
 
   part () {
@@ -701,7 +706,7 @@ class IrcChannelViewController extends EventEmitter {
       }
     }).appendTo(contentView)
 
-    let channelToolbar = $('<div />', {
+    this.channelToolbar = $('<div />', {
       class: 'toolbar toolbar-footer',
       style: 'height: 40px; display: none'
     }).appendTo(rightColumn)
@@ -711,7 +716,7 @@ class IrcChannelViewController extends EventEmitter {
       'class': 'chat-input',
       'placeholder': 'Send Message …',
       'autofocus': true
-    }).appendTo(channelToolbar)
+    }).appendTo(this.channelToolbar)
 
     input.keyup((e) => {
       if (e.keyCode === 13) {
@@ -721,17 +726,21 @@ class IrcChannelViewController extends EventEmitter {
     })
 
     inputhistory(input)
-
-    this.channelToolbar = channelToolbar
   }
 
   sendUserInput (text) {
+    if (!text) {
+      return
+    }
+
     if (text[0] === '/') {
       this.sendAction(text)
+      this.scrollToBottom()
     } else {
       text.match(/.{1,398}/g).forEach(chunk => {
         this.channel.sendMessage(chunk)
       })
+      this.scrollToBottom()
     }
   }
 
