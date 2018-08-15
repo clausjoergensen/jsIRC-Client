@@ -7,7 +7,7 @@ const { Menu } = remote
 const events = require('events')
 const { EventEmitter } = events
 
-const { IrcUser } = require('jsirc') 
+const { IrcUser } = require('jsirc')
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
@@ -76,7 +76,7 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channel.on('modes', (source, newModes, newModeParameters) => {
       if (source instanceof IrcUser) {
-        this.displayAction(source, `sets mode '${newModes.join('')} ${newModeParameters ? newModeParameters.join('') : ''}'`)        
+        this.displayAction(source, `sets mode '${newModes.join('')} ${newModeParameters ? newModeParameters.join('') : ''}'`)
       }
     })
 
@@ -273,7 +273,7 @@ class IrcChannelViewController extends EventEmitter {
     if (!newTopic) {
       this.titleView.html('(No Channel Topic)')
     } else {
-      newtopic = newtopic.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
+      newTopic = newTopic.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
       let html = Autolinker.link(newTopic, {
         stripPrefix: false,
         newWindow: false,
@@ -286,7 +286,7 @@ class IrcChannelViewController extends EventEmitter {
             return true
           }
         }
-      })      
+      })
       this.titleView.html(`<span title="${newTopic}">${html}</span>`)
     }
 
