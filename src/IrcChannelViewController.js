@@ -820,6 +820,7 @@ class IrcChannelViewController extends EventEmitter {
     let message = $('<input />', {
       'type': 'text',
       'style': 'width: 276px; margin-top: 3px; margin-bottom: 10px;',
+      'autofocus': true,
       'onEnter': (e) => {
         if (shouldBan) {
           channelUser.ban()
@@ -857,6 +858,8 @@ class IrcChannelViewController extends EventEmitter {
       }
     }
     window.addEventListener('keyup', handler)
+
+    message.focus()
   }
 }
 
