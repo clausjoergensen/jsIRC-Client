@@ -12,6 +12,8 @@ const prettyMs = require('pretty-ms')
 const inputhistory = require('./inputhistory.js')
 const $ = require('jquery')
 
+const packageInfo = require('./../package.json')
+
 class IrcServerViewController extends EventEmitter {
   constructor (client, ctcpClient) {
     super()
@@ -152,6 +154,11 @@ class IrcServerViewController extends EventEmitter {
   hide () {
     this.serverView.css('display', 'none')
     this.serverToolbar.css('display', 'none')
+  }
+
+  remove () {
+    this.serverView.remove()
+    this.serverToolbar.remove()
   }
 
   scrollToBottom () {
@@ -301,7 +308,7 @@ class IrcServerViewController extends EventEmitter {
       },
       { type: 'separator' },
       {
-        label: 'Quit',
+        label: `Quit jsIRC`,
         click: () => {
           app.quit()
         }

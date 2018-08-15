@@ -18,7 +18,7 @@ class IrcChatViewController extends EventEmitter {
     this.client = client
 
     this.ctcpClient = new CtcpClient(client)
-    this.ctcpClient.clientName = packageInfo.name
+    this.ctcpClient.clientName = 'jsIRC'
     this.ctcpClient.clientVersion = packageInfo.version
 
     this.serverViewController = new IrcServerViewController(this.client, this.ctcpClient)
@@ -47,7 +47,14 @@ class IrcChatViewController extends EventEmitter {
     this.hideAllChannels()
   }
 
-  viewServer (serverName) {
+  remove () {
+    this.serverViewController.remove()
+    Object.keys(this.channels).forEach((key, index) => {
+      this.channels[key].remove()
+    })
+  }
+
+  viewServer () {
     if (this.selectedChannel) {
       this.selectedChannel.hide()
     }

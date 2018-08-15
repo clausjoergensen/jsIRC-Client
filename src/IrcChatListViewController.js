@@ -27,6 +27,11 @@ class IrcChatListViewController extends EventEmitter {
     this.connections[client.id] = chatViewController
   }
 
+  quitServer (client) {
+    this.connections[client.id].remove()
+    delete this.connections[client.id]
+  } 
+
   viewServer (client, serverName) {
     Object.keys(this.connections).forEach((key, index) => {
       this.connections[key].hide()

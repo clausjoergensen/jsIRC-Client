@@ -27,16 +27,24 @@ class IrcNetworkListViewController extends EventEmitter {
   addServer (client) {
     let networkController = new IrcNetworkViewController(client)
 
+    networkController.once('quit', (client) => {
+      delete this.connections[client.id]
+      if (this.selectedConnection == networkController) {
+        this.viewNextServer()
+      }
+      this.emit('quit', client)
+    })
+
     networkController.on('viewChannel', (client, channel) => {
       this.hideOthers(networkController)
       this.selectedConnection = networkController
       this.emit('viewChannel', client, channel)
     })
 
-    networkController.on('viewServer', (client, serverName) => {
+    networkController.on('viewServer', (client) => {
       this.hideOthers(networkController)
       this.selectedConnection = networkController
-      this.emit('viewServer', client, serverName)
+      this.emit('viewServer', client)
     })
 
     this.connections[client.id] = networkController

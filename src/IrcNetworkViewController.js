@@ -130,7 +130,7 @@ class IrcNetworkViewController extends EventEmitter {
     this.selectedView = this.serverView
     this.setWindowTitleForServer()
 
-    this.emit('viewServer', this.client, this.client.serverName)
+    this.emit('viewServer', this.client)
   }
 
   addServerToList () {
@@ -150,7 +150,22 @@ class IrcNetworkViewController extends EventEmitter {
       'click': (e) => {
         e.preventDefault()
         this.viewServer()
-      }
+      },
+      'contextmenu': (e) => {
+        e.preventDefault()
+        let serverMenu = Menu.buildFromTemplate([{
+          label: `Leave ${this.client.serverSupportedFeatures['NETWORK'] || this.client.serverName}`,
+          click: () => {
+            this.client.quit()
+            this.serverView.remove()
+            Object.keys(this.channels).forEach((key, index) => {
+              this.channels[key].channelView.remove()
+            })
+            this.emit('quit', this.client)
+          }
+        }])
+        serverMenu.popup({ window: remote.getCurrentWindow() })
+      },
     }).appendTo(this.serverView)
 
     this.client.once('clientInfo', () => {
