@@ -29,11 +29,14 @@ class IrcViewController {
     this.chatListViewController.addServer(client)
 
     this.networkListViewController.addServer(client)
+    this.networkListViewController.once('quit', (client) => {
+      this.chatListViewController.quitServer(client)
+    })
     this.networkListViewController.on('viewChannel', (client, channel) => {
       this.chatListViewController.viewChannel(client, channel)
     })
-    this.networkListViewController.on('viewServer', (client, serverName) => {
-      this.chatListViewController.viewServer(client, serverName)
+    this.networkListViewController.on('viewServer', (client) => {
+      this.chatListViewController.viewServer(client)
     })
 
     client.connect(server, port, registrationInfo)
