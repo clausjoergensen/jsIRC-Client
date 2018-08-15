@@ -133,3 +133,34 @@ a.title {
     cursor: default;
     overflow: hidden;
 }
+
+.close {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 40px;
+    height: 26px;
+    cursor: pointer;
+}
+
+.close:hover {
+    background-color: red;
+}
+
+.close:before, .close:after {
+    position: absolute;
+    left: 20px;
+    content: ' ';
+    height: 14px;
+    width: 2px;
+    top: 6px;
+    background-color: white;
+}
+
+.close:before {
+    transform: rotate(45deg);
+}
+
+.close:after {
+    transform: rotate(-45deg);
+}
