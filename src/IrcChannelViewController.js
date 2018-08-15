@@ -513,7 +513,6 @@ class IrcChannelViewController extends EventEmitter {
       $('#m-max-users').prop('disabled', !isChannelOperator)
 
       if (this.channel.modes.includes('k')) {
-        console.log(newModeParameters)
         if (this.channel.modes.includes('l')) {
           $('#m-key').val(newModeParameters[2])
           this.channel.channelKey = newModeParameters[2]
@@ -677,7 +676,7 @@ class IrcChannelViewController extends EventEmitter {
       this.sendAction(text)
       this.scrollToBottom()
     } else {
-      text.match(/.{1,398}/g).forEach(chunk => {
+      text.trim().match(/.{1,398}/g).forEach(chunk => {
         this.channel.sendMessage(chunk)
       })
       this.scrollToBottom()
@@ -687,7 +686,7 @@ class IrcChannelViewController extends EventEmitter {
   sendAction (text) {
     let firstSpace = text.substring(1).indexOf(' ')
     let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1)
+    let content = text.substring(1).substr(firstSpace + 1).trim()
 
     if (firstSpace === -1) {
       action = text.substring(1)

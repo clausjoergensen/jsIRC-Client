@@ -231,7 +231,7 @@ class IrcServerViewController extends EventEmitter {
     }
 
     if (text[0] === '/') {
-      this.sendAction(text)
+      this.sendAction(text.trim())
     } else {
       this.displayMessage(null, '* You are not on a channel')
     }

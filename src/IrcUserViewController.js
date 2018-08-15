@@ -63,10 +63,10 @@ class IrcUserViewController extends EventEmitter {
     }
 
     if (text[0] === '/') {
-      this.sendAction(text)
+      this.sendAction(text.trim())
       this.scrollToBottom()
     } else {
-      text.match(/.{1,398}/g).forEach(chunk => {
+      text.trim().match(/.{1,398}/g).forEach(chunk => {
         this.client.localUser.sendMessage([this.user.nickName], chunk)
         this.displayMessage(this.client.localUser, chunk)
       })
