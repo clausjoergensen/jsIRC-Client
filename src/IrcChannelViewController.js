@@ -147,8 +147,8 @@ class IrcChannelViewController extends EventEmitter {
     if (!newTopic) {
       this.titleView.html('(No Channel Topic)')
     } else {
-      newTopic = newTopic.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
-      let html = Autolinker.link(newTopic, {
+      let html = IrcMessageFormatter.colorifyMessage(newTopic)
+      html = Autolinker.link(html, {
         stripPrefix: false,
         newWindow: false,
         replaceFn: (match) => {
