@@ -1,0 +1,135 @@
+/** 
+ * UI Prompts
+ */
+div.prompt-window {
+    font-size: 13px;
+    border: 1px solid #ddd;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
+
+div.prompt-title {
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    background-color: #68768A;
+    color: white;
+}
+
+div#connect-to-server-prompt {
+    width: 230px !important;
+    height: 280px !important;
+    top: calc(50vh - (280px / 2));
+    left: calc(50vw - (230px / 2));
+}
+
+div#connect-to-server-prompt input[type='text'] {
+    width: 202px;
+}
+
+div#connect-to-server-prompt button {
+    float: right;
+    margin-top: 10px;
+    margin-right: 5px;
+    width: 80px;
+}
+
+div#kick-prompt {
+    width: 300px !important;
+    height: 124px !important;
+    top: calc(50vh - (124px / 2));
+    left: calc(50vw - (300px / 2));
+}
+
+div#kick-prompt button {
+    float: right;
+    margin-left: 5px;
+    width: 80px;
+}
+
+div#channel-modes {
+    width: 500px !important;
+    height: 300px !important;
+    top: calc(50vh - (300px / 2));
+    left: calc(50vw - (500px / 2));
+}
+
+div#channel-modes input {
+    width: 478px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+div#channel-modes ul#ban-list {
+    list-style: none;
+    width: 200px;
+    height: 145px;
+    border: 1px solid #A9A9A9;
+    margin: 10px 0px 10px 0px;
+    padding: 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+div#channel-modes ul#ban-list li {
+    user-select: none;
+    cursor: default;
+    font-size: 13px;
+}
+
+div#channel-modes ul#ban-list li.selected {
+    background-color: #0078D7;
+    color: white;
+}
+
+div#modes-box {
+    width: 260px;
+    height: 165px;
+    margin-top: 2px;
+    float: right;
+    font-size: 13px;
+}
+
+div#modes-box .title {
+    text-align: left;
+    margin-top: -2px;
+    font-size: 13px;
+    color: black;
+}
+
+div#modes-box table {
+    margin-top: 1px;
+}
+
+div#modes-box input[type='checkbox'] {
+    margin: 0px;
+    padding: 0px;
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    margin-top: 4px;
+}
+
+div#modes-box label.input {
+    margin-left: 16px;
+}
+
+div#channel-modes button {
+    float: right;
+    margin-left: 5px;
+    width: 80px;
+}
+
+a.title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: center;
+    color: #555;
+    cursor: default;
+    overflow: hidden;
+}

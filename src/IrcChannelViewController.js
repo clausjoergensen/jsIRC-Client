@@ -170,9 +170,18 @@ class IrcChannelViewController extends EventEmitter {
     let senderClass = ''
     if (source) {
       if (source.nickName) {
-        senderClass = sender.isLocalUser ? 'sender-me' : 'sender-user'
+        senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
       } else if (source.hostName) {
         senderClass = 'sender-server'
+      }
+    }
+
+    let messageClass = ''
+    if (source) {
+      if (source.nickName) {
+        messageClass = source.isLocalUser ? 'message-by-me' : 'message-by-other'
+      } else if (source.hostName) {
+        senderClass = 'message-by-server'
       }
     }
 
@@ -193,7 +202,7 @@ class IrcChannelViewController extends EventEmitter {
     })
 
     let now = new Date()
-    let formattedText = `[${strftime('%H:%M', now)}] <span class="${senderClass}">${senderName}</span> ${linkedText}`
+    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
 
     let paragraph = document.createElement('p')
     paragraph.classList.add('channel-message')

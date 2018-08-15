@@ -22,7 +22,7 @@ span.sender-server {
     color: black;
 }
 
-span.sender-user {
+span.sender-other {
     color: black;
 }
 
@@ -52,4 +52,13 @@ p.server-message {
     margin-left: 0px;
     margin-right: 0px;
     font-size: 11pt;
+}
+
+span.message-by-me {
+}
+
+span.message-by-other {
+}
+
+span.message-by-server {
 }

@@ -1,0 +1,64 @@
+/** 
+ * Network and Channels Panel
+ */
+td#left-column {
+    width: 200px;
+    border-right: 1px solid #ddd;
+}
+
+ul#network-list {
+    width: 200px;
+    height: calc(100vh - 37px);
+    background-color: #f5f5f4;
+    user-select: none;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.network {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+li.network {
+    color: #666666;
+    font-size: 10pt;
+    padding: 10px;
+}
+
+li.network-selected {
+    background-color: #dcdfe1;
+}
+
+li.network:hover {
+    cursor: pointer;
+    background-color: #dcdfe1;
+}
+
+li.channel {
+    font-size: 10pt;
+    border: 1px solid #F8F8F2;
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+li.channel:hover {
+    background-color: #dcdfe1;
+    cursor: pointer;
+}
+
+li.channel-selected {
+    background-color: #dcdfe1;
+    cursor: pointer;
+}
+
+li.nav-unread {
+    color: red !important;
+}
