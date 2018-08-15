@@ -82,7 +82,7 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   get selectedChannel () {
-    return this.selectedView ? this.selectedView.channel : null
+    return this.selectedView ? this.selectedView.data('channel') : null
   }
 
   deselect () {
