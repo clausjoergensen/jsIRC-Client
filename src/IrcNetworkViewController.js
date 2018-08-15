@@ -77,6 +77,8 @@ class IrcNetworkViewController extends EventEmitter {
         let channelView = this.channels[channel.name].channelView
         channelView.remove()
 
+        delete this.channels[channel.name]
+
         if (Object.keys(this.channels).length === 0) {
           this.viewServer()
         } else if (this.selectedChannel === channel) {
@@ -92,8 +94,6 @@ class IrcNetworkViewController extends EventEmitter {
             }
           }
         }
-
-        delete this.channels[channel.name]
       })
     })
 
