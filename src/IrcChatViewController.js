@@ -127,6 +127,7 @@ class IrcChatViewController extends EventEmitter {
 
   hideUser (user) {
     this.users[user.nickName].remove()
+    delete this.users[user.nickName]
   }
 
   hideServer () {
