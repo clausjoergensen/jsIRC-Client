@@ -67,6 +67,44 @@ div.server-view {
     background-color: white;
 }
 
+div.user-view {
+    height: calc(100vh - 37px);
+    font-size: 10pt;
+    background-color: white;
+}
+
+div.user-title-view {
+    width: calc(100vw - 201px);
+    height: 40px;
+    background-color: #f5f5f4;
+    border-bottom: 1px solid #ddd;
+    user-select: none;
+}
+
+div.user-title-label {
+    user-select: none;
+    background-color: #f5f5f4;
+    padding: 13px 3px 3px 3px;
+    text-align: center;
+    height: 1em;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    cursor: default;
+}
+
+div.user-message-view {
+    width: calc(100vw - 201px);
+    height: calc(100vh - 98px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 10px;
+    float: left;
+    font-size: 11pt;
+}
+
 input.chat-input {
     margin-left: 3px;
     width: calc(100vw - 220px);

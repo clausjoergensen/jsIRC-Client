@@ -32,10 +32,6 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('connected', () => {
-      this.client.localUser.on('message', (source, targets, messageText) => {
-        this.displayMessage(source, messageText)
-      })
-
       this.client.localUser.on('notice', (source, targets, noticeText) => {
         let channelUsers = this.client.localUser.getChannelUsers()
         if (channelUsers.length === 0) {
@@ -223,7 +219,7 @@ class IrcServerViewController extends EventEmitter {
     paragraph.append(document.createTextNode(` ${text}`))
 
     this.serverView.append(paragraph)
-    this.serverView.scrollTop(this.serverView.scrollHeight)
+    this.scrollToBottom()
 
     this.markAsUnread()
     this.scrollToBottom()
@@ -233,7 +229,6 @@ class IrcServerViewController extends EventEmitter {
     let paragraph = $('<p />', { 'class': 'server-message seperator', 'text': '-' })
 
     this.serverView.append(paragraph)
-    this.serverView.scrollTop(this.serverView.scrollHeight)
     this.scrollToBottom()
   }
 

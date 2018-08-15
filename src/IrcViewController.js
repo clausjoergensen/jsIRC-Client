@@ -28,6 +28,9 @@ class IrcViewController {
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
 
     this.chatListViewController.addServer(client)
+    this.chatListViewController.on('chatWithUser', (client, user) => {
+      this.networkListViewController.addUser(client, user)      
+    })
 
     this.networkListViewController.addServer(client)
     this.networkListViewController.once('quit', (client) => {
@@ -38,6 +41,12 @@ class IrcViewController {
     })
     this.networkListViewController.on('viewServer', (client) => {
       this.chatListViewController.viewServer(client)
+    })
+    this.networkListViewController.on('viewUser', (client, user) => {
+      this.chatListViewController.viewUser(client, user)
+    })
+    this.networkListViewController.on('hideUser', (client, user) => {
+      this.chatListViewController.hideUser(client, user)
     })
 
     client.connect(server, port, registrationInfo)

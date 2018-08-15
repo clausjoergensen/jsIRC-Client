@@ -15,6 +15,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     this.client = client
     this.channels = {}
+    this.users = {}
     this.serverView = null
 
     client.once('connecting', () => {
@@ -27,6 +28,17 @@ class IrcNetworkViewController extends EventEmitter {
           this.serverTitle.text(`${this.networkName || this.client.serverName} (${this.client.localUser.nickName})`)
         }
         this.setWindowTitleForServer(this.networkName)
+      })
+
+      client.localUser.on('message',  (source, targets, noticeText) => {
+        if (this.users[source.nickName]) {
+          let user = this.users[source.nickName]
+          if (this.selectedUser !== user.user) {
+            this.users[source.nickName].userView.addClass('nav-unread')
+          }
+        } else {
+          this.addUserToList(source) 
+        }
       })
 
       client.localUser.on('notice', (source, targets, noticeText) => {
@@ -99,6 +111,10 @@ class IrcNetworkViewController extends EventEmitter {
     return this.selectedView ? this.selectedView.data('channel') : null
   }
 
+  get selectedUser () {
+    return this.selectedView ? this.selectedView.data('user') : null
+  }
+
   deselect () {
     this.selectedView = null
   }
@@ -121,9 +137,38 @@ class IrcNetworkViewController extends EventEmitter {
     return null
   }
 
+  viewUser (user) {
+    $('.network').removeClass('network-selected')
+    $('.channel').removeClass('channel-selected')
+    $('.user').removeClass('user-selected')    
+
+    this.users[user.nickName].userView.removeClass('nav-unread')
+    this.users[user.nickName].userView.addClass('user-selected')
+
+    this.selectedView = this.users[user.name].userView
+    this.setWindowTitleForUser(user)
+
+    this.emit('viewUser', this.client, user)
+  }
+
+  hideUser (user) {
+    this.users[user.nickName].userView.remove()
+    delete this.users[user.nickName]
+
+    let keys = Object.keys(this.channels)
+    if (keys.length > 0) {
+      this.viewChannel(this.channels[keys[0]].channel)
+    } else {
+      this.viewServer()
+    }
+
+    this.emit('hideUser', this.client, user)
+  }
+
   viewChannel (channel) {
     $('.network').removeClass('network-selected')
     $('.channel').removeClass('channel-selected')
+    $('.user').removeClass('user-selected')
 
     this.channels[channel.name].channelView.removeClass('nav-unread')
     this.channels[channel.name].channelView.addClass('channel-selected')
@@ -137,6 +182,7 @@ class IrcNetworkViewController extends EventEmitter {
   viewServer () {
     $('.network').removeClass('network-selected')
     $('.channel').removeClass('channel-selected')
+    $('.user').removeClass('user-selected')
 
     this.serverTitle.removeClass('nav-unread')
     this.serverTitle.addClass('network-selected')
@@ -220,6 +266,39 @@ class IrcNetworkViewController extends EventEmitter {
     }
   }
 
+  addUserToList (user) {
+    if (this.users[user.nickName]) {
+      return
+    }
+
+    const userMenu = Menu.buildFromTemplate([{
+      label: 'Close',
+      click: () => {
+        this.hideUser(user)
+      }
+    }])
+
+    let userView = $('<li />', {
+      'class': 'user nav-unread',
+      'text': user.nickName,
+      'contextmenu': (e) => {
+        e.preventDefault()
+        userMenu.popup({ window: remote.getCurrentWindow() })
+      },
+      'click': (e) => {
+        e.preventDefault()
+        this.viewUser(user)
+      }
+    }).appendTo(this.serverView)
+
+    userView.data('user', user)
+
+    this.users[user.nickName] = {
+      'user': user,
+      'userView': userView
+    }
+  }
+
   setWindowTitleForServer (networkName = null) {
     let userModes = ''
     if (this.client.localUser) {
@@ -247,6 +326,16 @@ class IrcNetworkViewController extends EventEmitter {
     if (browserWindow) {
       browserWindow.setTitle(`${app.getName()} - [${channel.name} (${serverName}, ${this.client.localUser.nickName})${topic}]`)
     }
+  }
+
+  setWindowTitleForUser (user) {
+    let serverName = this.client.serverSupportedFeatures['NETWORK']
+    serverName = serverName || this.client.serverName
+
+    let browserWindow = BrowserWindow.getFocusedWindow()
+    if (browserWindow) {
+      browserWindow.setTitle(`${app.getName()} - [${user.nickName} (${serverName}, ${this.client.localUser.nickName})]`)
+    }    
   }
 
   markAsUnread (channel = null) {

@@ -62,3 +62,10 @@ span.message-by-other {
 
 span.message-by-server {
 }
+
+p.user-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px
+}

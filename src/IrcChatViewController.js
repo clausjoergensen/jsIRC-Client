@@ -8,6 +8,7 @@ const { CtcpClient } = require('jsirc')
 
 const IrcServerViewController = require('./IrcServerViewController.js')
 const IrcChannelViewController = require('./IrcChannelViewController.js')
+const IrcUserViewController = require('./IrcUserViewController.js')
 
 const packageInfo = require('./../package.json')
 
@@ -26,9 +27,22 @@ class IrcChatViewController extends EventEmitter {
     this.channels = {}
     this.selectedChannel = null
 
+    this.users = {}
+    this.selectedUser = null
+
     this.client.on('connected', () => {
       this.client.localUser.on('joinedChannel', (channel) => {
-        this.channels[channel.name] = new IrcChannelViewController(this.client, this.ctcpClient, channel)
+        let channelViewController = new IrcChannelViewController(this.client, this.ctcpClient, channel)
+        
+        channelViewController.on('chatWithUser', (user) => {
+          let userViewController = new IrcUserViewController(this.client, this.ctcpClient, user)
+          this.users[user.nickName] = userViewController
+          this.viewUser(user)
+
+          this.emit('chatWithUser', this.client, user)
+        })
+        
+        this.channels[channel.name] = channelViewController
       })
 
       this.client.localUser.on('partedChannel', (channel) => {
@@ -41,6 +55,15 @@ class IrcChatViewController extends EventEmitter {
           this.channels[key].displayNotice(source, noticeText)
         })
       })
+
+      this.client.localUser.on('message', (source, targets, messageText) => {
+        if (this.users[source.nickName]) {
+          return
+        }
+        let userViewController = new IrcUserViewController(this.client, this.ctcpClient, source)
+        this.users[source.nickName] = userViewController
+        this.users[source.nickName].displayMessage(source, messageText)
+      })
     })
 
     this.client.on('registered', () => { this.client.joinChannel('#testing') })
@@ -50,12 +73,16 @@ class IrcChatViewController extends EventEmitter {
   hide () {
     this.hideServer()
     this.hideAllChannels()
+    this.hideAllUsers()
   }
 
   remove () {
     this.serverViewController.remove()
     Object.keys(this.channels).forEach((key, index) => {
       this.channels[key].remove()
+    })
+    Object.keys(this.users).forEach((key, index) => {
+      this.users[key].remove()
     })
   }
 
@@ -75,10 +102,31 @@ class IrcChatViewController extends EventEmitter {
       this.selectedChannel.hide()
     }
 
+    if (this.selectedUser) {
+      this.selectedUser.hide()
+    }
+
     if (this.channels[channel.name]) {
       this.selectedChannel = this.channels[channel.name]
       this.selectedChannel.show()
     }
+  }
+
+  viewUser (user) {
+    this.hideServer()
+
+    if (this.selectedChannel) {
+      this.selectedChannel.hide()
+    }
+
+    if (this.users[user.nickName]) {
+      this.selectedUser = this.users[user.nickName]
+      this.selectedUser.show()
+    }
+  }
+
+  hideUser (user) {
+    this.users[user.nickName].remove()
   }
 
   hideServer () {
@@ -91,6 +139,14 @@ class IrcChatViewController extends EventEmitter {
     })
 
     this.selectedChannel = null
+  }
+
+  hideAllUsers () {
+    Object.keys(this.users).forEach((key, index) => {
+      this.users[key].hide()
+    })
+
+    this.selectedUser = null
   }
 
   protocolError (command, errorName, errorParameters, errorMessage) {

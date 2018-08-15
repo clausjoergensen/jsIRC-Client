@@ -47,8 +47,28 @@ class IrcNetworkListViewController extends EventEmitter {
       this.emit('viewServer', client)
     })
 
+    networkController.on('viewUser', (client, user) => {
+      this.hideOthers(networkController)
+      this.selectedConnection = networkController
+      this.emit('viewUser', client, user)
+    })
+
+    networkController.on('viewUser', (client, user) => {
+      this.emit('hideUser', client, user)
+    })
+
     this.connections[client.id] = networkController
     this.selectedConnection = networkController
+  }
+
+  addUser (client, user) {
+    if (!this.connections[client.id]) {
+      log.error('Attempted to start a chat with a user without being connected to a server.')
+      return
+    }
+
+    this.connections[client.id].addUserToList(user)
+    this.connections[client.id].viewUser(user)
   }
 
   hideOthers (selected) {

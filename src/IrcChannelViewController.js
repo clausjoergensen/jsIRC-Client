@@ -213,7 +213,7 @@ class IrcChannelViewController extends EventEmitter {
     let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
     paragraph.html(formattedText)
 
-    this.messageView.scrollTop(this.messageView.scrollHeight)
+    this.scrollToBottom()
   }
 
   displayMessage (source, text) {
@@ -266,7 +266,7 @@ class IrcChannelViewController extends EventEmitter {
     let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
     paragraph.html(formattedText)
 
-    this.messageView.scrollTop(this.messageView.scrollHeight)
+    this.scrollToBottom()
   }
 
   displayTopic (source = null, newTopic = null) {
@@ -454,6 +454,11 @@ class IrcChannelViewController extends EventEmitter {
 
       let userElement = $('<div />', {
         'class': 'user',
+        'dblclick': (e) => {
+          if (!user.isLocalUser) {
+            this.emit('chatWithUser', user)
+          }
+        },
         'contextmenu': (e) => {
           e.preventDefault()
           userMenu.popup({ window: remote.getCurrentWindow() })

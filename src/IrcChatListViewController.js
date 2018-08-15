@@ -24,6 +24,9 @@ class IrcChatListViewController extends EventEmitter {
 
   addServer (client) {
     let chatViewController = new IrcChatViewController(client)
+    chatViewController.on('chatWithUser', (client, user) => {
+      this.emit('chatWithUser', client, user)
+    })
     this.connections[client.id] = chatViewController
   }
 
@@ -48,6 +51,19 @@ class IrcChatListViewController extends EventEmitter {
 
     this.connections[client.id].viewChannel(channel)
     this.selectedConnection = this.connections[client.id]
+  }
+
+  viewUser (client, user) {
+    Object.keys(this.connections).forEach((key, index) => {
+      this.connections[key].hide()
+    })
+
+    this.connections[client.id].viewUser(user)
+    this.selectedConnection = this.connections[client.id]
+  }
+
+  hideUser (client, user) {
+    this.connections[client.id].hideUser(user)
   }
 }
 
