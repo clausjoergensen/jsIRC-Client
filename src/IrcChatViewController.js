@@ -33,7 +33,7 @@ class IrcChatViewController extends EventEmitter {
     this.client.on('connected', () => {
       this.client.localUser.on('joinedChannel', (channel) => {
         let channelViewController = new IrcChannelViewController(this.client, this.ctcpClient, channel)
-        
+
         channelViewController.on('chatWithUser', (user) => {
           let userViewController = new IrcUserViewController(this.client, this.ctcpClient, user)
           this.users[user.nickName] = userViewController
@@ -41,7 +41,7 @@ class IrcChatViewController extends EventEmitter {
 
           this.emit('chatWithUser', this.client, user)
         })
-        
+
         this.channels[channel.name] = channelViewController
       })
 

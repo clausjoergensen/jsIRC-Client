@@ -4,6 +4,8 @@
 const events = require('events')
 const { EventEmitter } = events
 
+const log = require('electron-log')
+
 const IrcNetworkViewController = require('./IrcNetworkViewController.js')
 
 class IrcNetworkListViewController extends EventEmitter {
@@ -29,7 +31,7 @@ class IrcNetworkListViewController extends EventEmitter {
 
     networkController.once('quit', (client) => {
       delete this.connections[client.id]
-      if (this.selectedConnection == networkController) {
+      if (this.selectedConnection === networkController) {
         this.viewNextServer()
       }
       this.emit('quit', client)

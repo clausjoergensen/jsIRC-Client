@@ -12,8 +12,6 @@ const prettyMs = require('pretty-ms')
 const inputhistory = require('./inputhistory.js')
 const $ = require('jquery')
 
-const packageInfo = require('./../package.json')
-
 class IrcServerViewController extends EventEmitter {
   constructor (client, ctcpClient) {
     super()
@@ -35,7 +33,7 @@ class IrcServerViewController extends EventEmitter {
       this.client.localUser.on('notice', (source, targets, noticeText) => {
         let channelUsers = this.client.localUser.getChannelUsers()
         if (channelUsers.length === 0) {
-          this.displayNotice(source, noticeText)          
+          this.displayNotice(source, noticeText)
         }
       })
     })

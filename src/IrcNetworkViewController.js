@@ -30,14 +30,14 @@ class IrcNetworkViewController extends EventEmitter {
         this.setWindowTitleForServer(this.networkName)
       })
 
-      client.localUser.on('message',  (source, targets, noticeText) => {
+      client.localUser.on('message', (source, targets, noticeText) => {
         if (this.users[source.nickName]) {
           let user = this.users[source.nickName]
           if (this.selectedUser !== user.user) {
             this.users[source.nickName].userView.addClass('nav-unread')
           }
         } else {
-          this.addUserToList(source) 
+          this.addUserToList(source)
         }
       })
 
@@ -140,7 +140,7 @@ class IrcNetworkViewController extends EventEmitter {
   viewUser (user) {
     $('.network').removeClass('network-selected')
     $('.channel').removeClass('channel-selected')
-    $('.user').removeClass('user-selected')    
+    $('.user').removeClass('user-selected')
 
     this.users[user.nickName].userView.removeClass('nav-unread')
     this.users[user.nickName].userView.addClass('user-selected')
@@ -225,7 +225,7 @@ class IrcNetworkViewController extends EventEmitter {
           }
         }])
         serverMenu.popup({ window: remote.getCurrentWindow() })
-      },
+      }
     }).appendTo(this.serverView)
 
     this.client.once('clientInfo', () => {
@@ -335,7 +335,7 @@ class IrcNetworkViewController extends EventEmitter {
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
       browserWindow.setTitle(`${app.getName()} - [${user.nickName} (${serverName}, ${this.client.localUser.nickName})]`)
-    }    
+    }
   }
 
   markAsUnread (channel = null) {
