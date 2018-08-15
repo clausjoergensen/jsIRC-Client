@@ -114,6 +114,9 @@ class IrcChatViewController extends EventEmitter {
           }
         }
         break
+      default:
+        this.serverViewController.displayMessage(null, '* Unknown Command')
+        break
     }
   }
 
