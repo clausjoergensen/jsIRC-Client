@@ -9,6 +9,7 @@ const { EventEmitter } = events
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
+const inputhistory = require('./inputhistory.js')
 const $ = require('jquery')
 
 $.fn.onEnter = function (func) {
@@ -27,10 +28,6 @@ class IrcChannelViewController extends EventEmitter {
     this.client = client
     this.ctcpClient = ctcpClient
     this.channel = channel
-
-    this.channelView = null
-    this.messageView = null
-    this.titleView = null
 
     this.channel.on('message', (source, messageText) => {
       this.displayMessage(source, messageText)
@@ -89,20 +86,19 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   show () {
-    this.channelView.style.display = 'table'
-    this.messageView.scrollTop = this.messageView.scrollHeight
+    this.channelView.css('display', 'block')
+    this.messageView.scrollTop(this.messageView.scrollHeight)
+    this.channelToolbar.css('display', 'block')
+    this.channelToolbar.find('.chat-input')[0].focus()
   }
 
   hide () {
-    this.channelView.style.display = 'none'
+    this.channelView.css('display', 'none')
+    this.channelToolbar.css('display', 'none')
   }
 
   remove () {
     this.channelView.parentElement.removeChild(this.channelView)
-  }
-
-  sendMessage (message) {
-    this.channel.sendMessage(message)
   }
 
   part () {
@@ -113,19 +109,18 @@ class IrcChannelViewController extends EventEmitter {
     let senderName = '* ' + this.client.localUser.nickName
     let now = new Date()
 
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('channel-message')
-    paragraph.classList.add('channel-message-error')
+    let paragraph = $('<p />', {
+      'class': 'channel-message channel-message-error'
+    }).appendTo(this.messageView)
 
-    let timestamp = document.createElement('span')
-    timestamp.classList.add('timestamp')
-    timestamp.innerText = `[${strftime('%H:%M', now)}]`
+    $('<span />', {
+      'class': 'timestamp',
+      'text': `[${strftime('%H:%M', now)}]`
+    }).appendTo(paragraph)
 
-    paragraph.appendChild(timestamp)
-    paragraph.appendChild(document.createTextNode(` ${senderName}: ${errorMessage}`))
+    paragraph.append(document.createTextNode(` ${senderName}: ${errorMessage}`))
 
-    this.messageView.appendChild(paragraph)
-    this.messageView.scrollTop = this.messageView.scrollHeight
+    this.messageView.scrollTop(this.messageView.scrollHeight)
   }
 
   displayAction (source, text) {
@@ -149,11 +144,9 @@ class IrcChannelViewController extends EventEmitter {
     let now = new Date()
     let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> ${senderName} ${linkedText}`
 
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('channel-message')
-    paragraph.innerHTML += formattedText
+    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
+    paragraph.html(formattedText)
 
-    this.messageView.appendChild(paragraph)
     this.messageView.scrollTop = this.messageView.scrollHeight
   }
 
@@ -204,19 +197,17 @@ class IrcChannelViewController extends EventEmitter {
     let now = new Date()
     let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
 
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('channel-message')
-    paragraph.innerHTML = formattedText
+    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
+    paragraph.html(formattedText)
 
-    this.messageView.appendChild(paragraph)
-    this.messageView.scrollTop = this.messageView.scrollHeight
+    this.messageView.scrollTop(this.messageView.scrollHeight)
   }
 
   displayTopic (source = null, newTopic = null) {
     if (!newTopic) {
-      this.titleView.innerHTML = '(No Channel Topic)'
+      this.titleView.html('(No Channel Topic)')
     } else {
-      this.titleView.innerHTML = Autolinker.link(newTopic, {
+      this.titleView.html(Autolinker.link(newTopic, {
         stripPrefix: false,
         newWindow: false,
         replaceFn: (match) => {
@@ -228,7 +219,7 @@ class IrcChannelViewController extends EventEmitter {
             return true
           }
         }
-      })
+      }))
     }
 
     if (source) {
@@ -395,44 +386,42 @@ class IrcChannelViewController extends EventEmitter {
         }
       ])
 
-      let userElement = document.createElement('div')
-      userElement.classList.add('user')
-      userElement.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
-        userMenu.popup({ window: remote.getCurrentWindow() })
-      }, false)
+      let userElement = $('<div />', {
+        'class': 'user',
+        'contextmenu': (e) => {
+          e.preventDefault()
+          userMenu.popup({ window: remote.getCurrentWindow() })
+        }
+      }).appendTo(this.usersView)
 
-      let userNameElement = document.createElement('span')
-      userNameElement.classList.add('user-name')
-      userNameElement.innerText = user.nickName
+      $('<span />', {
+        'class': 'user-name',
+        text: user.nickName
+      }).appendTo(userElement)
 
-      let prefixElement = document.createElement('span')
-      prefixElement.classList.add('user-mode')
+      let prefixElement = $('<span />', {
+        'class': 'user-mode'
+      }).appendTo(userElement)
 
       if (channelUser.modes.includes('q')) {
-        prefixElement.classList.add('user-mode-owner')
-        prefixElement.innerText = '~'
+        prefixElement.addClass('user-mode-owner')
+        prefixElement.text('~')
       } else if (channelUser.modes.includes('a')) {
-        prefixElement.classList.add('user-mode-admin')
-        prefixElement.innerText = '&'
+        prefixElement.addClass('user-mode-admin')
+        prefixElement.text('&')
       } else if (channelUser.modes.includes('o')) {
-        prefixElement.classList.add('user-mode-op')
-        prefixElement.innerText = '@'
+        prefixElement.addClass('user-mode-op')
+        prefixElement.text('@')
       } else if (channelUser.modes.includes('h')) {
-        prefixElement.classList.add('user-mode-halfop')
-        prefixElement.innerText = '%'
+        prefixElement.addClass('user-mode-halfop')
+        prefixElement.text('%')
       } else if (channelUser.modes.includes('v')) {
-        prefixElement.classList.add('user-mode-voice')
-        prefixElement.innerText = '+'
+        prefixElement.addClass('user-mode-voice')
+        prefixElement.text('+')
       } else {
-        prefixElement.classList.add('user-mode-none')
-        prefixElement.innerText = 'x'
+        prefixElement.addClass('user-mode-none')
+        prefixElement.text('x')
       }
-
-      userElement.appendChild(prefixElement)
-      userElement.appendChild(userNameElement)
-
-      this.usersView.appendChild(userElement)
     })
   }
 
@@ -665,46 +654,12 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   createChannelView () {
-    let channelTableView = document.createElement('table')
-    channelTableView.style.display = 'none'
-    channelTableView.cellSpacing = 0
-    channelTableView.cellPadding = 0
-    channelTableView.classList.add('channel-view')
-
-    let row = channelTableView.insertRow()
-    let messagesCell = row.insertCell()
-    messagesCell.classList.add('messages-panel')
-
-    let channelUsersView = row.insertCell()
-    channelUsersView.classList.add('users-panel')
-
-    let channelView = document.createElement('div')
-    channelView.classList.add('channel-content-view')
-    messagesCell.appendChild(channelView)
-
-    let channelTitleView = document.createElement('div')
-    channelTitleView.classList.add('channel-title-view')
-    channelView.appendChild(channelTitleView)
-
-    let channelTitleLabel = document.createElement('div')
-    channelTitleLabel.classList.add('channel-title-label')
-    channelTitleView.appendChild(channelTitleLabel)
-
     const channelTitleMenu = Menu.buildFromTemplate([{
       label: 'Set Topic',
       click: () => {
         this.displayChannelModes()
       }
     }])
-
-    channelTitleLabel.addEventListener('contextmenu', (e) => {
-      e.preventDefault()
-      channelTitleMenu.popup({ window: remote.getCurrentWindow() })
-    }, false)
-
-    let channelMessageView = document.createElement('div')
-    channelMessageView.classList.add('channel-message-view')
-    channelView.appendChild(channelMessageView)
 
     const channelMessageViewMenu = Menu.buildFromTemplate([{
       label: 'Channel Modes',
@@ -713,17 +668,123 @@ class IrcChannelViewController extends EventEmitter {
       }
     }])
 
-    channelMessageView.addEventListener('contextmenu', (e) => {
-      e.preventDefault()
-      channelMessageViewMenu.popup({ window: remote.getCurrentWindow() })
-    }, false)
+    let rightColumn = $('#right-column')
 
-    this.channelView = channelTableView
-    this.messageView = channelMessageView
-    this.titleView = channelTitleLabel
-    this.usersView = channelUsersView
+    this.channelView = $('<table />', {
+      'style': 'display: none',
+      'cellSpacing': 0,
+      'cellPadding': 0,
+      'class': 'channel-view'
+    }).appendTo(rightColumn)
 
-    document.getElementById('right-column').appendChild(channelTableView)
+    let row = $('<tr />').appendTo(this.channelView)
+    let messagesCell = $('<td />', { class: 'messages-panel' }).appendTo(row)
+    this.usersView = $('<td />', { 'class': 'users-panel' }).appendTo(row)
+
+    let contentView = $('<div />', { 'class': 'channel-content-view' }).appendTo(messagesCell)
+
+    this.titleView = $('<div />', {
+      'class': 'channel-title-label',
+      'contextmenu': (e) => {
+        e.preventDefault()
+        channelTitleMenu.popup({ window: remote.getCurrentWindow() })
+      }
+    })
+
+    $('<div />', { 'class': 'channel-title-view' }).append(this.titleView).appendTo(contentView)
+
+    this.messageView = $('<div />', {
+      'class': 'channel-message-view',
+      'contextmenu': (e) => {
+        e.preventDefault()
+        channelMessageViewMenu.popup({ window: remote.getCurrentWindow() })
+      }
+    }).appendTo(contentView)
+
+    let channelToolbar = $('<div />', {
+      class: 'toolbar toolbar-footer',
+      style: 'height: 40px; display: none'
+    }).appendTo(rightColumn)
+
+    let input = $('<input />', {
+      'type': 'text',
+      'class': 'chat-input',
+      'placeholder': 'Send Message …',
+      'autofocus': true
+    }).appendTo(channelToolbar)
+
+    input.keyup((e) => {
+      if (e.keyCode === 13) {
+        this.sendUserInput(input.val())
+        input.val('')
+      }
+    })
+
+    inputhistory(input)
+
+    this.channelToolbar = channelToolbar
+  }
+
+  sendUserInput (text) {
+    if (text[0] === '/') {
+      this.sendAction(text)
+    } else {
+      text.match(/.{1,398}/g).forEach(chunk => {
+        this.channel.sendMessage(chunk)
+      })
+    }
+  }
+
+  sendAction (text) {
+    let firstSpace = text.substring(1).indexOf(' ')
+    let action = text.substring(1, firstSpace + 1)
+    let content = text.substring(1).substr(firstSpace + 1)
+
+    if (firstSpace === -1) {
+      action = text.substring(1)
+      content = ''
+    }
+
+    switch (action.toLowerCase()) {
+      case 'msg':
+        {
+          let target = content.substr(0, content.indexOf(' '))
+          let message = content.substr(content.indexOf(' ') + 1)
+          this.client.sendMessage([target], message)
+        }
+        break
+      case 'join':
+        this.client.joinChannel(content)
+        break
+      case 'part':
+        this.channel.part()
+        break
+      case 'me':
+        this.ctcpClient.action([this.channel.name], content)
+        this.channels[this.channel.name].displayAction(this.client.localUser, content)
+        break
+      case 'nick':
+        this.client.setNickName(content)
+        break
+      case 'topic':
+        this.channel.setTopic(content)
+        break
+      case 'hop':
+        {
+          let newChannel = content.substr(content.indexOf(' ') + 1).trim()
+          let name = this.channel.name
+          this.channel.part()
+          if (newChannel.length !== 0) {
+            this.client.joinChannel(newChannel)
+          } else {
+            this.client.joinChannel(name)
+          }
+        }
+        break
+      default:
+        this.displayMessage(null, '* Unknown Command')
+        break
+    }
   }
 
   displayKickPrompt (channelUser, shouldBan = false) {

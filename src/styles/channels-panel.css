@@ -3,7 +3,6 @@
  */
 td#left-column {
     width: 200px;
-    border-right: 1px solid #ddd;
 }
 
 ul#network-list {
@@ -15,6 +14,7 @@ ul#network-list {
     list-style: none;
     margin: 0px;
     padding: 0px;
+    border-right: 1px solid #ddd;
 }
 
 ul.network {

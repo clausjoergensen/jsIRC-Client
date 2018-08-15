@@ -16,7 +16,7 @@ table#window-content {
 }
 
 table.channel-view {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 37px);
     font-size: 10pt;
     background-color: white;
 }
@@ -67,8 +67,8 @@ div.server-view {
     background-color: white;
 }
 
-input#chat-input {
-    margin-left: 5px;
+input.chat-input {
+    margin-left: 3px;
     width: calc(100vw - 220px);
     padding-left: 6px;
     font-size: 11pt;
@@ -76,11 +76,11 @@ input#chat-input {
     border: 1px solid #c2c0c2;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
     height: 20px;
-    margin-top: 1px;
+    margin-top: 5.5px;
     user-select: text;
 }
 
-input#chat-input:focus {
+input.chat-input:focus {
     outline: none;
 }
 

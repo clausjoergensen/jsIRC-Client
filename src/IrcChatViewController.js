@@ -37,87 +37,9 @@ class IrcChatViewController extends EventEmitter {
       })
     })
 
+    this.client.on('registered', () => { this.client.joinChannel('#testing') })
+
     this.client.on('protocolError', this.protocolError.bind(this))
-  }
-
-  sendUserInput (text) {
-    if (text[0] === '/') {
-      this.sendAction(text)
-    } else {
-      if (this.selectedChannel) {
-        text.match(/.{1,398}/g).forEach(this.sendMessage.bind(this))
-      } else {
-        this.serverViewController.displayMessage(null, '* You are not on a channel')
-      }
-    }
-  }
-
-  sendMessage (message) {
-    if (this.selectedChannel) {
-      this.selectedChannel.sendMessage(message)
-    }
-  }
-
-  sendAction (text) {
-    let firstSpace = text.substring(1).indexOf(' ')
-    let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1)
-
-    if (firstSpace === -1) {
-      action = text.substring(1)
-      content = ''
-    }
-
-    switch (action.toLowerCase()) {
-      case 'msg':
-        {
-          let target = content.substr(0, content.indexOf(' '))
-          let message = content.substr(content.indexOf(' ') + 1)
-          this.client.sendMessage([target], message)
-        }
-        break
-      case 'join':
-        this.client.joinChannel(content)
-        break
-      case 'part':
-        this.selectedChannel.part()
-        break
-      case 'me':
-        if (this.selectedChannel) {
-          this.ctcpClient.action([this.selectedChannel.name], content)
-          this.channels[this.selectedChannel.name].displayAction(this.client.localUser, content)
-        } else {
-          this.serverViewController.displayMessage(null, '* Cannot use /me in this view.')
-        }
-        break
-      case 'nick':
-        this.client.setNickName(content)
-        break
-      case 'topic':
-        if (this.selectedChannel) {
-          this.selectedChannel.setTopic(content)
-        }
-        break
-      case 'hop':
-        {
-          let newChannel = content.substr(content.indexOf(' ') + 1).trim()
-          if (this.selectedChannel) {
-            let name = this.selectedChannel.name
-            this.selectedChannel.part()
-            if (newChannel.length !== 0) {
-              this.client.joinChannel(newChannel)
-            } else {
-              this.client.joinChannel(name)
-            }
-          } else {
-            this.serverViewController.displayMessage(null, '* Cannot use /hop in this view.')
-          }
-        }
-        break
-      default:
-        this.serverViewController.displayMessage(null, '* Unknown Command')
-        break
-    }
   }
 
   hide () {

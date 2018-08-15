@@ -9,6 +9,8 @@ const { EventEmitter } = events
 
 const strftime = require('strftime')
 const prettyMs = require('pretty-ms')
+const inputhistory = require('./inputhistory.js')
+const $ = require('jquery')
 
 class IrcServerViewController extends EventEmitter {
   constructor (client, ctcpClient) {
@@ -138,12 +140,15 @@ class IrcServerViewController extends EventEmitter {
   }
 
   show () {
-    this.serverView.style.display = 'block'
-    this.serverView.scrollTop = this.serverView.scrollHeight
+    this.serverView.css('display', 'block')
+    this.serverView.scrollTop(this.serverView.scrollHeight)
+    this.serverToolbar.css('display', 'block')
+    this.serverToolbar.find('.chat-input')[0].focus()
   }
 
   hide () {
-    this.serverView.style.display = 'none'
+    this.serverView.css('display', 'none')
+    this.serverToolbar.css('display', 'none')
   }
 
   displayAction (text) {
@@ -188,33 +193,29 @@ class IrcServerViewController extends EventEmitter {
 
     let now = new Date()
 
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('server-message')
+    let paragraph = $('<p />', { 'class': 'server-message' })
     if (messageClass) {
-      paragraph.classList.add(messageClass)
+      paragraph.addClass(messageClass)
     }
 
-    let timestamp = document.createElement('span')
-    timestamp.classList.add('timestamp')
-    timestamp.innerText = `[${strftime('%H:%M', now)}]`
+    let timestamp = $('<span />', {
+      'class': 'timestamp',
+      'text': `[${strftime('%H:%M', now)}]`
+    }).appendTo(paragraph)
 
-    paragraph.appendChild(timestamp)
-    paragraph.appendChild(document.createTextNode(` ${text}`))
+    paragraph.append(document.createTextNode(` ${text}`))
 
-    this.serverView.appendChild(paragraph)
-    this.serverView.scrollTop = this.serverView.scrollHeight
+    this.serverView.append(paragraph)
+    this.serverView.scrollTop(this.serverView.scrollHeight)
 
     this.markAsUnread()
   }
 
   displaySeperator () {
-    let paragraph = document.createElement('p')
-    paragraph.classList.add('server-message')
-    paragraph.classList.add('seperator')
-    paragraph.innerText = '-'
+    let paragraph = $('<p />', { 'class': 'server-message seperator', 'text': '-' })
 
-    this.serverView.appendChild(paragraph)
-    this.serverView.scrollTop = this.serverView.scrollHeight
+    this.serverView.append(paragraph)
+    this.serverView.scrollTop(this.serverView.scrollHeight)
   }
 
   markAsUnread () {
@@ -227,10 +228,72 @@ class IrcServerViewController extends EventEmitter {
     }
   }
 
+  sendUserInput (text) {
+    if (text[0] === '/') {
+      this.sendAction(text)
+    } else {
+      this.displayMessage(null, '* You are not on a channel')
+    }
+  }
+
+  sendAction (text) {
+    let firstSpace = text.substring(1).indexOf(' ')
+    let action = text.substring(1, firstSpace + 1)
+    let content = text.substring(1).substr(firstSpace + 1)
+
+    if (firstSpace === -1) {
+      action = text.substring(1)
+      content = ''
+    }
+
+    switch (action.toLowerCase()) {
+      case 'msg':
+        {
+          let target = content.substr(0, content.indexOf(' '))
+          let message = content.substr(content.indexOf(' ') + 1)
+          this.client.sendMessage([target], message)
+        }
+        break
+      case 'join':
+        this.client.joinChannel(content)
+        break
+      case 'nick':
+        this.client.setNickName(content)
+        break
+      default:
+        this.displayMessage(null, '* Unknown Command')
+        break
+    }
+  }
+
   createServerView () {
-    let serverView = document.createElement('div')
-    serverView.classList.add('server-view')
-    serverView.style.display = 'none'
+    let rightColumn = $('#right-column')
+
+    let serverView = $('<div />', {
+      'class': 'server-view',
+      'style': 'display: none'
+    }).appendTo(rightColumn)
+
+    let serverToolbar = $('<div />', {
+      class: 'toolbar toolbar-footer',
+      style: 'height: 40px; display: none'
+    }).appendTo(rightColumn)
+
+    let input = $('<input />', {
+      'type': 'text',
+      'class': 'chat-input',
+      'placeholder': 'Send Message …',
+      'autofocus': true
+    }).appendTo(serverToolbar)
+
+    input.keyup((e) => {
+      if (e.keyCode === 13) {
+        this.sendUserInput(input.val())
+        input.val('')
+      }        
+    })
+    
+    inputhistory(input)
 
     const serverMenuTemplate = [
       {
@@ -262,14 +325,13 @@ class IrcServerViewController extends EventEmitter {
 
     const serverMenu = Menu.buildFromTemplate(serverMenuTemplate)
 
-    serverView.addEventListener('contextmenu', (e) => {
+    serverView.on('contextmenu', (e) => {
       e.preventDefault()
       serverMenu.popup({ window: remote.getCurrentWindow() })
     }, false)
 
-    document.getElementById('right-column').appendChild(serverView)
-
     this.serverView = serverView
+    this.serverToolbar = serverToolbar
   }
 }
 
