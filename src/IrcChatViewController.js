@@ -154,11 +154,14 @@ class IrcChatViewController extends EventEmitter {
     switch (command) {
       case 433: // ERR_NICKNAMEINUSE
         this.serverViewController.displayError(`Nickname '${errorParameters[0]}' is already in use.`)
-        this.emit('nickNameAlreadyInUse')
+        this.serverViewController.focusInput('/nick ')
         break
       case 482: // ERR_CHANOPRIVSNEEDED
-        if (this.selectedChannel) {
-          this.selectedChannel.displayError(errorParameters[0], errorMessage)
+        {
+          let channel = this.channels[errorParameters[0]]
+          if (channel) {
+            channel.displayError(errorMessage)
+          }
         }
         break
       default:

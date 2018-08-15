@@ -166,6 +166,14 @@ class IrcServerViewController extends EventEmitter {
     this.serverView.scrollTop(this.serverView.prop('scrollHeight'))
   }
 
+  focusInput(message = null) {
+    let input = this.serverToolbar.find('.chat-input')
+    if (message) {
+      input.val(message)
+    }
+    input.focus()
+  }
+
   displayText (text, messageClass) {
     let paragraph = IrcMessageFormatter.formatMessage(null, text, { 
       isServer: true, isAction: true, detectLinks: false, class: messageClass
