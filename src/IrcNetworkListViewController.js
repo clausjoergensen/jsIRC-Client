@@ -53,7 +53,7 @@ class IrcNetworkListViewController extends EventEmitter {
       this.emit('viewUser', client, user)
     })
 
-    networkController.on('viewUser', (client, user) => {
+    networkController.on('hideUser', (client, user) => {
       this.emit('hideUser', client, user)
     })
 
