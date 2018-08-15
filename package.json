@@ -1,7 +1,7 @@
 {
   "name": "jsIRC-Client",
   "version": "0.0.1",
-  "description": "JavaScript IRC Client",
+  "description": "IRC Client",
   "main": "app.js",
   "scripts": {
     "start": "electron ."
@@ -15,15 +15,15 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "electron": "^2.0.6",
     "electron-debug": "^2.0.0",
-    "electron-log": "^2.2.16",
-    "jquery": "^3.3.1"
+    "max-listeners-exceeded-warning": "0.0.1"
   },
   "dependencies": {
+    "electron": "^2.0.6",
+    "electron-log": "^2.2.16",
+    "jquery": "^3.3.1",
     "autolinker": "^1.7.1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",
-    "max-listeners-exceeded-warning": "0.0.1",
     "pretty-ms": "^3.2.0",
     "strftime": "^0.10.0"
   }
