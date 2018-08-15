@@ -1,33 +1,55 @@
-/* Message Styles */
-.client-event {
+/** 
+ * Message Styles 
+ */
+span.client-event {
     color: #0000A8;
 }
 
-.server-error {
+span.server-error {
     color: red;
 }
 
-.seperator {
+p.seperator {
     margin-top: -5px;
     margin-bottom: -3px;
 }
 
-.timestamp {
+span.timestamp {
     color: #808080;
 }
 
-.sender-server {
+span.sender-server {
     color: black;
 }
 
-.sender-user {
+span.sender-user {
     color: black;
 }
 
-.sender-me {
+span.sender-me {
     color: black;
 }
 
-.channel-message a {
+p.channel-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px
+}
+
+p.channel-message-error {
+    color: red;
+}
+
+p.channel-message a {
+
     /* default */
+}
+
+p.server-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px;
+    font-size: 11pt;
 }
