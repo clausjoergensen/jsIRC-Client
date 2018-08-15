@@ -7,6 +7,8 @@ const { Menu, app } = remote
 const events = require('events')
 const { EventEmitter } = events
 
+const IrcMessageFormatter = require('./IrcMessageFormatter.js')
+
 const strftime = require('strftime')
 const prettyMs = require('pretty-ms')
 const inputhistory = require('./inputhistory.js')
@@ -88,7 +90,7 @@ class IrcServerViewController extends EventEmitter {
       } else if (error.code === 'ECONNRESET') {
         this.displayText(`* Disconnected (Connection Reset)`, 'client-event')
       } else if (error.code === 'ENOTFOUND') {
-        this.displayText(`* Unable to resolve server`, 'client-event')
+        this.displayError(`* Unable to resolve server`, 'client-event')
       } else {
         console.error(error)
       }
@@ -135,7 +137,9 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.ctcpClient.on('rawMessageSent', (message) => {
-      this.displayAction(`[${message.targets[0]} ${message.tag}]`)
+      if (message.tag != 'ACTION') {
+        this.displayAction(`[${message.targets[0]} ${message.tag}]`)
+      }
     })
 
     this.createServerView()
@@ -162,61 +166,44 @@ class IrcServerViewController extends EventEmitter {
     this.serverView.scrollTop(this.serverView.prop('scrollHeight'))
   }
 
+  displayText (text, messageClass) {
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, { 
+      isServer: true, isAction: true, detectLinks: false, class: messageClass
+    })
+    this.serverView.append(paragraph)
+    this.markAsUnread()
+  }
+
   displayAction (text) {
-    this.displayText(text)
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, { isServer: true, isAction: true })
+    this.serverView.append(paragraph)
     this.displaySeperator()
+    this.markAsUnread()
   }
 
   displayError (text) {
-    this.displayText(text)
-    this.displaySeperator()
-  }
-
-  displayMessage (source, text, isNotice = false) {
-    let senderName = ''
-    if (source) {
-      if (source.nickName) {
-        senderName = isNotice ? `-${source.nickName}-` : `<${source.nickName}>`
-      } else if (source.hostName) {
-        senderName = source.hostName
-      }
-    }
-
-    this.displayText(`${senderName} ${text}`)
-    
-    if (isNotice) {
-      this.displaySeperator()
-    }
-  }
-
-  displayText (text, messageClass = null) {
-    text = text.replace(/[^\x20-\xFF]/g, '')
-
-    let now = new Date()
-
-    let paragraph = $('<p />', { 'class': 'server-message' })
-    if (messageClass) {
-      paragraph.addClass(messageClass)
-    }
-
-    $('<span />', {
-      'class': 'timestamp',
-      'text': `[${strftime('%H:%M', now)}]`
-    }).appendTo(paragraph)
-
-    paragraph.append(document.createTextNode(` ${text}`))
-
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, { isServer: true, isError: true })
     this.serverView.append(paragraph)
-    this.scrollToBottom()
-
+    this.displaySeperator()
     this.markAsUnread()
-    this.scrollToBottom()
+  }
+
+  displayNotice (source, text) {
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, { isServer: true, isNotice: true })
+    this.serverView.append(paragraph)
+    this.displaySeperator()
+    this.markAsUnread()
+  }
+
+  displayMessage (source, text) {
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, { isServer: true })
+    this.serverView.append(paragraph)
+    this.displaySeperator()
+    this.markAsUnread()
   }
 
   displaySeperator () {
-    let paragraph = $('<p />', { 'class': 'server-message seperator', 'text': '-' })
-
-    this.serverView.append(paragraph)
+    this.serverView.append(IrcMessageFormatter.seperator())
     this.scrollToBottom()
   }
 

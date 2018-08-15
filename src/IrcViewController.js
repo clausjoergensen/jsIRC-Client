@@ -16,11 +16,6 @@ class IrcViewController {
     $('#btn-add-server').on('click', e => {
       this.displayServerConnectionManager()
     })
-
-    $(document).ready(() => {
-      this.displayServerConnectionManager()
-    })
-    })*/
   }
 
   connectToServer (server, port, registrationInfo) {

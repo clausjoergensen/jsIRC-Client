@@ -4,6 +4,8 @@
 const events = require('events')
 const { EventEmitter } = events
 
+const IrcMessageFormatter = require('./IrcMessageFormatter.js')
+
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
@@ -91,59 +93,14 @@ class IrcUserViewController extends EventEmitter {
   }
 
   displayMessage (source, text) {
-    let senderName = `&lt;${source.nickName}&gt;`
-    let senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
-    let messageClass = source.isLocalUser ? 'message-by-me' : 'message-by-other'
-
-    text = text.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
-
-    let linkedText = Autolinker.link(text, {
-      stripPrefix: false,
-      newWindow: false,
-      replaceFn: (match) => {
-        if (match.getType() === 'url') {
-          let tag = match.buildTag()
-          tag.setAttr('title', match.getAnchorHref())
-          return tag
-        } else {
-          return true
-        }
-      }
-    })
-
-    let now = new Date()
-    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
-
-    let paragraph = $('<p />', { 'class': 'user-message' }).appendTo(this.messageView)
-    paragraph.html(formattedText)
-
+    let paragraph = IrcMessageFormatter.formatMessage(source, text, { isPrivate: true })
+    this.messageView.append(paragraph)
     this.scrollToBottom()
   }
 
   displayAction (source, text) {
-    text = text.replace(/[^\x20-\xFF]/g, '')
-
-    let linkedText = Autolinker.link(text, {
-      stripPrefix: false,
-      newWindow: false,
-      replaceFn: (match) => {
-        if (match.getType() === 'url') {
-          let tag = match.buildTag()
-          tag.setAttr('title', match.getAnchorHref())
-          return tag
-        } else {
-          return true
-        }
-      }
-    })
-
-    let senderName = '* ' + source.nickName
-    let now = new Date()
-    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> ${senderName} ${linkedText}`
-
-    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
-    paragraph.html(formattedText)
-
+    let paragraph = IrcMessageFormatter.formatMessage(source, text, { isPrivate: true, isAction: true })
+    this.messageView.append(paragraph)
     this.scrollToBottom()
   }
 

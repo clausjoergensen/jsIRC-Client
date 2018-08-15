@@ -8,6 +8,7 @@ const events = require('events')
 const { EventEmitter } = events
 
 const { IrcUser } = require('jsirc')
+const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
@@ -119,101 +120,26 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayError (errorMessage) {
-    let senderName = '* ' + this.client.localUser.nickName
-    let now = new Date()
-
-    let paragraph = $('<p />', {
-      'class': 'channel-message channel-message-error'
-    }).appendTo(this.messageView)
-
-    $('<span />', {
-      'class': 'timestamp',
-      'text': `[${strftime('%H:%M', now)}]`
-    }).appendTo(paragraph)
-
-    paragraph.append(document.createTextNode(` ${senderName}: ${errorMessage}`))
-
-    this.messageView.scrollTop(this.messageView.scrollHeight)
+    let paragraph = IrcMessageFormatter.formatMessage(this.client.localUser, errorMessage, { isError: true })
+    this.messageView.append(paragraph)
+    this.scrollToBottom()
   }
 
   displayAction (source, text) {
-    text = text.replace(/[^\x20-\xFF]/g, '')
+    let paragraph = IrcMessageFormatter.formatMessage(source, text, { isAction: true })
+    this.messageView.append(paragraph)
+    this.scrollToBottom()
+  }
 
-    let linkedText = Autolinker.link(text, {
-      stripPrefix: false,
-      newWindow: false,
-      replaceFn: (match) => {
-        if (match.getType() === 'url') {
-          let tag = match.buildTag()
-          tag.setAttr('title', match.getAnchorHref())
-          return tag
-        } else {
-          return true
-        }
-      }
-    })
-
-    let senderName = '* ' + source.nickName
-    let now = new Date()
-    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> ${senderName} ${linkedText}`
-
-    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
-    paragraph.html(formattedText)
-
-    this.messageView.scrollTop = this.messageView.scrollHeight
+  displayNotice(source, text) {
+    let paragraph = IrcMessageFormatter.formatMessage(source, text, { isNotice: true })
+    this.messageView.append(paragraph)
+    this.scrollToBottom()    
   }
 
   displayMessage (source, text, isNotice = false) {
-    let senderName = ''
-    if (source) {
-      if (source.nickName) {
-        senderName = isNotice ? `-${source.nickName}-` : `&lt;${source.nickName}&gt;`
-      } else if (source.hostName) {
-        senderName = source.hostName
-      }
-    }
-
-    let senderClass = ''
-    if (source) {
-      if (source.nickName) {
-        senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
-      } else if (source.hostName) {
-        senderClass = 'sender-server'
-      }
-    }
-
-    let messageClass = ''
-    let token = isNotice ? 'notice' : 'message' 
-    if (source) {
-      if (source.nickName) {
-        messageClass = source.isLocalUser ? `${token}-by-me` : `${token}-by-other`
-      } else if (source.hostName) {
-        senderClass = `${token}-by-server`
-      }
-    }
-
-    text = text.replace(/[\x00-\x1F]/g, '') // eslint-disable-line no-control-regex
-
-    let linkedText = Autolinker.link(text, {
-      stripPrefix: false,
-      newWindow: false,
-      replaceFn: (match) => {
-        if (match.getType() === 'url') {
-          let tag = match.buildTag()
-          tag.setAttr('title', match.getAnchorHref())
-          return tag
-        } else {
-          return true
-        }
-      }
-    })
-
-    let now = new Date()
-    let formattedText = `<span class="timestamp">[${strftime('%H:%M', now)}]</span> <span class="${senderClass}">${senderName}</span> <span class="${messageClass}">${linkedText}</span>`
-
-    let paragraph = $('<p />', { 'class': 'channel-message' }).appendTo(this.messageView)
-    paragraph.html(formattedText)
-
+    let paragraph = IrcMessageFormatter.formatMessage(source, text)
+    this.messageView.append(paragraph)
     this.scrollToBottom()
   }
 

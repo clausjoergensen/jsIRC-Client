@@ -1,23 +1,41 @@
-/** 
- * Message Styles 
- */
-span.client-event {
-    color: #0000A8;
-}
-
-span.server-error {
-    color: red;
-}
-
+/** Paragraphs */
 p.seperator {
     margin-top: -5px;
     margin-bottom: -3px;
 }
 
+p.user-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px
+}
+
+p.channel-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px
+}
+
+p.server-message {
+    margin-top: 0px;
+    margin-bottom: 3px;
+    margin-left: 0px;
+    margin-right: 0px;
+    font-size: 11pt;
+}
+
+p.error-message {
+    color: red;
+}
+
+/** Timestamp **/
 span.timestamp {
     color: #808080;
 }
 
+/** Sender (NickName|ServerName) */
 span.sender-server {
     color: black;
 }
@@ -30,30 +48,7 @@ span.sender-me {
     color: black;
 }
 
-p.channel-message {
-    margin-top: 0px;
-    margin-bottom: 3px;
-    margin-left: 0px;
-    margin-right: 0px
-}
-
-p.channel-message-error {
-    color: red;
-}
-
-p.channel-message a {
-
-    /* default */
-}
-
-p.server-message {
-    margin-top: 0px;
-    margin-bottom: 3px;
-    margin-left: 0px;
-    margin-right: 0px;
-    font-size: 11pt;
-}
-
+/** Message Content */
 span.message-by-me {
 }
 
@@ -63,9 +58,7 @@ span.message-by-other {
 span.message-by-server {
 }
 
-p.user-message {
-    margin-top: 0px;
-    margin-bottom: 3px;
-    margin-left: 0px;
-    margin-right: 0px
+/** Special styling */
+span.client-event {
+    color: #0000A8;
 }
