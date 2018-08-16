@@ -61,7 +61,7 @@ class IrcCommandHandler {
         this.client.setNickName(content)
         break
       case 'part':
-        this.channel.part()
+        this.channel.part(content)
         break
       case 'mode':
         {
