@@ -17,11 +17,6 @@ A IRC client built in [Electron](https://electronjs.org) and [Node.js](https://n
 - Localization (Currently English and Danish)
 - IRC Colors (except reversed).
 
-# Upcoming features
-
-- Settings (Notifications, Default Nickname/Username, etc.)
-- Styling of difference message categories.
-
 # Notes
 
 This project only been tested on Windows, but should run on MacOS and Linux as well.
