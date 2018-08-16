@@ -20,7 +20,7 @@ module.exports = (function($) {
     arrowKeys: false,    // Allow the use of <up> and <down> keys to iterate
     hint: false, // "placeholder", "select", false
     match: match,
-    caseSensitive: true,
+    caseSensitive: false,
     minLength: 1,
     wrapInput: true
   };
