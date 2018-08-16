@@ -13,6 +13,14 @@ A IRC client built in [Electron](https://electronjs.org) and [Node.js](https://n
 - 1:1 chats.
 - Standard CTCP actions.
 - Chat input history (on arrow-up)
+- Notifications for channels and 1:1 chats when the app is not in focus.
+- Localization (Currently English and Danish)
+- IRC Colors (except reversed).
+
+# Upcoming features
+
+- Settings (Notifications, Default Nickname/Username, etc.)
+- Styling of difference message categories.
 
 # Notes
 
