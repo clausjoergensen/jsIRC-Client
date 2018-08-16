@@ -63,3 +63,7 @@ span.message-by-server {
 span.client-event {
     color: #0000A8;
 }
+
+span.client-action {
+    color: #009933;
+}

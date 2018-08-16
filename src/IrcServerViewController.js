@@ -36,7 +36,7 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('connected', () => {
       this.client.localUser.on('modes', (newModes) => {
-        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes))
+        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes), 'client-action')
         this.displaySeperator()
       })
       this.client.localUser.on('notice', (source, targets, noticeText) => {
