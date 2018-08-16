@@ -32,7 +32,6 @@
    "SERVER_MENU_TIME": "Time",
    "SERVER_MENU_MOTD": "Message of the Day",
    "SERVER_MENU_QUIT": "Quit jsIRC",
-   "PLACEHOLDER_SEND_MESSAGE": "Send Message …",
    "WINDOW_TITLE_SERVER": "jsIRC - [Status: %s %s on %s (%s:%d)]",
    "WINDOW_TITLE_CHANNEL": "jsIRC - [%s (%s, %s)%s]",
    "WINDOW_TITLE_USER": "jsIRC - [%s %s, %s)]",

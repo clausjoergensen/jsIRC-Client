@@ -6,7 +6,6 @@ const electron = require('electron')
 const fs = require('fs')
 const util = require('util')
 
-let translations
 let app = electron.app ? electron.app : electron.remote.app
 
 // eslint-disable-next-line no-unused-vars
@@ -36,20 +35,21 @@ function pseudoLocalization (input) {
   return output
 }
 
+let translations
+let english
+
 module.exports = function (string, ...args) {
-  if (!translations) {
+  if (!english) {    
     if (fs.existsSync(path.join(__dirname, '../locales', app.getLocale() + '.json'))) {
       translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', app.getLocale() + '.json'), 'utf8'))
-    } else {
-      translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
-    }
+    } 
+    english = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
   }
 
   let translation = translations[string]
   if (translation === undefined) {
-    translation = string
+    translation = english[string] || string
   }
 
-  let translated = util.format(translation, ...args)
-  return translated
+  return util.format(translation, ...args)
 }
