@@ -41,11 +41,16 @@
    "ACTION_SLAP": "slaps %s around a bit with a large trout",
    "CHANNEL_MODE_LABEL": "Channel Mode",
    "BAN_LIST_LABEL": "Ban List",
+   "BUTTON_OK": "OK",
    "BUTTON_KICK": "Kick",
    "BUTTON_CANCEL": "Cancel",
+   "BUTTON_UNBAN": "Unban",
    "KICK_TITLE": "Kick %s",
    "KICKBAN_TITLE": "Kick & Ban %s",
    "NO_CHANNEL_TOPIC": "(No Channel Topic)",
+   "NETWORK_MENU_LEAVE": "Leave %s",
+   "CHANNEL_MENU_LEAVE": "Leave Channel",
+   "USER_MENU_CLOSE": "Close",
    "USER_MENU_INFO": "Info",
    "USER_MENU_WHOIS": "Whois",
    "USER_MENU_CONTROL": "Control",
@@ -62,5 +67,7 @@
    "USER_MENU_CTCP_PING": "Ping",
    "USER_MENU_CTCP_TIME": "Time",
    "USER_MENU_CTCP_VERSION": "Version",
-   "USER_MENU_SLAP": "Slap"
+   "USER_MENU_SLAP": "Slap",
+   "CHAT_MENU_CHANNEL_MODES": "Channel Modes",
+   "MENU_REPORT_ISSUE": "Report Issue…"
 }

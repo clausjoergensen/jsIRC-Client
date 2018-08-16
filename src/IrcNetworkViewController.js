@@ -215,7 +215,7 @@ class IrcNetworkViewController extends EventEmitter {
       'contextmenu': (e) => {
         e.preventDefault()
         let serverMenu = Menu.buildFromTemplate([{
-          label: `Leave ${this.client.serverSupportedFeatures['NETWORK'] || this.client.serverName}`,
+          label: __('NETWORK_MENU_LEAVE', this.client.serverSupportedFeatures['NETWORK'] || this.client.serverName),
           click: () => {
             this.client.quit()
             this.serverView.remove()
@@ -240,7 +240,7 @@ class IrcNetworkViewController extends EventEmitter {
     }
 
     const channelMenu = Menu.buildFromTemplate([{
-      label: 'Leave Channel',
+      label: __('CHANNEL_MENU_LEAVE'),
       click: () => {
         channel.part()
       }
@@ -273,7 +273,7 @@ class IrcNetworkViewController extends EventEmitter {
     }
 
     const userMenu = Menu.buildFromTemplate([{
-      label: 'Close',
+      label: __('USER_MENU_CLOSE'),
       click: () => {
         this.hideUser(user)
       }

@@ -430,7 +430,7 @@ class IrcChannelViewController extends EventEmitter {
 
     // Buttons
     let unbanButton = $('<button />', {
-      'text': 'Unban',
+      'text': __('BUTTON_UNBAN'),
       'style': 'float: left; margin-left: 0px;',
       'disabled': 'disabled',
       'click': (e) => {
@@ -445,7 +445,7 @@ class IrcChannelViewController extends EventEmitter {
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'OK',
+      'text': __('BUTTON_OK'),
       'type': 'submit',
       'click': (e) => {
         this.saveChannelModes(topic.val())
@@ -454,7 +454,7 @@ class IrcChannelViewController extends EventEmitter {
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'Cancel',
+      'text': __('BUTTON_CANCEL'),
       'click': (e) => {
         inlineWindow.remove()
       }
@@ -609,7 +609,7 @@ class IrcChannelViewController extends EventEmitter {
     }])
 
     const channelMessageViewMenu = Menu.buildFromTemplate([{
-      label: 'Channel Modes',
+      label: __('CHAT_MENU_CHANNEL_MODES'),
       click: () => {
         this.displayChannelModes()
       }

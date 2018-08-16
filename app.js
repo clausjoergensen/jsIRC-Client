@@ -3,6 +3,7 @@
 
 const { app, shell, BrowserWindow, Menu } = require('electron')
 const path = require('path')
+const __ = require('./src/i18n.js')
 
 let mainWindow = null
 
@@ -34,8 +35,6 @@ app.on('ready', () => {
     {
       label: 'File',
       submenu: [
-        { label: 'Options' },
-        { type: 'separator' },
         { role: 'quit' }
       ]
     },
@@ -69,7 +68,7 @@ app.on('ready', () => {
       label: 'Help',
       submenu: [
         {
-          label: 'Report Issue…',
+          label: __('MENU_REPORT_ISSUE'),
           click: () => {
             shell.openExternal('https://github.com/clausjoergensen/jsIRC/issues/new/choose');
           }
