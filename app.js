@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
-const { app, shell, BrowserWindow, Menu, ipcMain } = require('electron')
+const { app, shell, BrowserWindow, Menu, ipcMain, globalShortcut } = require('electron')
 const path = require('path')
 const __ = require('./src/i18n.js')
 
@@ -21,24 +21,28 @@ app.on('ready', () => {
     'accept-first-mouse': true,
     'title-bar-style': 'hidden',
     'webPreferences': {
-      'devTools': app.isPackaged
+      'devTools': !app.isPackaged
     }
   })
 
   mainWindow.loadURL(path.join('file://', __dirname, '/src/index.html'))
 
-  ipcMain.on('quit', (e, arg) => {  
-    mainWindow.close()
-  });
-
   mainWindow.once('close', (e) => {
     e.preventDefault()
     mainWindow.webContents.send('close', e)
+    setTimeout(() => mainWindow.close(), 100)
   })
 
   mainWindow.on('closed', (e) => {
     mainWindow = null
   })
+
+  if (!app.isPackaged) {
+    globalShortcut.register('CommandOrControl+R', function(e) {
+      mainWindow.webContents.send('reload', e)
+      setTimeout(() => mainWindow.reload(), 100)
+    })
+  }
 
   let template = [
     {
@@ -69,7 +73,6 @@ app.on('ready', () => {
         { role: 'zoomout' },
         { type: 'separator' },
         { role: 'reload' },
-        { role: 'forcereload' },
         { role: 'toggledevtools' }
       ]
     },

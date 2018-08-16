@@ -32,7 +32,10 @@ class IrcViewController {
 
     electron.ipcRenderer.on('close', function(e, data) {      
       client.quit()
-      setTimeout(() => electron.ipcRenderer.sendSync('quit', true), 100)
+    })
+
+    electron.ipcRenderer.on('reload', function(e, data) {      
+      client.quit()
     })
 
     if (!isPackaged) {
