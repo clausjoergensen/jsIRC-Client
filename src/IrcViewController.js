@@ -137,6 +137,7 @@ class IrcViewController {
     $('<button />', {
       'text': __('BUTTON_CONNECT'),
       'type': 'submit',
+      'class': 'btn btn-primary',
       'click': submit
     }).appendTo(innerView)
 

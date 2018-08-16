@@ -508,6 +508,7 @@ class IrcChannelViewController extends EventEmitter {
       'text': __('BUTTON_UNBAN'),
       'style': 'float: left; margin-left: 0px;',
       'disabled': 'disabled',
+      'class': 'btn btn-negative',
       'click': (e) => {
         if (!isChannelOperator) {
           return
@@ -515,6 +516,7 @@ class IrcChannelViewController extends EventEmitter {
         let selected = $('#ban-list').find('.selected').first()
         let banMask = selected.data('banMask')
         this.channel.unban(banMask)
+        unbanButton.prop('disabled', true)
         selected.remove()
       }
     }).appendTo(innerView)
@@ -522,6 +524,7 @@ class IrcChannelViewController extends EventEmitter {
     $('<button />', {
       'text': __('BUTTON_OK'),
       'type': 'submit',
+      'class': 'btn btn-primary',
       'click': (e) => {
         this.saveChannelModes(topic.val())
         inlineWindow.remove()
@@ -530,6 +533,7 @@ class IrcChannelViewController extends EventEmitter {
 
     $('<button />', {
       'text': __('BUTTON_CANCEL'),
+      'class': 'btn btn-default',
       'click': (e) => {
         inlineWindow.remove()
       }

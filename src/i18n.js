@@ -38,7 +38,7 @@ function pseudoLocalization (input) {
 
 module.exports = function (string, ...args) {
   if (!translations) {
-    if (fs.existsSync(path.join(__dirname, '../locales', app.getLocale() + '.js'))) {
+    if (fs.existsSync(path.join(__dirname, '../locales', app.getLocale() + '.json'))) {
       translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', app.getLocale() + '.json'), 'utf8'))
     } else {
       translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
