@@ -164,6 +164,12 @@ class IrcChatViewController extends EventEmitter {
           }
         }
         break
+      case 473: // ERR_INVITEONLYCHAN
+        this.serverViewController.displayError(`Unable to join channel ${errorParameters[0]} (invite only).`)
+        break
+      case 475: // ERR_BADCHANNELKEY
+        this.serverViewController.displayError(`Unable to join channel ${errorParameters[0]} (need correct key).`)
+        break
       default:
         console.warn(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)
         break
