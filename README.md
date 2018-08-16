@@ -4,19 +4,6 @@ A IRC client built in [Electron](https://electronjs.org) and [Node.js](https://n
 
 ![](screenshot.png)
 
-# Current set of features
-
-- Connection to one or more IRC networks
-- Chat in channels.
-- Change channel modes, set the topic, etc.
-- Change user modes (op/deop/voice etc.) in channels.
-- 1:1 chats.
-- Standard CTCP actions.
-- Chat input history (on arrow-up)
-- Notifications for channels and 1:1 chats when the app is not in focus.
-- Localization (Currently English and Danish)
-- IRC Colors (except reversed).
-
 # Notes
 
 This project only been tested on Windows, but should run on MacOS and Linux as well.
