@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "electron .",
+    "test": "electron-mocha ./test",
     "pack": "build --dir",
     "dist": "build"
   },
@@ -26,6 +27,7 @@
     "electron": "^2.0.6",
     "electron-builder": "^20.28.1",
     "electron-debug": "^2.0.0",
+    "electron-mocha": "^6.0.4",
     "max-listeners-exceeded-warning": "0.0.1"
   },
   "dependencies": {

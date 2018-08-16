@@ -40,7 +40,7 @@ class IrcCommandHandler {
       case 'msg':
         {
           let [target] = content.split(' ', 1)
-          let message = content.substr(content.indexOf(' ') + 1)
+          let message = content.substring(target.length + 1)
           if (message) {
             this.client.sendMessage([target], message) // display 1:1 somehow?
           }
@@ -49,7 +49,7 @@ class IrcCommandHandler {
       case 'notice':
         {
           let [target] = content.split(' ', 1)
-          let notice = content.substr(content.indexOf(' ') + 1)
+          let notice = content.substring(target.length + 1)
           if (notice) {
             this.client.sendNotice([target], notice)
           }
@@ -58,7 +58,7 @@ class IrcCommandHandler {
       case 'kick':
         if (this.channel && content) {
           let [target] = content.split(' ', 1)
-          let reason = content.substr(content.indexOf(' ') + 1)
+          let reason = content.substring(target.length + 1)
           if (target) {
             this.channel.kick(target, reason && reason.length > 0 ? reason : null)
           }
@@ -74,9 +74,9 @@ class IrcCommandHandler {
         break
       case 'away':
         if (this.client.localUser.isAway) {
-          this.client.localUser.setAway(content && content.length > 0 ? content : null)
-        } else {
           this.client.localUser.unsetAway()
+        } else {
+          this.client.localUser.setAway(content && content.length > 0 ? content : null)
         }
         break
       case 'join':
@@ -104,7 +104,7 @@ class IrcCommandHandler {
         break
       case 'mode':
         {
-          let match = content.match(/([#+!&].+) ([+-]{1})([pmsintlkqaohv]{1})[\s?]{1}(.*)/)
+          let match = content.match(/([#+!&].+) ([+-]{1})([pmsintlkqaohv]{1})[\s]?(.*)/)
           if (this.channel && match && this.channel.name === match[1]) {
             this.client.setChannelModes(this.channel, `${match[2]}${match[3]}`, [match[4]])
           } else {
