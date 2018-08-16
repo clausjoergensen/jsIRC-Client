@@ -29,7 +29,7 @@ class IrcCommandHandler {
   handle (text, displayMessage = null) {
     let firstSpace = text.substring(1).indexOf(' ')
     let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1)
+    let content = text.substring(1).substr(firstSpace + 1).trim()
 
     if (firstSpace === -1) {
       action = text.substring(1)
@@ -39,29 +39,68 @@ class IrcCommandHandler {
     switch (action.toLowerCase()) {
       case 'msg':
         {
-          let target = content.substr(0, content.indexOf(' '))
+          let [target] = content.split(' ', 1)
           let message = content.substr(content.indexOf(' ') + 1)
-          this.client.sendMessage([target], message) // display 1:1 somehow?
+          if (message) {
+            this.client.sendMessage([target], message) // display 1:1 somehow?
+          }
         }
         break
       case 'notice':
         {
-          let target = content.substr(0, content.indexOf(' '))
+          let [target] = content.split(' ', 1)
           let notice = content.substr(content.indexOf(' ') + 1)
-          this.client.sendNotice([target], notice)
+          if (notice) {
+            this.client.sendNotice([target], notice)
+          }
+        }
+        break
+      case 'kick':
+        if (this.channel && content) {
+          let [target] = content.split(' ', 1)
+          let reason = content.substr(content.indexOf(' ') + 1)
+          if (target) {
+            this.channel.kick(target, reason && reason.length > 0 ? reason : null)
+          }
+        }
+        break
+      case 'ban':
+        {
+          let [target] = content.split(' ', 1)
+          if (this.channel && target) {
+            this.channel.ban(target)
+          }
+        }
+        break
+      case 'away':
+        if (this.client.localUser.isAway) {
+          this.client.localUser.setAway(content && content.length > 0 ? content : null)
+        } else {
+          this.client.localUser.unsetAway()
         }
         break
       case 'join':
         {
           let [channelName, key] = content.split(' ')
-          this.client.joinChannel(channelName, key)
+          if (channelName && channelName) {
+            this.client.joinChannel(channelName, key && key.length > 0 ? key : null)
+          }
         }
         break
       case 'nick':
-        this.client.setNickName(content)
+        if (content) {
+          this.client.setNickName(content)
+        }
+        break
+      case 'quit':
+        if (this.channel) {
+          this.client.quit(content && content.length > 0 ? content : null)
+        }
         break
       case 'part':
-        this.channel.part(content)
+        if (this.channel) {
+          this.channel.part(content && content.length > 0 ? content : null)
+        }
         break
       case 'mode':
         {
@@ -70,26 +109,35 @@ class IrcCommandHandler {
             this.client.setChannelModes(this.channel, `${match[2]}${match[3]}`, [match[4]])
           } else {
             let [nickName, modes] = content.split(' ')
-            if (nickName === this.client.localUser.nickName) {
+            if (nickName === this.client.localUser.nickName && modes) {
               this.client.localUser.setModes(modes)
             }
           }
         }
         break
       case 'me':
-        if (!this.channel) {
-          return
-        }
-        this.ctcpClient.action([this.channel.name], content)
-        if (displayMessage) {
-          displayMessage(this.client.localUser, content)
+        if (this.channel && content) {
+          this.ctcpClient.action([this.channel.name], content)
+          if (displayMessage) {
+            displayMessage(this.client.localUser, content)
+          }
         }
         break
       case 'topic':
-        this.channel.setTopic(content)
+        if (this.channel && content) {
+          this.channel.setTopic(content)
+        }
+        break
+      case 'invite':
+        {
+          let [target] = content.split(' ')
+          if (this.channel && target) {
+            this.channel.invite(target)
+          }
+        }
         break
       case 'hop':
-        {
+        if (this.channel) {
           let channelName = this.channel.name
           this.channel.part()
           let [newChannelName] = content.split(' ')
@@ -98,6 +146,11 @@ class IrcCommandHandler {
           } else {
             this.client.joinChannel(channelName)
           }
+        }
+        break
+      case 'raw':
+        if (content) {
+          this.client.sendRawMessage(content)
         }
         break
       default:
