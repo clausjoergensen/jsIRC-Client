@@ -15,7 +15,6 @@ class IrcMessageFormatter {
     let isColor = false
     let isItalic = false
     let isUnderline = false
-    let isReversed = false
 
     let output = ''
 

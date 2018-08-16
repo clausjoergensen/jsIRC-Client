@@ -84,5 +84,6 @@
    "CONNECT_NICKNAME": "Nickname",
    "CONNECT_NAME": "Navn",
    "CONNECT_EMAIL": "Email",
-   "BUTTON_CONNECT": "Opret Forbindelse"
+   "BUTTON_CONNECT": "Opret Forbindelse",
+   "USER_SET_MODES": "%s satte indstilling %s"
 }

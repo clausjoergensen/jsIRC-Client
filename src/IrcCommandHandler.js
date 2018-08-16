@@ -66,7 +66,7 @@ class IrcCommandHandler {
       case 'mode':
         {
           let match = content.match(/([#+!&].+) ([+-]{1})([pmsintlkqaohv]{1})[\s?]{1}(.*)/)
-          if (this.channel && match && this.channel.name == match[1]) {
+          if (this.channel && match && this.channel.name === match[1]) {
             this.client.setChannelModes(this.channel, `${match[2]}${match[3]}`, [match[4]])
           } else {
             let [nickName, modes] = content.split(' ')

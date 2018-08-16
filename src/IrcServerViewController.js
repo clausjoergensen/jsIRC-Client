@@ -10,7 +10,6 @@ const { EventEmitter } = events
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const IrcCommandHandler = require('./IrcCommandHandler.js')
 
-const strftime = require('strftime')
 const prettyMs = require('pretty-ms')
 const inputhistory = require('./inputhistory.js')
 const __ = require('./i18n.js')
@@ -36,6 +35,10 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('connected', () => {
+      this.client.localUser.on('modes', (newModes) => {
+        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes))
+        this.displaySeperator()
+      })
       this.client.localUser.on('notice', (source, targets, noticeText) => {
         let channelUsers = this.client.localUser.getChannelUsers()
         if (channelUsers.length === 0) {
@@ -108,7 +111,7 @@ class IrcServerViewController extends EventEmitter {
           networkInfo.serverClientsCount !== undefined &&
           networkInfo.serverServersCount !== undefined) {
         // First display when all information been recieved.
-        this.displayText(__('NETWORK_INFO_1', 
+        this.displayText(__('NETWORK_INFO_1',
           networkInfo.visibleUsersCount, networkInfo.invisibleUsersCount, networkInfo.serversCount))
         this.displayText(__('NETWORK_INFO_2', networkInfo.channelsCount))
         this.displayText(__('NETWORK_INFO_3', networkInfo.serverClientsCount, networkInfo.serverServersCount))
@@ -142,7 +145,7 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.ctcpClient.on('rawMessageSent', (message) => {
-      if (message.tag != 'ACTION') {
+      if (message.tag !== 'ACTION') {
         this.displayAction(__('CTCP_SENT_MSG_FORMAT', message.targets[0], message.tag))
       }
     })
@@ -171,7 +174,7 @@ class IrcServerViewController extends EventEmitter {
     this.serverView.scrollTop(this.serverView.prop('scrollHeight'))
   }
 
-  focusInput(message = null) {
+  focusInput (message = null) {
     let input = this.serverToolbar.find('.chat-input')
     if (message) {
       input.val(message)
@@ -180,7 +183,7 @@ class IrcServerViewController extends EventEmitter {
   }
 
   displayText (text, messageClass) {
-    let paragraph = IrcMessageFormatter.formatMessage(null, text, { 
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, {
       isServer: true, isAction: true, detectLinks: false, class: messageClass
     })
     this.serverView.append(paragraph)
@@ -242,7 +245,7 @@ class IrcServerViewController extends EventEmitter {
     } else {
       this.displayMessage(null, __('NOT_ON_A_CHANNEL'))
     }
-    
+
     this.scrollToBottom()
   }
 

@@ -84,5 +84,6 @@
    "CONNECT_NICKNAME": "Nickname",
    "CONNECT_NAME": "Name",
    "CONNECT_EMAIL": "Email",
-   "BUTTON_CONNECT": "Connect"
+   "BUTTON_CONNECT": "Connect",
+   "USER_SET_MODES": "%s sets mode %s"
 }
