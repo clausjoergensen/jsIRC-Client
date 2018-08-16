@@ -3,6 +3,7 @@
    "ERR_INVITEONLYCHAN": "Unable to join channel %s (invite only).",
    "ERR_BADCHANNELKEY": "Unable to join channel %s (need correct key).",
    "ERR_CHANNELISFULL": "Unable to join channel %s (channel is full)",
+   "ERR_BANNEDFROMCHAN": "Unable to join channel %s (address is banned)",
    "PLACEHOLDER_SEND_MESSAGE": "Send Message …",
    "CONNECTING_TO": "* Connecting to %s (%d)",
    "DISCONNECTED": "* Disconnected (%s)",

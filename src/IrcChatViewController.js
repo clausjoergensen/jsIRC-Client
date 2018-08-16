@@ -169,8 +169,12 @@ class IrcChatViewController extends EventEmitter {
         break
       case 475: // ERR_BADCHANNELKEY
         this.serverViewController.displayError(__('ERR_BADCHANNELKEY', errorParameters[0]))
+        break
       case 471: // ERR_CHANNELISFULL
-      this.serverViewController.displayError(__('ERR_CHANNELISFULL', errorParameters[0]))
+        this.serverViewController.displayError(__('ERR_CHANNELISFULL', errorParameters[0]))
+        break
+      case 474: // ERR_BANNEDFROMCHAN
+        this.serverViewController.displayError(__('ERR_BANNEDFROMCHAN', errorParameters[0]))
         break
       default:
         console.warn(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)

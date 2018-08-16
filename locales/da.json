@@ -3,6 +3,7 @@
    "ERR_INVITEONLYCHAN": "Kan ikke åbne kanalen %s (kun inviterede brugere).",
    "ERR_BADCHANNELKEY": "Kan ikke åbne kanalen %s (mangler kodeord).",
    "ERR_CHANNELISFULL": "Kan ikke åbne kanalen %s (kanalen er fuld)",
+   "ERR_BANNEDFROMCHAN": "Kan ikke åbne kanalen %s (din addresse er bannet)",
    "PLACEHOLDER_SEND_MESSAGE": "Send besked …",
    "CONNECTING_TO": "* Opretter forbindelse til %s (%d)",
    "DISCONNECTED": "* Forbindelse afbrudt (%s)",
