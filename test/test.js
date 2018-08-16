@@ -7,14 +7,13 @@ const assert = require('assert')
 console.debug = (m) => {}
 
 describe('IrcCommandHandler Tests', function () {
-
   let fakeIrcClient = {}
   let fakeCtcpClient = {}
 
-  beforeEach(function() {
+  beforeEach(function () {
     fakeIrcClient = {}
     fakeCtcpClient = {}
-  });
+  })
 
   it('.isCommand', function () {
     assert.equal(IrcCommandHandler.isCommand('/cmd'), true)
@@ -318,7 +317,7 @@ describe('IrcCommandHandler Tests', function () {
         if (channelName === '#testing') {
           resolve()
         } else {
-          reject()
+          reject(new Error('Called with invalid channelName.'))
         }
       }
     })
@@ -340,7 +339,7 @@ describe('IrcCommandHandler Tests', function () {
         if (channelName === '#foobar') {
           resolve()
         } else {
-          reject()
+          reject(new Error('Called with invalid channelName.'))
         }
       }
     })
@@ -353,7 +352,7 @@ describe('IrcCommandHandler Tests', function () {
 
   it('/raw', function (done) {
     fakeIrcClient.sendRawMessage = (message) => {
-      if (message == 'JOIN :#foobar') {
+      if (message === 'JOIN :#foobar') {
         done()
       } else {
         assert.ok(false)
