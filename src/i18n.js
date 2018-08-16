@@ -9,6 +9,7 @@ const util = require('util')
 let translations
 let app = electron.app ? electron.app : electron.remote.app
 
+// eslint-disable-next-line no-unused-vars
 function pseudoLocalization (input) {
   var output = input
   var normal = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -52,4 +53,3 @@ module.exports = function (string, ...args) {
   let translated = util.format(translation, ...args)
   return translated
 }
-

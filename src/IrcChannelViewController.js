@@ -10,7 +10,6 @@ const { EventEmitter } = events
 const { IrcUser } = require('jsirc')
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 
-const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
 
@@ -79,7 +78,7 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channel.on('modes', (source, newModes, newModeParameters) => {
       if (source instanceof IrcUser) {
-        this.displayAction(source, __('USER_SET_CHANNEL_MODE', 
+        this.displayAction(source, __('USER_SET_CHANNEL_MODE',
           newModes.join(''), newModeParameters ? newModeParameters.join('') : ''))
       }
     })
@@ -134,10 +133,10 @@ class IrcChannelViewController extends EventEmitter {
     this.scrollToBottom()
   }
 
-  displayNotice(source, text) {
+  displayNotice (source, text) {
     let paragraph = IrcMessageFormatter.formatMessage(source, text, { isNotice: true })
     this.messageView.append(paragraph)
-    this.scrollToBottom()    
+    this.scrollToBottom()
   }
 
   displayMessage (source, text, isNotice = false) {
@@ -407,10 +406,86 @@ class IrcChannelViewController extends EventEmitter {
     }).appendTo(innerView)
 
     // Channel Mode
-    let template = document.querySelector('#template-channel-modes-table')
+    let table1 = $('<table />', {
+      'border': 0,
+      'cellSpacing': 0,
+      'cellPadding': 0,
+      'style': 'border-collapse: separate; border-spacing: 0px 5px;'
+    })
+
+    let row = $('<tr />').appendTo(table1)
+
+    let chIsPrivate = $('<input />', { 'type': 'checkbox', 'id': 'm-private' })
+    $('<td />', { 'valign': 'top' })
+      .append(chIsPrivate)
+      .append($('<label />', { 'for': 'm-private', 'class': 'input', 'text': __('CHANNEL_MODE_PRIVATE') }))
+      .appendTo(row)
+
+    let chInviteOnly = $('<input />', { 'type': 'checkbox', 'id': 'm-inviteonly' })
+    $('<td />', { 'valign': 'top', 'style': 'padding-left: 5px' })
+      .append(chInviteOnly)
+      .append($('<label />', { 'for': 'm-inviteonly', 'class': 'input', 'text': __('CHANNEL_MODE_INVITE_ONLY') }))
+      .appendTo(row)
+
+    row = $('<tr />').appendTo(table1)
+
+    let chIsModerated = $('<input />', { 'type': 'checkbox', 'id': 'm-moderated' })
+    $('<td />', { 'valign': 'top' })
+      .append(chIsModerated)
+      .append($('<label />', { 'for': 'm-moderated', 'class': 'input', 'text': __('CHANNEL_MODE_MODERATED') }))
+      .appendTo(row)
+
+    let chNoExternalMsg = $('<input />', { 'type': 'checkbox', 'id': 'm-no-extmsg' })
+    $('<td />', { 'valign': 'top', 'style': 'padding-left: 5px' })
+      .append(chNoExternalMsg)
+      .append($('<label />', { 'for': 'm-no-extmsg', 'class': 'input', 'text': __('CHANNEL_MODE_NO_EXT_MSG') }))
+      .appendTo(row)
+
+    row = $('<tr />').appendTo(table1)
+
+    let chIsSecret = $('<input />', { 'type': 'checkbox', 'id': 'm-secret' })
+    $('<td />', { 'valign': 'top' })
+      .append(chIsSecret)
+      .append($('<label />', { 'for': 'm-secret', 'class': 'input', 'text': __('CHANNEL_MODE_SECRET') }))
+      .appendTo(row)
+
+    let chOnlyOpsSetTopic = $('<input />', { 'type': 'checkbox', 'id': 'm-opstopic' })
+    $('<td />', { 'valign': 'top', 'style': 'padding-left: 5px' })
+      .append(chOnlyOpsSetTopic)
+      .append($('<label />', { 'for': 'm-opstopic', 'class': 'input', 'text': __('CHANNEL_MODE_OPSTOPIC') }))
+      .appendTo(row)
+
+    let table2 = $('<table />', {
+      'border': 0,
+      'cellSpacing': 0,
+      'cellPadding': 0,
+      'style': 'margin-top: 10px; margin-left: 20px;'
+    })
+
+    row = $('<tr />').appendTo(table2)
+
+    let inputKey = $('<input />', { 'type': 'text', 'id': 'm-key', 'style': 'width: 100px' })
+    $('<td />', { 'style': 'text-align: right; padding-right: 5px;' })
+      .append($('<label />', { 'for': 'm-key', 'text': __('CHANNEL_MODE_KEY') }))
+      .appendTo(row)
+    $('<td />')
+      .append(inputKey)
+      .appendTo(row)
+
+    row = $('<tr />').appendTo(table2)
+
+    let inputMaxUsers = $('<input />', { 'type': 'text', 'id': 'm-max-users', 'style': 'width: 100px' })
+    $('<td />', { 'style': 'text-align: right; padding-right: 5px;' })
+      .append($('<label />', { 'for': 'm-max-users', 'text': __('CHANNEL_MODE_MAX_USERS') }))
+      .appendTo(row)
+    $('<td />')
+      .append(inputMaxUsers)
+      .appendTo(row)
+
     $('<div />', { 'id': 'modes-box' })
       .append($('<div />', { 'text': __('CHANNEL_MODE_LABEL') }))
-      .append(document.importNode(template.content, true))
+      .append(table1)
+      .append(table2)
       .appendTo(innerView)
 
     $('#m-key').onEnter((e) => {
@@ -491,41 +566,41 @@ class IrcChannelViewController extends EventEmitter {
     this.channel.once('modes', (source, newModes, newModeParameters) => {
       topic.prop('disabled', this.channel.modes.includes('t') && !isChannelOperator)
 
-      $('#m-private').prop('disabled', !isChannelOperator)
-      $('#m-private').prop('checked', this.channel.modes.includes('p'))
+      chIsPrivate.prop('disabled', !isChannelOperator)
+      chIsPrivate.prop('checked', this.channel.modes.includes('p'))
 
-      $('#m-moderated').prop('disabled', !isChannelOperator)
-      $('#m-moderated').prop('checked', this.channel.modes.includes('m'))
+      chIsModerated.prop('disabled', !isChannelOperator)
+      chIsModerated.prop('checked', this.channel.modes.includes('m'))
 
-      $('#m-secret').prop('disabled', !isChannelOperator)
-      $('#m-secret').prop('checked', this.channel.modes.includes('s'))
+      chIsSecret.prop('disabled', !isChannelOperator)
+      chIsSecret.prop('checked', this.channel.modes.includes('s'))
 
-      $('#m-inviteonly').prop('disabled', !isChannelOperator)
-      $('#m-inviteonly').prop('checked', this.channel.modes.includes('i'))
+      chInviteOnly.prop('disabled', !isChannelOperator)
+      chInviteOnly.prop('checked', this.channel.modes.includes('i'))
 
-      $('#m-no-extmsg').prop('disabled', !isChannelOperator)
-      $('#m-no-extmsg').prop('checked', this.channel.modes.includes('n'))
+      chNoExternalMsg.prop('disabled', !isChannelOperator)
+      chNoExternalMsg.prop('checked', this.channel.modes.includes('n'))
 
-      $('#m-opstopic').prop('disabled', !isChannelOperator)
-      $('#m-opstopic').prop('checked', this.channel.modes.includes('t'))
+      chOnlyOpsSetTopic.prop('disabled', !isChannelOperator)
+      chOnlyOpsSetTopic.prop('checked', this.channel.modes.includes('t'))
 
       if (this.channel.modes.includes('l')) {
         this.channel.userLimit = newModeParameters[1]
-        $('#m-max-users').val(newModeParameters[1])
+        inputMaxUsers.val(newModeParameters[1])
       }
-      $('#m-max-users').prop('disabled', !isChannelOperator)
+      inputMaxUsers.prop('disabled', !isChannelOperator)
 
       if (this.channel.modes.includes('k')) {
         if (this.channel.modes.includes('l')) {
-          $('#m-key').val(newModeParameters[2])
+          inputKey.val(newModeParameters[2])
           this.channel.channelKey = newModeParameters[2]
         } else {
-          $('#m-key').val(newModeParameters[1])
+          inputKey.val(newModeParameters[1])
           this.channel.channelKey = newModeParameters[1]
         }
       }
 
-      $('#m-key').prop('disabled', !isChannelOperator)
+      inputKey.prop('disabled', !isChannelOperator)
 
       if (!isChannelOperator) {
         banList.css('backgroundColor', '#EBEBE4')

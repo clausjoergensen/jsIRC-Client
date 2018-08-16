@@ -69,5 +69,14 @@
    "USER_MENU_CTCP_VERSION": "Version",
    "USER_MENU_SLAP": "Slap",
    "CHAT_MENU_CHANNEL_MODES": "Channel Modes",
-   "MENU_REPORT_ISSUE": "Report Issue…"
+   "MENU_REPORT_ISSUE": "Report Issue…",
+   "CHANNEL_MODE_OPSTOPIC": "Only ops can change topic",
+   "CHANNEL_MODE_LABEL": "Channel Modes",
+   "CHANNEL_MODE_SECRET": "Secret",
+   "CHANNEL_MODE_NO_EXT_MSG": "No external messages",
+   "CHANNEL_MODE_MODERATED": "Moderated",
+   "CHANNEL_MODE_INVITE_ONLY": "Invite Only",
+   "CHANNEL_MODE_PRIVATE": "Private",
+   "CHANNEL_MODE_KEY": "Key:",
+   "CHANNEL_MODE_MAX_USERS": "Max Users:"
 }
