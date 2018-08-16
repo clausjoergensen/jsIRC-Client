@@ -12,8 +12,9 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const Autolinker = require('autolinker')
-const inputhistory = require('./inputhistory.js')
-const tabComplete = require('./tabcomplete.js')
+
+const inputhistory = require('./external/inputhistory.js')
+const tabComplete = require('./external/tabcomplete.js')
 
 const __ = require('./i18n.js')
 const $ = require('jquery')
@@ -754,7 +755,7 @@ class IrcChannelViewController extends EventEmitter {
 
     this.chatInput = input
 
-    inputhistory(input)
+    input.inputhistory()
   }
 
   sendUserInput (text) {

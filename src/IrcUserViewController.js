@@ -8,7 +8,7 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
-const inputhistory = require('./inputhistory.js')
+const inputhistory = require('./external/inputhistory.js')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
@@ -147,7 +147,7 @@ class IrcUserViewController extends EventEmitter {
       }
     })
 
-    inputhistory(input)
+    input.inputhistory()
   }
 }
 

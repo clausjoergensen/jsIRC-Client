@@ -11,7 +11,7 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const prettyMs = require('pretty-ms')
-const inputhistory = require('./inputhistory.js')
+const inputhistory = require('./external/inputhistory.js')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
@@ -308,7 +308,7 @@ class IrcServerViewController extends EventEmitter {
       }
     })
 
-    inputhistory(input)
+    input.inputhistory()
   }
 }
 
