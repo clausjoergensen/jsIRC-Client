@@ -8,6 +8,7 @@ const events = require('events')
 const { EventEmitter } = events
 
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
+const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const strftime = require('strftime')
 const prettyMs = require('pretty-ms')
@@ -21,6 +22,8 @@ class IrcServerViewController extends EventEmitter {
 
     this.client = client
     this.ctcpClient = ctcpClient
+
+    this.commandHandler = new IrcCommandHandler(this.client, this.ctcpClient)
 
     this.client.on('connecting', (hostName, port) => {
       this.displayText(__('CONNECTING_TO', hostName, port), 'client-event')
@@ -232,41 +235,15 @@ class IrcServerViewController extends EventEmitter {
       return
     }
 
-    if (text[0] === '/') {
-      this.sendAction(text.trim())
+    if (IrcCommandHandler.isCommand(text)) {
+      this.commandHandler.handle(text.trim(), null, (source, text) => {
+        this.displayMessage(source, text)
+      })
     } else {
       this.displayMessage(null, __('NOT_ON_A_CHANNEL'))
     }
-  }
-
-  sendAction (text) {
-    let firstSpace = text.substring(1).indexOf(' ')
-    let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1)
-
-    if (firstSpace === -1) {
-      action = text.substring(1)
-      content = ''
-    }
-
-    switch (action.toLowerCase()) {
-      case 'msg':
-        {
-          let target = content.substr(0, content.indexOf(' '))
-          let message = content.substr(content.indexOf(' ') + 1)
-          this.client.sendMessage([target], message)
-        }
-        break
-      case 'join':
-        this.client.joinChannel(content)
-        break
-      case 'nick':
-        this.client.setNickName(content)
-        break
-      default:
-        this.displayMessage(null, __('UNKNOWN_COMMAND'))
-        break
-    }
+    
+    this.scrollToBottom()
   }
 
   createServerView () {

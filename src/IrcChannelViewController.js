@@ -9,6 +9,7 @@ const { EventEmitter } = events
 
 const { IrcUser } = require('jsirc')
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
+const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
@@ -32,6 +33,8 @@ class IrcChannelViewController extends EventEmitter {
     this.client = client
     this.ctcpClient = ctcpClient
     this.channel = channel
+
+    this.commandHandler = new IrcCommandHandler(client, ctcpClient, channel)
 
     this.channel.on('message', (source, messageText) => {
       this.displayMessage(source, messageText)
@@ -754,67 +757,17 @@ class IrcChannelViewController extends EventEmitter {
       return
     }
 
-    if (text[0] === '/') {
-      this.sendAction(text)
-      this.scrollToBottom()
+    if (IrcCommandHandler.isCommand(text)) {
+      this.commandHandler.handle(text.trim(), (source, text) => {
+        this.displayAction(source, text)
+      })
     } else {
       text.trim().match(/.{1,398}/g).forEach(chunk => {
         this.channel.sendMessage(chunk)
       })
-      this.scrollToBottom()
-    }
-  }
-
-  sendAction (text) {
-    let firstSpace = text.substring(1).indexOf(' ')
-    let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1).trim()
-
-    if (firstSpace === -1) {
-      action = text.substring(1)
-      content = ''
     }
 
-    switch (action.toLowerCase()) {
-      case 'msg':
-        {
-          let target = content.substr(0, content.indexOf(' '))
-          let message = content.substr(content.indexOf(' ') + 1)
-          this.client.sendMessage([target], message)
-        }
-        break
-      case 'join':
-        this.client.joinChannel(content)
-        break
-      case 'part':
-        this.channel.part()
-        break
-      case 'me':
-        this.ctcpClient.action([this.channel.name], content)
-        this.channels[this.channel.name].displayAction(this.client.localUser, content)
-        break
-      case 'nick':
-        this.client.setNickName(content)
-        break
-      case 'topic':
-        this.channel.setTopic(content)
-        break
-      case 'hop':
-        {
-          let newChannel = content.substr(content.indexOf(' ') + 1).trim()
-          let name = this.channel.name
-          this.channel.part()
-          if (newChannel.length !== 0) {
-            this.client.joinChannel(newChannel)
-          } else {
-            this.client.joinChannel(name)
-          }
-        }
-        break
-      default:
-        this.displayMessage(null, __('UNKNOWN_COMMAND'))
-        break
-    }
+    this.scrollToBottom()
   }
 
   displayKickPrompt (channelUser, shouldBan = false) {
