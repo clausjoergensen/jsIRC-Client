@@ -11,7 +11,7 @@ const IrcChannelViewController = require('./IrcChannelViewController.js')
 const IrcUserViewController = require('./IrcUserViewController.js')
 
 const packageInfo = require('./../package.json')
-const i18n = new (require('./i18n.js'))()
+const __ = require('./i18n.js')
 
 class IrcChatViewController extends EventEmitter {
   constructor (client) {
@@ -153,7 +153,7 @@ class IrcChatViewController extends EventEmitter {
   protocolError (command, errorName, errorParameters, errorMessage) {
     switch (command) {
       case 433: // ERR_NICKNAMEINUSE
-        this.serverViewController.displayError(i18n.__('ERR_NICKNAMEINUSE', errorParameters[0]))
+        this.serverViewController.displayError(__('ERR_NICKNAMEINUSE', errorParameters[0]))
         this.serverViewController.focusInput('/nick ')
         break
       case 482: // ERR_CHANOPRIVSNEEDED
@@ -165,10 +165,10 @@ class IrcChatViewController extends EventEmitter {
         }
         break
       case 473: // ERR_INVITEONLYCHAN
-        this.serverViewController.displayError(i18n.__('ERR_INVITEONLYCHAN', errorParameters[0]))
+        this.serverViewController.displayError(__('ERR_INVITEONLYCHAN', errorParameters[0]))
         break
       case 475: // ERR_BADCHANNELKEY
-        this.serverViewController.displayError(i18n.__('ERR_BADCHANNELKEY', errorParameters[0]))
+        this.serverViewController.displayError(__('ERR_BADCHANNELKEY', errorParameters[0]))
         break
       default:
         console.warn(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)

@@ -6,27 +6,23 @@ const electron = require('electron')
 const fs = require('fs')
 const util = require('util')
 
-let loadedLanguage
+let translations
 let app = electron.app ? electron.app : electron.remote.app
 
-function i18n () {
-  if (loadedLanguage) {
-    return
+module.exports = function (string, ...args) {
+  if (!translations) {
+    if (fs.existsSync(path.join(__dirname, '../locales', app.getLocale() + '.js'))) {
+      translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', app.getLocale() + '.json'), 'utf8'))
+    } else {
+      translations = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
+    }
   }
 
-  if (fs.existsSync(path.join(__dirname, '../locales', app.getLocale() + '.js'))) {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', app.getLocale() + '.json'), 'utf8'))
-  } else {
-    loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
-  }
-}
-
-i18n.prototype.__ = function (phrase, ...args) {
-  let translation = loadedLanguage[phrase]
+  let translation = translations[string]
   if (translation === undefined) {
-    translation = phrase
+    translation = string
   }
+
   return util.format(translation, ...args)
 }
 
-module.exports = i18n
