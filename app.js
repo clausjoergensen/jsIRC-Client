@@ -14,11 +14,14 @@ app.on('window-all-closed', () => {
 
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
-    icon: 'app.ico',
+    'width': 1024,
+    'height': 768,
+    'icon': 'app.ico',
     'accept-first-mouse': true,
-    'title-bar-style': 'hidden'
+    'title-bar-style': 'hidden',
+    'webPreferences': {
+      'devTools': app.isPackaged
+    }
   })
 
   mainWindow.loadURL(path.join('file://', __dirname, '/src/index.html'))
@@ -27,7 +30,7 @@ app.on('ready', () => {
     mainWindow = null
   })
 
-  const template = [
+  let template = [
     {
       label: 'File',
       submenu: [
@@ -76,6 +79,12 @@ app.on('ready', () => {
       ]
     }
   ]
+
+  if (app.isPackaged) {
+    delete template[2].submenu[6] // reload
+    delete template[2].submenu[7] // forcereload
+    delete template[2].submenu[8] // toggledevtools
+  }
 
   const mainMenu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(mainMenu)
