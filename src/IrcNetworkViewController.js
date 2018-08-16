@@ -2,7 +2,9 @@
 'use strict'
 
 const { remote } = require('electron')
-const { Menu, BrowserWindow, app } = remote
+const { Menu, BrowserWindow, app, nativeImage } = remote
+
+const path = require('path')
 
 const events = require('events')
 const { EventEmitter } = events
@@ -31,10 +33,11 @@ class IrcNetworkViewController extends EventEmitter {
         this.setWindowTitleForServer(this.networkName)
       })
 
-      client.localUser.on('message', (source, targets, noticeText) => {
+      client.localUser.on('message', (source, targets, messageText) => {
+        this.userNotification(messageText, source)
         if (this.users[source.nickName]) {
           let user = this.users[source.nickName]
-          if (this.selectedUser !== user.user) {
+          if (this.selectedUser !== user.user) {            
             this.users[source.nickName].userView.addClass('nav-unread')
           }
         } else {
@@ -43,6 +46,7 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('notice', (source, targets, noticeText) => {
+        this.userNotification(noticeText, source)
         let keys = Object.keys(this.channels)
         if (keys.length > 0) {
           keys.forEach(key => {
@@ -58,6 +62,7 @@ class IrcNetworkViewController extends EventEmitter {
 
       client.localUser.on('joinedChannel', (channel) => {
         channel.on('message', (source, messageText) => {
+          this.channelNotification(messageText, source, channel)
           this.markAsUnread(channel)
         })
 
@@ -136,6 +141,48 @@ class IrcNetworkViewController extends EventEmitter {
       return this.channels[keys[index + 1]].channel
     }
     return null
+  }
+
+  userNotification (message, sender) {
+    if (sender.isLocalUser) {
+      return
+    }
+
+    if (remote.getCurrentWindow().isFocused()) {
+      return
+    }
+
+    let notification = new Notification(sender.nickName, {
+      body: message,
+      icon: path.join(__dirname, '/images/notification-chat.png')
+    })
+
+    notification.onclick = () => {
+      remote.getCurrentWindow().show()
+      app.focus()
+      this.viewUser(user) 
+    }
+  }
+
+  channelNotification (message, sender, channel) {
+    if (sender.isLocalUser) {
+      return
+    }
+
+    if (remote.getCurrentWindow().isFocused()) {
+      return
+    }
+    
+    let notification = new Notification(channel.name, {
+      body: `${sender.nickName}: ${message}`,
+      icon: path.join(__dirname, '/images/notification-chat.png')
+    })
+    
+    notification.onclick = () => {
+      remote.getCurrentWindow().show()
+      app.focus()
+      this.viewChannel(channel) 
+    }
   }
 
   viewUser (user) {
