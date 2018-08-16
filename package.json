@@ -4,7 +4,9 @@
   "description": "IRC Client",
   "main": "app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "keywords": [
     "irc"
@@ -13,14 +15,21 @@
     "name": "Claus Jørgensen",
     "email": "claus.joergensen@outlook.com"
   },
+  "build": {
+    "win": {
+      "target": "NSIS",
+      "icon": "app.ico"
+    }
+  },
   "license": "MIT",
   "devDependencies": {
+    "electron": "^2.0.6",
+    "electron-builder": "^20.28.1",
     "electron-debug": "^2.0.0",
     "max-listeners-exceeded-warning": "0.0.1"
   },
   "dependencies": {
     "autolinker": "^1.7.1",
-    "electron": "^2.0.6",
     "jquery": "^3.3.1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",
     "pretty-ms": "^3.2.0",

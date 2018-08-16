@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# electron build output
+dist
+
 # jsdoc output
 out
 docs
