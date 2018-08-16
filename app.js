@@ -7,6 +7,11 @@ const __ = require('./src/i18n.js')
 
 let mainWindow = null
 
+// Workaround to enable HTML5 notifications for local development.
+if (!app.isPackaged) {
+  app.setAppUserModelId('com.dev.jsirc')
+}
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
