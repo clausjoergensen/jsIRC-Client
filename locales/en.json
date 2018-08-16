@@ -1,0 +1,5 @@
+{
+   "ERR_NICKNAMEINUSE": "Nickname '%s' is already in use.",
+   "ERR_INVITEONLYCHAN": "Unable to join channel %s (invite only).",
+   "ERR_BADCHANNELKEY": "Unable to join channel %s (need correct key)."
+}

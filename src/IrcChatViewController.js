@@ -66,7 +66,6 @@ class IrcChatViewController extends EventEmitter {
       })
     })
 
-    this.client.on('registered', () => { this.client.joinChannel('#testing') })
     this.client.on('protocolError', this.protocolError.bind(this))
   }
 
