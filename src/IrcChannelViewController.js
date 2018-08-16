@@ -147,7 +147,8 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayMessage (source, text, isNotice = false) {
-    let paragraph = IrcMessageFormatter.formatMessage(source, text)
+    let highlight = text.toLowerCase().includes(this.client.localUser.nickName.toLowerCase())    
+    let paragraph = IrcMessageFormatter.formatMessage(source, text, { highlight: highlight })
     this.messageView.append(paragraph)
     this.scrollToBottom()
   }

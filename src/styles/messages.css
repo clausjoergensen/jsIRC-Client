@@ -67,3 +67,7 @@ span.client-event {
 span.client-action {
     color: #009933;
 }
+
+span.highlight {
+    color: red;
+}

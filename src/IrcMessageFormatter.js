@@ -112,7 +112,8 @@ class IrcMessageFormatter {
       isError: false,
       detectLinks: true,
       stripColors: false,
-      class: ''
+      highlight: false,
+      class: '',
     }, options)
 
     let senderName = ''
@@ -192,6 +193,12 @@ class IrcMessageFormatter {
       senderClass += ' error'
       messageClass += ' error'
       timestampClass += ' error'
+    }
+
+    if (options.highlight) {
+      senderClass += ' highlight'
+      messageClass += ' highlight'
+      timestampClass += ' highlight'      
     }
 
     let formattedText =
