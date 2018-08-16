@@ -7,6 +7,7 @@ const IrcNetworkListViewController = require('./IrcNetworkListViewController.js'
 const IrcChatListViewController = require('./IrcChatListViewController.js')
 
 const isPackaged = require('electron').remote.app.isPackaged
+const __ = require('./i18n.js')
 const $ = require('jquery')
 
 class IrcViewController {
@@ -17,6 +18,8 @@ class IrcViewController {
     $('#btn-add-server').on('click', e => {
       this.displayServerConnectionManager()
     })
+
+    $('#lbl-connect-to-server').text(__('CONNECT_TO_SERVER'))
   }
 
   connectToServer (server, port, registrationInfo) {
@@ -25,7 +28,7 @@ class IrcViewController {
 
     if (!isPackaged) {
       client.on('in', (message) => { console.debug(message) })
-      client.on('out', (message) => { console.debug(message) })      
+      client.on('out', (message) => { console.debug(message) })
     }
 
     this.chatListViewController.addServer(client)
@@ -57,15 +60,15 @@ class IrcViewController {
 
   displayServerConnectionManager () {
     // "Window"
-    let inlineWindow = $('<div />', { 
-      'id': 'connect-to-server-prompt', 
-      'class': 'prompt-window' 
+    let inlineWindow = $('<div />', {
+      'id': 'connect-to-server-prompt',
+      'class': 'prompt-window'
     }).appendTo('body')
 
     // Title
     $('<div />', {
       'class': 'prompt-title',
-      'text': 'Connect to new server'
+      'text': __('CONNECT_TO_SERVER')
     }).append(
       $('<span />', {
         'class': 'close',
@@ -74,12 +77,12 @@ class IrcViewController {
     ).appendTo(inlineWindow)
 
     // Container
-    let innerView = $('<div />', { 
-      'style': 'padding: 10px' 
+    let innerView = $('<div />', {
+      'style': 'padding: 10px'
     }).appendTo(inlineWindow)
 
     // Input Fields
-    $('<div />', { 'text': 'Address' }).appendTo(innerView)
+    $('<div />', { 'text': __('CONNECT_ADDRESS') }).appendTo(innerView)
 
     let submit = () => {
       this.connectToServer(server.val(), parseInt(port.val()), {
@@ -97,7 +100,7 @@ class IrcViewController {
       'onEnter': submit
     }).appendTo(innerView)
 
-    $('<div />', { 'text': 'Port' }).appendTo(innerView)
+    $('<div />', { 'text': __('CONNECT_PORT') }).appendTo(innerView)
 
     let port = $('<input />', {
       'type': 'text',
@@ -107,7 +110,7 @@ class IrcViewController {
 
     port.val('6667')
 
-    $('<div />', { 'text': 'Nickname' }).appendTo(innerView)
+    $('<div />', { 'text': __('CONNECT_NICKNAME') }).appendTo(innerView)
 
     let nickName = $('<input />', {
       'type': 'text',
@@ -115,7 +118,7 @@ class IrcViewController {
       'onEnter': submit
     }).appendTo(innerView)
 
-    $('<div />', { 'text': 'Name' }).appendTo(innerView)
+    $('<div />', { 'text': __('CONNECT_NAME') }).appendTo(innerView)
 
     let realName = $('<input />', {
       'type': 'text',
@@ -123,7 +126,7 @@ class IrcViewController {
       'onEnter': submit
     }).appendTo(innerView)
 
-    $('<div />', { 'text': 'Email' }).appendTo(innerView)
+    $('<div />', { 'text': __('CONNECT_EMAIL') }).appendTo(innerView)
 
     let email = $('<input />', {
       'type': 'text',
@@ -132,7 +135,7 @@ class IrcViewController {
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'Connect',
+      'text': __('BUTTON_CONNECT'),
       'type': 'submit',
       'click': submit
     }).appendTo(innerView)

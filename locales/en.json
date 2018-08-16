@@ -78,5 +78,12 @@
    "CHANNEL_MODE_INVITE_ONLY": "Invite Only",
    "CHANNEL_MODE_PRIVATE": "Private",
    "CHANNEL_MODE_KEY": "Key:",
-   "CHANNEL_MODE_MAX_USERS": "Max Users:"
+   "CHANNEL_MODE_MAX_USERS": "Max Users:",
+   "CONNECT_TO_SERVER": "Connect to Server",
+   "CONNECT_ADDRESS": "Address",
+   "CONNECT_PORT": "Port",
+   "CONNECT_NICKNAME": "Nickname",
+   "CONNECT_NAME": "Name",
+   "CONNECT_EMAIL": "Email",
+   "BUTTON_CONNECT": "Connect"
 }
