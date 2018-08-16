@@ -160,7 +160,7 @@ class IrcNetworkViewController extends EventEmitter {
     notification.onclick = () => {
       remote.getCurrentWindow().show()
       app.focus()
-      this.viewUser(user) 
+      this.viewUser(sender) 
     }
   }
 
