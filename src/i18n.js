@@ -46,8 +46,13 @@ module.exports = function (string, ...args) {
     english = JSON.parse(fs.readFileSync(path.join(__dirname, '../locales', 'en.json'), 'utf8'))
   }
 
-  let translation = translations[string]
-  if (translation === undefined) {
+  let translation = string
+  if (translations) {
+    translation = translations[string]
+    if (translation === undefined) {
+      translation = english[string] || string
+    }
+  } else {
     translation = english[string] || string
   }
 
