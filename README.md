@@ -31,7 +31,6 @@ The project uses a range of Open Source components.
 * [photon](https://github.com/connors/photon)
 * [inputhistory](https://github.com/erming/inputhistory)
 * [autolinker](https://github.com/gregjacobs)
-* [electron-log](https://github.com/megahertz/electron-log)
 * [jquery](https://github.com/jquery/jquery)
 * [pretty-ms](https://github.com/sindresorhus/pretty-ms)
 * [strftime](https://github.com/thdoan/strftime)

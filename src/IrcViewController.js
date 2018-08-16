@@ -6,7 +6,6 @@ const { IrcClient, IrcFloodPreventer } = require('jsIRC')
 const IrcNetworkListViewController = require('./IrcNetworkListViewController.js')
 const IrcChatListViewController = require('./IrcChatListViewController.js')
 
-const log = require('electron-log')
 const $ = require('jquery')
 
 class IrcViewController {
@@ -23,8 +22,8 @@ class IrcViewController {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
 
-    client.on('in', (message) => { log.verbose(message) })
-    client.on('out', (message) => { log.verbose(message) })
+    client.on('in', (message) => { console.debug(message) })
+    client.on('out', (message) => { console.debug(message) })
 
     this.chatListViewController.addServer(client)
     this.chatListViewController.on('chatWithUser', (client, user) => {

@@ -63,7 +63,7 @@ class IrcNetworkListViewController extends EventEmitter {
 
   addUser (client, user) {
     if (!this.connections[client.id]) {
-      log.error('Attempted to start a chat with a user without being connected to a server.')
+      console.error('Attempted to start a chat with a user without being connected to a server.')
       return
     }
 

@@ -3,17 +3,6 @@
 
 const { app, shell, BrowserWindow, Menu } = require('electron')
 const path = require('path')
-const log = require('electron-log')
-
-if (app.isPackaged) {
-  log.transports.file.level = 'verbose'
-  log.transports.console.level = false
-  log.transports.rendererConsole.level = false
-} else {
-  log.transports.file.level = false
-  log.transports.console.level = false
-  log.transports.rendererConsole.level = 'debug'
-}
 
 let mainWindow = null
 
