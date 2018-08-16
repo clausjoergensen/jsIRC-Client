@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
-const { app, shell, BrowserWindow, Menu } = require('electron')
+const { app, shell, BrowserWindow, Menu, ipcMain } = require('electron')
 const path = require('path')
 const __ = require('./src/i18n.js')
 
@@ -27,7 +27,16 @@ app.on('ready', () => {
 
   mainWindow.loadURL(path.join('file://', __dirname, '/src/index.html'))
 
-  mainWindow.on('closed', () => {
+  ipcMain.on('quit', (e, arg) => {  
+    mainWindow.close()
+  });
+
+  mainWindow.once('close', (e) => {
+    e.preventDefault()
+    mainWindow.webContents.send('close', e)
+  })
+
+  mainWindow.on('closed', (e) => {
     mainWindow = null
   })
 

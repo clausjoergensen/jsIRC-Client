@@ -1,6 +1,10 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
+const electron = require('electron')
+const { remote } = require('electron')
+const { app, BrowserWindow } = remote
+
 const { IrcClient, IrcFloodPreventer } = require('jsIRC')
 
 const IrcNetworkListViewController = require('./IrcNetworkListViewController.js')
@@ -25,6 +29,11 @@ class IrcViewController {
   connectToServer (server, port, registrationInfo) {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
+
+    electron.ipcRenderer.on('close', function(e, data) {      
+      client.quit()
+      setTimeout(() => electron.ipcRenderer.sendSync('quit', true), 100)
+    })
 
     if (!isPackaged) {
       client.on('in', (message) => { console.debug(message) })
