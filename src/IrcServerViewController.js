@@ -12,6 +12,7 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const strftime = require('strftime')
 const prettyMs = require('pretty-ms')
 const inputhistory = require('./inputhistory.js')
+const __ = require('./i18n.js')
 const $ = require('jquery')
 
 class IrcServerViewController extends EventEmitter {
@@ -22,12 +23,12 @@ class IrcServerViewController extends EventEmitter {
     this.ctcpClient = ctcpClient
 
     this.client.on('connecting', (hostName, port) => {
-      this.displayText(`* Connecting to ${hostName} (${port})`, 'client-event')
+      this.displayText(__('CONNECTING_TO', hostName, port), 'client-event')
       this.displaySeperator()
     })
 
     this.client.on('disconnected', (reason) => {
-      this.displayText(`* Disconnected (${reason})`, 'client-event')
+      this.displayText(__('DISCONNECTED', reason), 'client-event')
       this.displaySeperator()
     })
 
@@ -45,7 +46,7 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('hostHidden', (hostName) => {
-      this.displayText(`${hostName} is now your displayed host.`)
+      this.displayText(__('DISPLAY_HOST', hostName))
       this.displaySeperator()
     })
 
@@ -57,27 +58,27 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('whoIsReply', (user) => {
-      this.displayText(`${user.nickName} is ${user.userName}@${user.hostName} * ${user.realName}`)
+      this.displayText(__('WHOIS_REPLY_1', user.nickName, user.userName, user.hostName, user.realName))
 
       let channels = user.getChannelUsers().map(cu => cu.channel.name).join(' ')
-      this.displayText(`${user.nickName} is on ${channels}`)
+      this.displayText(__('WHOIS_REPLY_2', user.nickName, channels))
 
       if (user.isAway) {
-        this.displayText(`${user.nickName} is away: ${user.awayMessage}`)
+        this.displayText(__('WHOIS_REPLY_3', user.nickName, user.awayMessage))
       }
 
-      this.displayText(`${user.nickName} is using ${user.serverName} ${user.serverInfo}`)
+      this.displayText(__('WHOIS_REPLY_4', user.nickName, user.serverName, user.serverInfo))
 
       if (user.idleDuration > 0) {
-        this.displayText(`${user.nickName} is has been idle ${prettyMs(user.idleDuration * 1000, { verbose: true })}`)
+        this.displayText(__('WHOIS_REPLY_5', user.nickName, prettyMs(user.idleDuration * 1000, { verbose: true })))
       }
 
-      this.displayText(`${user.nickName} End of /WHOIS list.`)
+      this.displayText(__('WHOIS_REPLY_6', user.nickName))
       this.displaySeperator()
     })
 
     this.client.on('motd', messageOfTheDay => {
-      this.displayText(` - ${this.client.serverName} Message of the Day - `)
+      this.displayText(__('MOTD_TITLE', this.client.serverName))
       messageOfTheDay
         .split('\r\n')
         .forEach(line => this.displayText(line))
@@ -86,11 +87,11 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('connectionError', error => {
       if (error.code === 'ECONNREFUSED') {
-        this.displayError(`* Couldn't connect to server (Connection refused)`, 'client-event')
+        this.displayError(__('ECONNREFUSED'), 'client-event')
       } else if (error.code === 'ECONNRESET') {
-        this.displayText(`* Disconnected (Connection Reset)`, 'client-event')
+        this.displayText(__('ECONNRESET'), 'client-event')
       } else if (error.code === 'ENOTFOUND') {
-        this.displayError(`* Unable to resolve server`, 'client-event')
+        this.displayError(__('ENOTFOUND'), 'client-event')
       } else {
         console.error(error)
       }
@@ -104,9 +105,10 @@ class IrcServerViewController extends EventEmitter {
           networkInfo.serverClientsCount !== undefined &&
           networkInfo.serverServersCount !== undefined) {
         // First display when all information been recieved.
-        this.displayText(`There are ${networkInfo.visibleUsersCount} users and ${networkInfo.invisibleUsersCount} invisible on ${networkInfo.serversCount} servers`)
-        this.displayText(`${networkInfo.channelsCount} channels formed`)
-        this.displayText(`I have ${networkInfo.serverClientsCount} clients and ${networkInfo.serverServersCount} servers`)
+        this.displayText(__('NETWORK_INFO_1', 
+          networkInfo.visibleUsersCount, networkInfo.invisibleUsersCount, networkInfo.serversCount))
+        this.displayText(__('NETWORK_INFO_2', networkInfo.channelsCount))
+        this.displayText(__('NETWORK_INFO_3', networkInfo.serverClientsCount, networkInfo.serverServersCount))
         this.displaySeperator()
       }
     })
@@ -117,28 +119,28 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.ctcpClient.on('ping', (source, pingTime) => {
-      this.displayAction(`[${source.nickName} PING reply]: ${pingTime} seconds.`)
+      this.displayAction(__('PING_REPLY', source.nickName, pingTime))
     })
 
     this.ctcpClient.on('time', (source, dateTime) => {
-      this.displayAction(`[${source.nickName} TIME reply]: ${dateTime}.`)
+      this.displayAction(__('TIME_REPLY', source.nickName, dateTime))
     })
 
     this.ctcpClient.on('version', (source, versionInfo) => {
-      this.displayAction(`[${source.nickName} VERSION reply]: ${versionInfo}.`)
+      this.displayAction(__('VERSION_REPLY', source.nickName, versionInfo))
     })
 
     this.ctcpClient.on('finger', (source, info) => {
-      this.displayAction(`[${source.nickName} FINGER reply]: ${info}.`)
+      this.displayAction(__('FINGER_REPLY', source.nickName, info))
     })
 
     this.ctcpClient.on('clientInfo', (source, info) => {
-      this.displayAction(`[${source.nickName} CLIENTINFO reply]: ${info}.`)
+      this.displayAction(__('CLIENTINFO_REPLY', source.nickName, info))
     })
 
     this.ctcpClient.on('rawMessageSent', (message) => {
       if (message.tag != 'ACTION') {
-        this.displayAction(`[${message.targets[0]} ${message.tag}]`)
+        this.displayAction(__('CTCP_SENT_MSG_FORMAT', message.targets[0], message.tag))
       }
     })
 
@@ -233,7 +235,7 @@ class IrcServerViewController extends EventEmitter {
     if (text[0] === '/') {
       this.sendAction(text.trim())
     } else {
-      this.displayMessage(null, '* You are not on a channel')
+      this.displayMessage(null, __('NOT_ON_A_CHANNEL'))
     }
   }
 
@@ -262,7 +264,7 @@ class IrcServerViewController extends EventEmitter {
         this.client.setNickName(content)
         break
       default:
-        this.displayMessage(null, '* Unknown Command')
+        this.displayMessage(null, __('UNKNOWN_COMMAND'))
         break
     }
   }
@@ -270,26 +272,26 @@ class IrcServerViewController extends EventEmitter {
   createServerView () {
     const serverMenu = Menu.buildFromTemplate([
       {
-        label: 'Network Info',
+        label: __('SERVER_MENU_NETWORK_INFO'),
         click: () => {
           this.client.getNetworkInfo()
         }
       },
       {
-        label: 'Time',
+        label: __('SERVER_MENU_TIME'),
         click: () => {
           this.client.getServerTime()
         }
       },
       {
-        label: 'Message of the Day',
+        label: __('SERVER_MENU_MOTD'),
         click: () => {
           this.client.getMessageOfTheDay()
         }
       },
       { type: 'separator' },
       {
-        label: `Quit jsIRC`,
+        label: __('SERVER_MENU_QUIT'),
         click: () => {
           app.quit()
         }
@@ -315,7 +317,7 @@ class IrcServerViewController extends EventEmitter {
     let input = $('<input />', {
       'type': 'text',
       'class': 'chat-input',
-      'placeholder': 'Send Message …',
+      'placeholder': __('PLACEHOLDER_SEND_MESSAGE'),
       'autofocus': true
     }).appendTo(this.serverToolbar)
 

@@ -13,6 +13,8 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
+
+const __ = require('./i18n.js')
 const $ = require('jquery')
 
 $.fn.onEnter = function (func) {
@@ -77,7 +79,8 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channel.on('modes', (source, newModes, newModeParameters) => {
       if (source instanceof IrcUser) {
-        this.displayAction(source, `sets mode '${newModes.join('')} ${newModeParameters ? newModeParameters.join('') : ''}'`)
+        this.displayAction(source, __('USER_SET_CHANNEL_MODE', 
+          newModes.join(''), newModeParameters ? newModeParameters.join('') : ''))
       }
     })
 
@@ -145,7 +148,7 @@ class IrcChannelViewController extends EventEmitter {
 
   displayTopic (source = null, newTopic = null) {
     if (!newTopic) {
-      this.titleView.html('(No Channel Topic)')
+      this.titleView.html(__('NO_CHANNEL_TOPIC'))
     } else {
       let html = IrcMessageFormatter.colorifyMessage(newTopic)
       html = Autolinker.link(html, {
@@ -165,7 +168,7 @@ class IrcChannelViewController extends EventEmitter {
     }
 
     if (source) {
-      this.displayAction(source, `changed topic to '${newTopic}'`)
+      this.displayAction(source, __('USER_CHANGED_TOPIC', newTopic))
     }
   }
 
@@ -221,72 +224,72 @@ class IrcChannelViewController extends EventEmitter {
 
       const userMenu = Menu.buildFromTemplate([
         {
-          label: 'Info',
+          label: __('USER_MENU_INFO'),
           click: () => {
             this.ctcpClient.finger([user.nickName])
           }
         },
         {
-          label: 'Whois',
+          label: __('USER_MENU_WHOIS'),
           click: () => {
             this.client.queryWhoIs([user.nickName])
           }
         },
         { type: 'separator' },
         {
-          label: 'Control',
+          label: __('USER_MENU_CONTROL'),
           submenu: [
             {
-              label: 'Op',
+              label: __('USER_MENU_CONTROL_OP'),
               click: () => {
                 channelUser.op()
               }
             },
             {
-              label: 'Deop',
+              label: __('USER_MENU_CONTROL_DEOP'),
               click: () => {
                 channelUser.deop()
               }
             },
             {
-              label: 'Voice',
+              label: __('USER_MENU_CONTROL_VOICE'),
               click: () => {
                 channelUser.voice()
               }
             },
             {
-              label: 'Devoice',
+              label: __('USER_MENU_CONTROL_DEVOICE'),
               click: () => {
                 channelUser.devoice()
               }
             },
             {
-              label: 'Kick',
+              label: __('USER_MENU_CONTROL_KICK'),
               click: () => {
                 channelUser.kick()
               }
             },
             {
-              label: 'Kick (Why)',
+              label: __('USER_MENU_CONTROL_KICKWHY'),
               click: () => {
                 this.displayKickPrompt(channelUser)
               }
             },
             {
-              label: 'Ban',
+              label: __('USER_MENU_CONTROL_BAN'),
               click: () => {
                 channelUser.ban()
               }
             },
             {
-              label: 'Ban, Kick',
+              label: __('USER_MENU_CONTROL_KICKBAN'),
               click: () => {
                 channelUser.ban()
                 channelUser.kick()
               }
             },
             {
-              label: 'Ban, Kick (Why)',
+              label: __('USER_MENU_CONTROL_KICKBANWHY'),
               click: () => {
                 this.displayKickPrompt(channelUser, true)
               }
@@ -294,21 +297,21 @@ class IrcChannelViewController extends EventEmitter {
           ]
         },
         {
-          label: 'CTCP',
+          label: __('USER_MENU_CTCP'),
           submenu: [
             {
-              label: 'Ping',
+              label: __('USER_MENU_CTCP_PING'),
               click: () => {
                 this.ctcpClient.ping([user.nickName])
               }
             },
             {
-              label: 'Time',
+              label: __('USER_MENU_CTCP_TIME'),
               click: () => {
                 this.ctcpClient.time([user.nickName])
               }
             }, {
-              label: 'Version',
+              label: __('USER_MENU_CTCP_VERSION'),
               click: () => {
                 this.ctcpClient.version([user.nickName])
               }
@@ -317,9 +320,9 @@ class IrcChannelViewController extends EventEmitter {
         },
         { type: 'separator' },
         {
-          label: 'Slap',
+          label: __('USER_MENU_SLAP'),
           click: () => {
-            let slapMessage = `slaps ${user.nickName} around a bit with a large trout`
+            let slapMessage = __('ACTION_SLAP', user.nickName)
             this.ctcpClient.action([this.channel.name], slapMessage)
             this.displayAction(this.client.localUser, slapMessage)
           }
@@ -330,7 +333,7 @@ class IrcChannelViewController extends EventEmitter {
         'class': 'user',
         'dblclick': (e) => {
           if (!user.isLocalUser) {
-            this.emit('chatWithUser', user)
+            this.emit('viewUser', user)
           }
         },
         'contextmenu': (e) => {
@@ -406,7 +409,7 @@ class IrcChannelViewController extends EventEmitter {
     // Channel Mode
     let template = document.querySelector('#template-channel-modes-table')
     $('<div />', { 'id': 'modes-box' })
-      .append($('<div />', { 'text': 'Channel Mode' }))
+      .append($('<div />', { 'text': __('CHANNEL_MODE_LABEL') }))
       .append(document.importNode(template.content, true))
       .appendTo(innerView)
 
@@ -421,7 +424,7 @@ class IrcChannelViewController extends EventEmitter {
     })
 
     // Ban List
-    $('<div />', { 'text': 'Ban List' }).appendTo(innerView)
+    $('<div />', { 'text': __('BAN_LIST_LABEL') }).appendTo(innerView)
 
     let banList = $('<ul />', { 'id': 'ban-list' }).appendTo(innerView)
 
@@ -653,7 +656,7 @@ class IrcChannelViewController extends EventEmitter {
     let input = $('<input />', {
       'type': 'text',
       'class': 'chat-input',
-      'placeholder': 'Send Message …',
+      'placeholder': __('PLACEHOLDER_SEND_MESSAGE'),
       'autofocus': true
     }).appendTo(this.channelToolbar)
 
@@ -730,7 +733,7 @@ class IrcChannelViewController extends EventEmitter {
         }
         break
       default:
-        this.displayMessage(null, '* Unknown Command')
+        this.displayMessage(null, __('UNKNOWN_COMMAND'))
         break
     }
   }
@@ -742,7 +745,7 @@ class IrcChannelViewController extends EventEmitter {
     // Title
     $('<div />', {
       'class': 'prompt-title',
-      'text': `Kick ${shouldBan ? '& Ban ' : ''}${channelUser.user.name}`
+      'text': __(shouldBan ? 'KICKBAN_TITLE' : 'KICK_TITLE', channelUser.user.name)
     }).append(
       $('<span />', {
         'class': 'close',
@@ -770,7 +773,7 @@ class IrcChannelViewController extends EventEmitter {
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'Kick',
+      'text': __('BUTTON_KICK'),
       'type': 'submit',
       'click': (e) => {
         if (shouldBan) {
@@ -782,7 +785,7 @@ class IrcChannelViewController extends EventEmitter {
     }).appendTo(innerView)
 
     $('<button />', {
-      'text': 'Cancel',
+      'text': __('BUTTON_CANCEL'),
       'click': (e) => {
         inlineWindow.remove()
       }

@@ -35,12 +35,12 @@ class IrcChatViewController extends EventEmitter {
       this.client.localUser.on('joinedChannel', (channel) => {
         let channelViewController = new IrcChannelViewController(this.client, this.ctcpClient, channel)
 
-        channelViewController.on('chatWithUser', (user) => {
+        channelViewController.on('viewUser', (user) => {
           let userViewController = new IrcUserViewController(this.client, this.ctcpClient, user)
           this.users[user.nickName] = userViewController
           this.viewUser(user)
 
-          this.emit('chatWithUser', this.client, user)
+          this.emit('viewUser', this.client, user)
         })
 
         this.channels[channel.name] = channelViewController
@@ -169,6 +169,8 @@ class IrcChatViewController extends EventEmitter {
         break
       case 475: // ERR_BADCHANNELKEY
         this.serverViewController.displayError(__('ERR_BADCHANNELKEY', errorParameters[0]))
+      case 471: // ERR_CHANNELISFULL
+      this.serverViewController.displayError(__('ERR_CHANNELISFULL', errorParameters[0]))
         break
       default:
         console.warn(`Unsupported protocol error ${errorName}(${command}).`, errorParameters, errorMessage)

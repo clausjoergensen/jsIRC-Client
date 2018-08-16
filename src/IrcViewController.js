@@ -29,7 +29,7 @@ class IrcViewController {
     }
 
     this.chatListViewController.addServer(client)
-    this.chatListViewController.on('chatWithUser', (client, user) => {
+    this.chatListViewController.on('viewUser', (client, user) => {
       this.networkListViewController.addUser(client, user)
     })
 

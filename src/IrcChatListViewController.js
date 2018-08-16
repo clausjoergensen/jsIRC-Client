@@ -24,8 +24,8 @@ class IrcChatListViewController extends EventEmitter {
 
   addServer (client) {
     let chatViewController = new IrcChatViewController(client)
-    chatViewController.on('chatWithUser', (client, user) => {
-      this.emit('chatWithUser', client, user)
+    chatViewController.on('viewUser', (client, user) => {
+      this.emit('viewUser', client, user)
     })
     this.connections[client.id] = chatViewController
   }

@@ -9,6 +9,7 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
+const __ = require('./i18n.js')
 const $ = require('jquery')
 
 $.fn.onEnter = function (func) {
@@ -135,7 +136,7 @@ class IrcUserViewController extends EventEmitter {
     let input = $('<input />', {
       'type': 'text',
       'class': 'chat-input',
-      'placeholder': 'Send Message …',
+      'placeholder': __('PLACEHOLDER_SEND_MESSAGE'),
       'autofocus': true
     }).appendTo(this.userToolbar)
 

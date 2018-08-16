@@ -7,6 +7,7 @@ const { Menu, BrowserWindow, app } = remote
 const events = require('events')
 const { EventEmitter } = events
 
+const __ = require('./i18n.js')
 const $ = require('jquery')
 
 class IrcNetworkViewController extends EventEmitter {
@@ -311,8 +312,8 @@ class IrcNetworkViewController extends EventEmitter {
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
       let nickName = this.client.localUser ? this.client.localUser.nickName : this.client.registrationInfo.nickName
-      browserWindow.setTitle(
-        `${app.getName()} - [Status: ${nickName} ${userModes} on ${serverName} (${this.client.hostName}:${this.client.port})]`)
+      browserWindow.setTitle(__('WINDOW_TITLE_SERVER', 
+        nickName, userModes, serverName, this.client.hostName, this.client.port))
     }
   }
 
@@ -324,7 +325,8 @@ class IrcNetworkViewController extends EventEmitter {
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(`${app.getName()} - [${channel.name} (${serverName}, ${this.client.localUser.nickName})${topic}]`)
+      browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL', 
+        channel.name, serverName, this.client.localUser.nickName, topic))
     }
   }
 
@@ -334,7 +336,8 @@ class IrcNetworkViewController extends EventEmitter {
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(`${app.getName()} - [${user.nickName} (${serverName}, ${this.client.localUser.nickName})]`)
+      browserWindow.setTitle(__('WINDOW_TITLE_USER', 
+        user.nickName, serverName, this.client.localUser.nickName))
     }
   }
 
