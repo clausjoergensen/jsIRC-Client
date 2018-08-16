@@ -57,7 +57,10 @@ class IrcViewController {
 
   displayServerConnectionManager () {
     // "Window"
-    let inlineWindow = $('<div />', { 'id': 'connect-to-server-prompt', 'class': 'prompt-window' }).appendTo('body')
+    let inlineWindow = $('<div />', { 
+      'id': 'connect-to-server-prompt', 
+      'class': 'prompt-window' 
+    }).appendTo('body')
 
     // Title
     $('<div />', {
@@ -71,7 +74,9 @@ class IrcViewController {
     ).appendTo(inlineWindow)
 
     // Container
-    let innerView = $('<div />', { 'style': 'padding: 10px' }).appendTo(inlineWindow)
+    let innerView = $('<div />', { 
+      'style': 'padding: 10px' 
+    }).appendTo(inlineWindow)
 
     // Input Fields
     $('<div />', { 'text': 'Address' }).appendTo(innerView)
