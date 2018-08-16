@@ -13,6 +13,7 @@ const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const Autolinker = require('autolinker')
 const inputhistory = require('./inputhistory.js')
+const tabComplete = require('./tabcomplete.js')
 
 const __ = require('./i18n.js')
 const $ = require('jquery')
@@ -49,6 +50,8 @@ class IrcChannelViewController extends EventEmitter {
     })
 
     this.channel.once('userList', () => {
+      this.chatInput.tabComplete(this.channel.users.map(x => x.user.nickName))
+
       this.channel.users.forEach(channelUser => {
         channelUser.user.on('nickName', () => {
           this.displayUsers()
@@ -749,6 +752,8 @@ class IrcChannelViewController extends EventEmitter {
       }
     })
 
+    this.chatInput = input
+
     inputhistory(input)
   }
 
@@ -836,5 +841,7 @@ class IrcChannelViewController extends EventEmitter {
     message.focus()
   }
 }
+
+
 
 module.exports = IrcChannelViewController

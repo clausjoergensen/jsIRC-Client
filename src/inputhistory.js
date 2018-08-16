@@ -1,7 +1,8 @@
 /**
- * Modified version of https://github.com/erming/inputhistory for Node.js
+ * https://github.com/erming/inputhistory
  *
- * @license MIT
+ * Copyright (c) 2014 Mattias Erming <mattias@mattiaserming.com>
+ * Licensed under the MIT License.
  */
 module.exports = function (input) {
   let options = {
