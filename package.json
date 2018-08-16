@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "autolinker": "^1.7.1",
+    "i18n": "^0.8.3",
     "jquery": "^3.3.1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",
     "pretty-ms": "^3.2.0",
