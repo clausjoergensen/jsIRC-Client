@@ -153,6 +153,16 @@ class IrcCommandHandler {
           this.client.sendRawMessage(content)
         }
         break
+      case 'server': 
+        {
+          if (!content || this.channel) {
+            return
+          }
+          let [hostName, port] = content.split(':')          
+          this.client.disconnect()
+          this.client.connect(hostName, parseInt(port) || 6667, this.client.registrationInfo)
+        }
+        break
       default:
         if (displayMessage) {
           displayMessage(null, __('UNKNOWN_COMMAND'))

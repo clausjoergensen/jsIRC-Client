@@ -364,4 +364,79 @@ describe('IrcCommandHandler Tests', function () {
     commandHandler.handle('/raw ')
     commandHandler.handle('/raw JOIN :#foobar')
   })
+
+  it('/server <host>', function (done) {
+    fakeIrcClient.quit = () => {}
+    fakeIrcClient.registrationInfo = {}
+    fakeIrcClient.connect = (hostName, port, registrationInfo) => {
+      if (hostName === 'irc.quakenet.org' && port === 6667) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/server')
+    commandHandler.handle('/server ')
+    commandHandler.handle('/server irc.quakenet.org')
+  })
+
+  it('/server <host:port>', function (done) {
+    fakeIrcClient.quit = () => {}
+    fakeIrcClient.registrationInfo = {}
+    fakeIrcClient.connect = (hostName, port, registrationInfo) => {
+      if (hostName === 'irc.quakenet.org' && port === 6668) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/server irc.quakenet.org:6668')
+  })
+
+  it('/server <ipAddress:port>', function (done) {
+    fakeIrcClient.quit = () => {}
+    fakeIrcClient.registrationInfo = {}
+    fakeIrcClient.connect = (hostName, port, registrationInfo) => {
+      if (hostName === '127.0.0.1' && port === 6667) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/server 127.0.0.1:6667')
+  })
+
+  it('/server <ipAddress:port>', function (done) {
+    fakeIrcClient.quit = () => {}
+    fakeIrcClient.registrationInfo = {}
+    fakeIrcClient.connect = (hostName, port, registrationInfo) => {
+      if (hostName === '127.0.0.1' && port === 6668) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/server 127.0.0.1:6668')
+  })
+
+  it('/server <host> in channel', function (done) {
+    fakeIrcClient.quit = () => {}
+    fakeIrcClient.registrationInfo = {}
+    fakeIrcClient.connect = (hostName, port, registrationInfo) => {
+      assert.ok(false)
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient, {}})
+    commandHandler.handle('/server')
+    commandHandler.handle('/server ')
+    commandHandler.handle('/server irc.quakenet.org')
+  })
 })
