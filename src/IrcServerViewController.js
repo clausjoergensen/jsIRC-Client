@@ -115,21 +115,23 @@ class IrcServerViewController extends EventEmitter {
         console.error(error)
       }
     })
-
+    
     this.client.on('networkInfo', networkInfo => {
-      if (networkInfo.visibleUsersCount !== undefined &&
-          networkInfo.invisibleUsersCount !== undefined &&
-          networkInfo.serversCount !== undefined &&
-          networkInfo.channelsCount !== undefined &&
-          networkInfo.serverClientsCount !== undefined &&
-          networkInfo.serverServersCount !== undefined) {
-        // First display when all information been recieved.
-        this.displayText(__('NETWORK_INFO_1',
-          networkInfo.visibleUsersCount, networkInfo.invisibleUsersCount, networkInfo.serversCount))
-        this.displayText(__('NETWORK_INFO_2', networkInfo.channelsCount))
-        this.displayText(__('NETWORK_INFO_3', networkInfo.serverClientsCount, networkInfo.serverServersCount))
-        this.displaySeperator()
-      }
+      // First display when all information been recieved.
+      this.displayText(__('NETWORK_INFO_1',
+        networkInfo.visibleUsersCount, networkInfo.invisibleUsersCount, networkInfo.serversCount))
+      this.displayText(__('NETWORK_INFO_2', networkInfo.channelsCount))
+      this.displayText(__('NETWORK_INFO_3', networkInfo.serverClientsCount, networkInfo.serverServersCount))
+      this.displaySeperator()
+    })
+
+    this.client.on('localUsers', (current, max) => {
+      this.displayText(__('RPL_LOCALUSERS', current, max))
+    })
+
+    this.client.on('globalUsers', (current, max) => {
+      this.displayText(__('RPL_GLOBALUSERS', current, max))
+      this.displaySeperator()
     })
 
     this.client.on('serverTime', (server, dateTime) => {

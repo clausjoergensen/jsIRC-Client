@@ -64,7 +64,7 @@
    "WHOIS_REPLY_5": "%s is has been idle %s",
    "WHOIS_REPLY_6": "%s End of /WHOIS list.",
    "MOTD_TITLE": " - %s Message of the Day - ",
-   
+
    "ECONNREFUSED": "* Couldn't connect to server (Connection refused)",
    "ECONNRESET": "* Disconnected (Connection Reset)",
    "ENOTFOUND": "* Unable to resolve server",
@@ -73,6 +73,9 @@
    "NETWORK_INFO_2": "%d channels formed",
    "NETWORK_INFO_3": "I have %d clients and %d servers",
    
+   "RPL_LOCALUSERS": "Current local users %d, max %d",
+   "RPL_GLOBALUSERS": "Current global users %d, max %d",
+
    "PING_REPLY": "[%s PING reply]: %d seconds.",
    "TIME_REPLY": "[%s TIME reply]: %s.",
    "VERSION_REPLY": "[%s VERSION reply]: %s.",
