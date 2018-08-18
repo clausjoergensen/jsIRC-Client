@@ -153,5 +153,9 @@
    "USER_LEFT_CHANNEL": " has left %s",
    "USER_KICKED": " was kicked by %s %s",
    "USER_QUIT": " Quit %s",
-   "YOU_KICKED": "You were kicked from %s by %s %s"
+   "YOU_KICKED": "You were kicked from %s by %s %s",
+
+   "LIST_TH_CHANNEL": "Channel",
+   "LIST_TH_USERS": "Users",
+   "LIST_TH_TOPIC": "Topic"
 }

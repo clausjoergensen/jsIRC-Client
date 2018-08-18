@@ -534,7 +534,7 @@ describe('IrcCommandHandler Tests', function () {
       if (message === expectedHTML) {
         done()
       } else {
-        assert.ok(false, message)
+        assert.ok(false)
       }
     }
 

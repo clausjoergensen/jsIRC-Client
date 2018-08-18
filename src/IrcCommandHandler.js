@@ -195,10 +195,10 @@ class IrcCommandHandler extends EventEmitter {
           let [, minParam, maxParam] = content.split('-')
 
           let min, max
-          if (minParam) {
+          if (minParam && minParam.toLowerCase().startsWith('min')) {
             min = parseInt(minParam.split(' ')[1])
           }
-          if (maxParam) {
+          if (maxParam && maxParam.toLowerCase().startsWith('max')) {
             max = parseInt(maxParam.split(' ')[1])
           }
 
@@ -217,7 +217,11 @@ class IrcCommandHandler extends EventEmitter {
             })
 
             let table = '<table class="table-striped cmd-list-table">' +
-              '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+              '<thead>' +
+              `<tr><th>${__('LIST_TH_CHANNEL')}</th>` +
+              `<th>${__('LIST_TH_USERS')}</th>` + 
+              `<th>${__('LIST_TH_TOPIC')}</th></tr>` +
+              '</thead>' +
               `<tbody>${rows.join('')}</tbody>` +
               '</table>'
 
