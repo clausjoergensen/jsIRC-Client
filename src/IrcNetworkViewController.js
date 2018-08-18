@@ -92,10 +92,10 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('partedChannel', (channel) => {
-        let channelView = this.channels[channel.name].channelView
+        let channelView = this.channels[channel.name.toLowerCase()].channelView
         channelView.remove()
 
-        delete this.channels[channel.name]
+        delete this.channels[channel.name.toLowerCase()]
 
         if (Object.keys(this.channels).length === 0) {
           this.viewServer()
@@ -237,10 +237,11 @@ class IrcNetworkViewController extends EventEmitter {
     $('.channel').removeClass('channel-selected')
     $('.user').removeClass('user-selected')
 
-    this.channels[channel.name].channelView.removeClass('nav-unread')
-    this.channels[channel.name].channelView.addClass('channel-selected')
+    let channelView = this.channels[channel.name.toLowerCase()].channelView
+    channelView.removeClass('nav-unread')
+    channelView.addClass('channel-selected')
 
-    this.selectedView = this.channels[channel.name].channelView
+    this.selectedView = channelView
     this.setWindowTitleForChannel(channel)
 
     this.emit('viewChannel', this.client, channel)
@@ -301,7 +302,7 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   addChannelToList (channel) {
-    if (this.channels[channel.name]) {
+    if (this.channels[channel.name.toLowerCase()]) {
       return
     }
 
@@ -327,7 +328,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     channelView.data('channel', channel)
 
-    this.channels[channel.name] = {
+    this.channels[channel.name.toLowerCase()] = {
       'channel': channel,
       'channelView': channelView
     }
@@ -412,7 +413,7 @@ class IrcNetworkViewController extends EventEmitter {
       this.serverTitle.addClass('nav-unread')
     } else {
       if (this.selectedChannel !== channel) {
-        this.channels[channel.name].channelView.addClass('nav-unread')
+        this.channels[channel.name.toLowerCase()].channelView.addClass('nav-unread')
       }
     }
   }
