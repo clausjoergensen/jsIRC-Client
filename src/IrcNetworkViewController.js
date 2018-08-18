@@ -36,6 +36,10 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('message', (source, targets, messageText) => {
+        if (source instanceof IrcServer) {
+          this.markAsUnread()
+          return
+        }
         this.userNotification(messageText, source)
         let user = this.users[source.nickName.toLowerCase()]
         if (user) {
@@ -48,6 +52,10 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('notice', (source, targets, noticeText) => {
+        if (source instanceof IrcServer) {
+          this.markAsUnread()
+          return
+        }
         this.userNotification(noticeText, source)
         let keys = Object.keys(this.channels)
         if (keys.length > 0) {
