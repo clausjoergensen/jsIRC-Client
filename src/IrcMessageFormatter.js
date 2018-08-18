@@ -3,6 +3,7 @@
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
+const htmlencode = require('htmlencode')
 const $ = require('jquery')
 
 class IrcMessageFormatter {
@@ -114,6 +115,7 @@ class IrcMessageFormatter {
       stripColors: false,
       highlight: false,
       timestamp: true,
+      preformatted: false,
       class: '',
     }, options)
 
@@ -168,6 +170,10 @@ class IrcMessageFormatter {
       message = message.replace(/[\x00-\x1F]/g, '')
     }
 
+    if (!options.html) {
+      message = htmlencode.htmlEncode(message)      
+    }
+
     if (options.detectLinks) {
       message = Autolinker.link(message, {
         stripPrefix: false,
@@ -200,6 +206,10 @@ class IrcMessageFormatter {
       senderClass += ' highlight'
       messageClass += ' highlight'
       timestampClass += ' highlight'
+    }
+
+    if (options.preformatted) {
+      messageClass += 'preformatted'
     }
 
     let formattedText = ""

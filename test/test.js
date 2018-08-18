@@ -447,9 +447,9 @@ describe('IrcCommandHandler Tests', function () {
     let expectedHTML = '<table class="table-striped cmd-list-table">' +
       '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
       '<tbody>' +
-      '<tr><td>#foo</td><td>17</td><td class="topic">Lorem ipsum</td></tr>' +
-      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
       '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
+      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
+      '<tr><td>#foo</td><td>17</td><td class="topic">Lorem ipsum</td></tr>' +
       '</tbody>' + 
       '</table>'
 
@@ -463,8 +463,8 @@ describe('IrcCommandHandler Tests', function () {
 
     fakeIrcClient.once = (e, callback) => {
       callback([
-        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
       ])
     }
@@ -497,8 +497,8 @@ describe('IrcCommandHandler Tests', function () {
     let expectedHTML = '<table class="table-striped cmd-list-table">' +
       '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
       '<tbody>' +
-      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
       '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
+      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
       '</tbody>' + 
       '</table>'
 
@@ -512,8 +512,8 @@ describe('IrcCommandHandler Tests', function () {
 
     fakeIrcClient.once = (e, callback) => {
       callback([
-        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
       ])
     }
@@ -540,8 +540,8 @@ describe('IrcCommandHandler Tests', function () {
 
     fakeIrcClient.once = (e, callback) => {
       callback([
-        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
       ])
     }

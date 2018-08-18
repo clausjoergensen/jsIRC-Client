@@ -210,6 +210,13 @@ class IrcCommandHandler extends EventEmitter {
               channels = channelList.filter(x => x.visibleUsersCount >= min)
             }
 
+            channels = channels.sort((a, b) => { // descending sort
+              if (a.visibleUsersCount == b.visibleUsersCount) {
+                return 0
+              }
+              return a.visibleUsersCount > b.visibleUsersCount ? -1 : 1
+            })
+
             let rows = channels.map(channelInfo => {
               return `<tr><td>${channelInfo.channelName.trim()}</td>` +
                 `<td>${channelInfo.visibleUsersCount}</td>` +
@@ -225,7 +232,7 @@ class IrcCommandHandler extends EventEmitter {
               `<tbody>${rows.join('')}</tbody>` +
               '</table>'
 
-            displayMessage(null, table, { timestamp: false })
+            displayMessage(null, table, { timestamp: false, html: true })
           })
 
           let searchMask = mask

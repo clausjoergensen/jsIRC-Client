@@ -63,7 +63,7 @@
    "WHOIS_REPLY_4": "%s is using %s %s",
    "WHOIS_REPLY_5": "%s is has been idle %s",
    "WHOIS_REPLY_6": "%s End of /WHOIS list.",
-   "MOTD_TITLE": " - %s Message of the Day - ",
+   "MOTD_TITLE": "- %s Message of the Day - ",
 
    "ECONNREFUSED": "* Couldn't connect to server (Connection refused)",
    "ECONNRESET": "* Disconnected (Connection Reset)",

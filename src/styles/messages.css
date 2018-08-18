@@ -72,6 +72,11 @@ span.highlight {
     color: red;
 }
 
+span.preformatted {
+    white-space: pre;
+    font-family: 'Inconsolata';
+}
+
 /** inline tables */
 table.cmd-list-table {
     border: 1px solid #ddd;

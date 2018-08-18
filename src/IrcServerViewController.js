@@ -34,18 +34,19 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('connecting', (hostName, port) => {
-      this.displayText(__('CONNECTING_TO', hostName, port), 'client-event')
+      this.displayText(__('CONNECTING_TO', hostName, port), { 'class': 'client-event' })
       this.displaySeperator()
     })
 
     this.client.on('disconnected', (reason) => {
-      this.displayText(__('DISCONNECTED', reason), 'client-event')
+      this.displayText(__('DISCONNECTED', reason), { 'class': 'client-event' })
       this.displaySeperator()
     })
 
     this.client.on('connected', () => {
       this.client.localUser.on('modes', (newModes) => {
-        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes), 'client-action')
+        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes), 
+          { 'class': 'client-action' })
         this.displaySeperator()
       })
       this.client.localUser.on('notice', (source, targets, noticeText) => {
@@ -55,7 +56,8 @@ class IrcServerViewController extends EventEmitter {
         }
       })
       this.client.localUser.on('kicked', (source, channel, comment) => {
-        this.displayText(__('YOU_KICKED', channel, source.nickName, comment ? `(${comment})` : ''), 'client-action')
+        this.displayText(__('YOU_KICKED', channel, source.nickName, comment ? `(${comment})` : ''), 
+          { 'class': 'client-action' })
         this.displaySeperator()
       })
     })
@@ -97,10 +99,10 @@ class IrcServerViewController extends EventEmitter {
     })
 
     this.client.on('motd', messageOfTheDay => {
-      this.displayText(__('MOTD_TITLE', this.client.serverName))
+      this.displayText(__('MOTD_TITLE', this.client.serverName), { preformatted: true })
       messageOfTheDay
         .split('\r\n')
-        .forEach(line => this.displayText(line))
+        .forEach(line => this.displayText(line, { preformatted: true }))
       this.displaySeperator()
     })
 
@@ -197,10 +199,10 @@ class IrcServerViewController extends EventEmitter {
     input.focus()
   }
 
-  displayText (text, messageClass) {
-    let paragraph = IrcMessageFormatter.formatMessage(null, text, {
-      isServer: true, isAction: true, detectLinks: false, class: messageClass
-    })
+  displayText (text, options) {
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, $.extend({
+      isServer: true, isAction: true, detectLinks: false
+    }, options))
     this.serverView.append(paragraph)
     this.markAsUnread()
   }
