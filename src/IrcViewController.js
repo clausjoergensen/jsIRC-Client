@@ -45,6 +45,11 @@ class IrcViewController {
       client.on('out', (message) => { console.debug(message) })
     }
 
+    client.reconnectAttempts = 0
+    client.on('connectionError', () => { this.reconnect(client) })
+    client.on('disconnected', () => { this.reconnect(client) })
+    client.on('connected', () => { client.reconnectAttempts = 0 })
+
     this.chatListViewController.addServer(client)
     this.chatListViewController.on('viewUser', (client, user) => {
       this.networkListViewController.addUser(client, user)
@@ -70,6 +75,17 @@ class IrcViewController {
     client.connect(server, port, registrationInfo)
 
     this.networkListViewController.viewNextChannel()
+  }
+
+  reconnect (client) {
+    if (client.reconnectAttempts == 10) {
+      return
+    }
+    client.reconnectAttempts++
+
+    setTimeout(() => {
+      client.connect(client.hostName, client.port, client.registrationInfo)
+    }, 2000)
   }
 
   displayServerConnectionManager () {
