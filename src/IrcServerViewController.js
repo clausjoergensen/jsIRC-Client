@@ -15,6 +15,8 @@ const inputhistory = require('./external/inputhistory.js')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
+require('./IrcBroadcaster.js')
+
 class IrcServerViewController extends EventEmitter {
   constructor (client, ctcpClient) {
     super()

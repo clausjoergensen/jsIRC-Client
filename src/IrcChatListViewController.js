@@ -10,6 +10,8 @@ const { EventEmitter } = events
 const IrcChatViewController = require('./IrcChatViewController.js')
 const $ = require('jquery')
 
+require('./IrcBroadcaster.js')
+
 class IrcChatListViewController extends EventEmitter {
   constructor () {
     super()

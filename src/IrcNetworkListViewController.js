@@ -6,6 +6,8 @@ const { EventEmitter } = events
 
 const IrcNetworkViewController = require('./IrcNetworkViewController.js')
 
+require('./IrcBroadcaster.js')
+
 class IrcNetworkListViewController extends EventEmitter {
   constructor () {
     super()

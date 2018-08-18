@@ -13,6 +13,8 @@ const IrcUserViewController = require('./IrcUserViewController.js')
 const packageInfo = require('./../package.json')
 const __ = require('./i18n.js')
 
+require('./IrcBroadcaster.js')
+
 class IrcChatViewController extends EventEmitter {
   constructor (client) {
     super()

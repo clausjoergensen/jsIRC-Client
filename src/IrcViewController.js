@@ -14,6 +14,8 @@ const isPackaged = require('electron').remote.app.isPackaged
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
+require('./IrcBroadcaster.js')
+
 class IrcViewController {
   constructor () {
     this.networkListViewController = new IrcNetworkListViewController()

@@ -12,6 +12,8 @@ const { EventEmitter } = events
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
+require('./IrcBroadcaster.js')
+
 class IrcNetworkViewController extends EventEmitter {
   constructor (client) {
     super()

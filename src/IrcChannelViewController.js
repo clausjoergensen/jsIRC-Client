@@ -19,6 +19,8 @@ const tabComplete = require('./external/tabcomplete.js')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
+require('./IrcBroadcaster.js')
+
 $.fn.onEnter = function (func) {
   this.bind('keypress', function (e) {
     if (e.keyCode === 13) {

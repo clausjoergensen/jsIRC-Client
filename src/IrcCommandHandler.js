@@ -6,11 +6,11 @@ const { EventEmitter } = events
 
 const __ = require('./i18n.js')
 
-function equalsCaseInsensitive(a, b) {
+require('./IrcBroadcaster.js')
+
+function equalsCaseInsensitive (a, b) {
   return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0
 }
-
-global.broadcaster = new EventEmitter()
 
 /**
  * @callback displayMessage
@@ -28,7 +28,7 @@ class IrcCommandHandler extends EventEmitter {
 
   static isCommand (text) {
     return text[0] === '/'
-  }  
+  }
 
   /**
    * Parses and handles text commands
