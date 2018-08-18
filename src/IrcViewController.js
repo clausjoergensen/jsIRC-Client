@@ -75,6 +75,11 @@ class IrcViewController {
     client.on('disconnected', () => { this.reconnect(client) })
     client.on('connected', () => { client.reconnectAttempts = 0 })
 
+    client.on('connecting', () => {
+      store.set('hostName', client.hostName)
+      store.set('port', client.port)
+    })
+
     client.once('protocolError', (command, errorName, errorParameters, errorMessage) => {
       if (command === 433) {
         let alternativeNickName = store.get('alternative')
@@ -161,6 +166,7 @@ class IrcViewController {
     let server = $('<input />', {
       'type': 'text',
       'style': '',
+      'value': store.get('hostName'),
       'onEnter': submit
     }).appendTo(innerView)
 
@@ -169,6 +175,7 @@ class IrcViewController {
     let port = $('<input />', {
       'type': 'text',
       'style': '',
+      'value': store.get('port'),
       'onEnter': submit
     }).appendTo(innerView)
 
