@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "autolinker": "^1.7.1",
+    "electron-store": "^2.0.0",
     "htmlencode": "0.0.4",
     "jquery": "^3.3.1",
     "jsirc": "git+https://github.com/clausjoergensen/jsIRC.git",

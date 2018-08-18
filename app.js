@@ -53,8 +53,14 @@ app.on('ready', () => {
 
   let template = [
     {
-      label: 'File',
+      label: __('MENU_FILE'),
       submenu: [
+        { 
+          label: __('MENU_PREFERENCES'),
+          click: (e) => {
+            mainWindow.webContents.send('view-preferences', e)
+          } 
+        },
         { role: 'quit' }
       ]
     },
@@ -99,6 +105,7 @@ app.on('ready', () => {
             aboutWindow = new BrowserWindow({
               'width': 400,
               'height': 270,
+              'title': 'jsIRC - About',
               'title-bar-style': 'hidden',
               'resizable': false,
               'modal': true,

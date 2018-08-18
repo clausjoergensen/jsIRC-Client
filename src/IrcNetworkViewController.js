@@ -14,6 +14,9 @@ const { IrcServer } = require('jsIRC')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
+const Store = require('electron-store')
+const store = new Store()
+
 require('./IrcBroadcaster.js')
 
 class IrcNetworkViewController extends EventEmitter {
@@ -176,6 +179,10 @@ class IrcNetworkViewController extends EventEmitter {
       return
     }
 
+    if (!store.get('privateNotifications')) {
+      return
+    }
+
     let notification = new Notification(sender.nickName, {
       body: message,
       icon: path.join(__dirname, '/images/notification-chat.png')
@@ -194,6 +201,10 @@ class IrcNetworkViewController extends EventEmitter {
     }
 
     if (remote.getCurrentWindow().isFocused()) {
+      return
+    }
+
+    if (!store.get('channelNotifications')) {
       return
     }
     

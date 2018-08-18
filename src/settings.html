@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-inline'">
+        <style>
+        body
+        {
+            font-family: "Segoe UI", "San Francisco", "Helvetica Neue", "Helvetica", sans-serif;
+            font-size: 11pt;
+        }
+        fieldset 
+        {
+            border: 1px solid #ddd;
+        }
+        input[type='text']
+        {
+            width: 245px;
+        }
+        input[type='checkbox'] 
+        {
+            padding: 0px;
+            margin: 0px;
+            vertical-align: bottom;
+            top: -1.5px;
+            position: relative;
+        }
+        h1
+        {
+            margin: 0px 0px 10px 0px;
+            padding: 0px;
+        }
+        </style>
+        <script type"text/javascript">
+            const Store = require('electron-store')
+            const store = new Store({
+                defaults: {
+                    nickName: '',
+                    alternative: '',
+                    realName: '',
+                    email: '',
+                    privateNotifications: true,
+                    channelNotifications: true
+                }
+            })
+
+            const $ = require('jquery')
+
+            function save () {
+                store.set('nickName', $('#nickName').val())
+                store.set('alternative', $('#alternative').val())
+                store.set('realName', $('#realName').val())
+                store.set('email', $('#email').val())
+                store.set('privateNotifications', $('#privateNotifications').prop('checked'))
+                store.set('channelNotifications', $('#channelNotifications').prop('checked'))
+            }
+
+            function close () {
+                const { remote } = require('electron')
+                let window = remote.getCurrentWindow()
+                window.close()
+            }
+
+            document.addEventListener('DOMContentLoaded', function (event) {
+                $('#nickName').val(store.get('nickName'))
+                $('#alternative').val(store.get('alternative'))                
+                $('#realName').val(store.get('realName'))
+                $('#email').val(store.get('email'))
+                $('#privateNotifications').prop('checked', store.get('privateNotifications'))
+                $('#channelNotifications').prop('checked', store.get('channelNotifications'))
+            })
+        </script>
+    </head>
+    <body>
+        <fieldset>
+            <legend>User Information</legend>
+            <table border="0" cellspacing="2" cellpadding="0" style="text-align: right;">
+                <tr>
+                    <td style="padding-right: 5px;">Nickname</td>
+                    <td><input id="nickName" type="text" /></td>
+                </tr>
+                <tr>
+                    <td style="padding-right: 5px;">Alternative</td>
+                    <td><input id="alternative" type="text" /></td>
+                </tr>
+                <tr>
+                    <td style="padding-right: 5px;">Name</td>
+                    <td><input id="realName" type="text" /></td>
+                </tr>
+                <tr>
+                    <td style="padding-right: 5px;">Email</td>
+                    <td><input id="email" type="text" /></td>
+                </tr>
+            </table>
+        </fieldset>
+        <br />
+        <fieldset>
+            <legend>Notifications</legend>
+            <label><input id="privateNotifications" type="checkbox"> Notifications for Private Messages</label><br />
+            <label><input id="channelNotifications" type="checkbox"> Notifications for Channel Messages</label>
+        </fieldset>
+        <button style="float: right; width: 100px; margin-top: 10px; margin-right: 2px;" onclick="window.save(); window.close()">Save</button>
+        <button style="float: right; width: 100px; margin-top: 10px; margin-right: 2px;" onclick="window.close()">Cancel</button>
+    </body>
+</html>

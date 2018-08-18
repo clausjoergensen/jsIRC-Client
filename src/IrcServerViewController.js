@@ -45,7 +45,7 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('connected', () => {
       this.client.localUser.on('modes', (newModes) => {
-        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes), 
+        this.displayText(__('USER_SET_MODES', this.client.localUser.nickName, newModes),
           { 'class': 'client-action' })
         this.displaySeperator()
       })
@@ -56,7 +56,7 @@ class IrcServerViewController extends EventEmitter {
         }
       })
       this.client.localUser.on('kicked', (source, channel, comment) => {
-        this.displayText(__('YOU_KICKED', channel, source.nickName, comment ? `(${comment})` : ''), 
+        this.displayText(__('YOU_KICKED', channel, source.nickName, comment ? `(${comment})` : ''),
           { 'class': 'client-action' })
         this.displaySeperator()
       })
@@ -64,6 +64,12 @@ class IrcServerViewController extends EventEmitter {
 
     this.client.on('error', errorMessage => {
       this.displayError('* ' + errorMessage)
+    })
+
+    this.client.on('protocolError', (command, errorName, errorParameters, errorMessage) => {
+      if (command === 433) {
+        this.focusInput('/nick ')
+      }
     })
 
     this.client.on('hostHidden', (hostName) => {
@@ -117,7 +123,7 @@ class IrcServerViewController extends EventEmitter {
         console.error(error)
       }
     })
-    
+
     this.client.on('networkInfo', networkInfo => {
       // First display when all information been recieved.
       this.displayText(__('NETWORK_INFO_1',

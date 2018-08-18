@@ -1,18 +1,20 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
-const electron = require('electron')
-const { remote } = require('electron')
-const { app, BrowserWindow } = remote
+const { remote, ipcRenderer } = require('electron')
 
 const { IrcClient, IrcFloodPreventer } = require('jsIRC')
 
 const IrcNetworkListViewController = require('./IrcNetworkListViewController.js')
 const IrcChatListViewController = require('./IrcChatListViewController.js')
 
-const isPackaged = require('electron').remote.app.isPackaged
+const path = require('path')
+const isPackaged = remote.app.isPackaged
 const __ = require('./i18n.js')
 const $ = require('jquery')
+
+const Store = require('electron-store')
+const store = new Store()
 
 require('./IrcBroadcaster.js')
 
@@ -32,12 +34,35 @@ class IrcViewController {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
 
-    electron.ipcRenderer.on('close', function(e, data) {      
+    ipcRenderer.on('close', function(e, data) {
       client.quit()
     })
 
-    electron.ipcRenderer.on('reload', function(e, data) {      
+    ipcRenderer.on('reload', function(e, data) {
       client.quit()
+    })
+
+    ipcRenderer.on('view-preferences', function(e, data) {
+      this.settingsWindow = new remote.BrowserWindow({
+        'width': 380,
+        'height': 315,
+        'title': 'jsIRC - Settings',
+        'title-bar-style': 'hidden',
+        'resizable': false,
+        'modal': true,
+        'alwaysOnTop': true,
+        'parent': remote.getCurrentWindow(),
+        'webPreferences': {
+          'devTools': !isPackaged
+        }
+      })
+
+      this.settingsWindow.setMenu(null)
+      this.settingsWindow.loadURL(path.join('file://', __dirname, '/settings.html'))
+
+      this.settingsWindow.on('closed', (e) => {
+        this.settingsWindow = null
+      })
     })
 
     if (!isPackaged) {
@@ -49,6 +74,15 @@ class IrcViewController {
     client.on('connectionError', () => { this.reconnect(client) })
     client.on('disconnected', () => { this.reconnect(client) })
     client.on('connected', () => { client.reconnectAttempts = 0 })
+
+    client.once('protocolError', (command, errorName, errorParameters, errorMessage) => {
+      if (command === 433) {
+        let alternativeNickName = store.get('alternative')
+        if (alternativeNickName && alternativeNickName.length > 0) {
+          client.setNickName(alternativeNickName)
+        }
+      }
+    })
 
     this.chatListViewController.addServer(client)
     this.chatListViewController.on('viewUser', (client, user) => {
@@ -145,6 +179,7 @@ class IrcViewController {
     let nickName = $('<input />', {
       'type': 'text',
       'style': '',
+      'value': store.get('nickName'),
       'onEnter': submit
     }).appendTo(innerView)
 
@@ -153,6 +188,7 @@ class IrcViewController {
     let realName = $('<input />', {
       'type': 'text',
       'style': '',
+      'value': store.get('realName'),
       'onEnter': submit
     }).appendTo(innerView)
 
@@ -161,6 +197,7 @@ class IrcViewController {
     let email = $('<input />', {
       'type': 'text',
       'style': '',
+      'value': store.get('email'),
       'onEnter': submit
     }).appendTo(innerView)
 

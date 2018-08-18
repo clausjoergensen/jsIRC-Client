@@ -52,7 +52,7 @@
    "ERR_WILDTOPLEVEL": "Wildcard in toplevel domain",
    "ERR_YOUREBANNEDCREEP": "You are banned from this server",
 
-   "PLACEHOLDER_SEND_MESSAGE": "Send Message …",
+   "PLACEHOLDER_SEND_MESSAGE": "Send message…",
    
    "CONNECTING_TO": "* Connecting to %s (%d)",
    "DISCONNECTED": "* Disconnected (%s)",
@@ -133,7 +133,10 @@
    "USER_MENU_SLAP": "Slap",
    
    "CHAT_MENU_CHANNEL_MODES": "Channel Modes",
+   
    "MENU_REPORT_ISSUE": "Report Issue…",
+   "MENU_FILE": "File",
+   "MENU_PREFERENCES": "Preferences…",
    
    "CHANNEL_MODE_OPSTOPIC": "Only ops can change topic",
    "CHANNEL_MODE_LABEL": "Channel Modes",
