@@ -10,6 +10,8 @@ function equalsCaseInsensitive(a, b) {
   return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0
 }
 
+global.broadcaster = new EventEmitter()
+
 /**
  * @callback displayMessage
  * @param {IrcUser} source
@@ -26,7 +28,7 @@ class IrcCommandHandler extends EventEmitter {
 
   static isCommand (text) {
     return text[0] === '/'
-  }
+  }  
 
   /**
    * Parses and handles text commands
@@ -179,7 +181,7 @@ class IrcCommandHandler extends EventEmitter {
         this.emit('clear')
         break
       case 'clearall':
-        this.emit('clearall')
+        global.broadcaster.emit('clearAll')
         break
       default:
         if (displayMessage) {

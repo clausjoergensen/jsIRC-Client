@@ -43,7 +43,8 @@ class IrcChannelViewController extends EventEmitter {
     this.commandHandler.on('clear', () => {
       this.messageView.empty()
     })
-    this.commandHandler.on('clearAll', () => {
+
+    global.broadcaster.on('clearAll', () => {
       this.messageView.empty()
     })
 

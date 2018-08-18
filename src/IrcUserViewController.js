@@ -40,7 +40,8 @@ class IrcUserViewController extends EventEmitter {
     this.commandHandler.on('clear', () => {
       this.userView.empty()
     })
-    this.commandHandler.on('clearAll', () => {
+    
+    global.broadcaster.on('clearAll', () => {
       this.userView.empty()
     })
 

@@ -26,7 +26,8 @@ class IrcServerViewController extends EventEmitter {
     this.commandHandler.on('clear', () => {
       this.serverView.empty()
     })
-    this.commandHandler.on('clearAll', () => {
+
+    global.broadcaster.on('clearAll', () => {
       this.serverView.empty()
     })
 
