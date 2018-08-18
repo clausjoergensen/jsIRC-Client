@@ -107,9 +107,7 @@ class IrcCommandHandler extends EventEmitter {
         }
         break
       case 'quit':
-        if (this.channel) {
-          this.client.quit(content && content.length > 0 ? content : null)
-        }
+        this.client.quit(content && content.length > 0 ? content : null)
         break
       case 'part':
         if (this.channel) {
@@ -182,6 +180,64 @@ class IrcCommandHandler extends EventEmitter {
         break
       case 'clearall':
         global.broadcaster.emit('clearAll')
+        break
+      case 'list':
+        {
+          if (!displayMessage) {
+            return
+          }
+
+          if (this.channel) {
+            return
+          }
+
+          let [mask] = content.split(' ', 1)
+          let [,minParam,maxParam] = content.split('-')
+
+          let min, max
+          if (minParam) {
+            min = parseInt(minParam.split(' ')[1])
+          }
+          if (maxParam) {
+            max = parseInt(maxParam.split(' ')[1])
+          }
+
+          this.client.once('channelList', (channelList) => {
+            let channels = channelList
+            if (min >= 0 && max >= 0) {
+              channels = channelList.filter(x => x.visibleUsersCount >= min && x.visibleUsersCount <= max)
+            } else if (min >= 0) {
+              channels = channelList.filter(x => x.visibleUsersCount >= min)
+            }
+
+            if (channels.length == 0) {
+              displayMessage(null, 'Found no channels on the server.')
+            } else {
+              let rows = channels.map(channelInfo => {
+                return `<tr><td>${channelInfo.channelName.trim()}</td>` +
+                  `<td>${channelInfo.visibleUsersCount}</td>` + 
+                  `<td class="topic">${channelInfo.topic.trim()}</td></tr>`
+              })
+
+              let table = '<table class="table-striped cmd-list-table">' + 
+                '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+                `<tbody>${rows.join('')}</tbody>` +
+                '</table>'
+
+              displayMessage(null, table)
+            }
+          })
+
+          let searchMask = mask
+          if (mask.startsWith('-')) {
+            searchMask = null
+          } else if (mask.length == 0) {
+            searchMask = null
+          } else {
+           searchMask = searchMask.split(',') 
+          }
+          this.client.listChannels(searchMask)
+        }
         break
       default:
         if (displayMessage) {

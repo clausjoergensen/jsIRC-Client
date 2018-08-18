@@ -75,34 +75,18 @@ class IrcUserViewController extends EventEmitter {
       return
     }
 
-    if (text[0] === '/') {
-      this.sendAction(text.trim())
-      this.scrollToBottom()
+    if (IrcCommandHandler.isCommand(text)) {
+      this.commandHandler.handle(text.trim(), null, (source, text) => {
+        this.displayAction(source, text)
+      })
     } else {
       text.trim().match(/.{1,398}/g).forEach(chunk => {
         this.client.localUser.sendMessage([this.user.nickName], chunk)
         this.displayMessage(this.client.localUser, chunk)
       })
-      this.scrollToBottom()
-    }
-  }
-
-  sendAction (text) {
-    let firstSpace = text.substring(1).indexOf(' ')
-    let action = text.substring(1, firstSpace + 1)
-    let content = text.substring(1).substr(firstSpace + 1)
-
-    if (firstSpace === -1) {
-      action = text.substring(1)
-      content = ''
     }
 
-    switch (action.toLowerCase()) {
-      case 'me':
-        this.ctcpClient.action([this.user.name], content)
-        this.displayAction(this.client.localUser, content)
-        break
-    }
+    this.scrollToBottom()
   }
 
   displayMessage (source, text) {

@@ -186,7 +186,7 @@ describe('IrcCommandHandler Tests', function () {
       done()
     }
 
-    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient, {})
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
     commandHandler.handle('/quit')
   })
 
@@ -199,7 +199,7 @@ describe('IrcCommandHandler Tests', function () {
       }
     }
 
-    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient, {})
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
     commandHandler.handle('/quit Bye cruel world')
   })
 
@@ -441,5 +441,112 @@ describe('IrcCommandHandler Tests', function () {
     let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient, {})
     global.broadcaster.on('clearAll', done)
     commandHandler.handle('/clearall')
+  })
+
+  it('/list', function (done) {
+    let expectedHTML = '<table class="table-striped cmd-list-table">' +
+      '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+      '<tbody>' +
+      '<tr><td>#foo</td><td>17</td><td class="topic">Lorem ipsum</td></tr>' +
+      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
+      '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
+      '</tbody>' + 
+      '</table>'
+
+    let displayAction = (source, message) => {
+      if (message === expectedHTML) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    fakeIrcClient.once = (e, callback) => {
+      callback([
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
+        { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#baz', visibleUsersCount: 37, topic: '' }
+      ])
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/list', displayAction)
+  })
+
+  it('/list mask', function (done) {
+    fakeIrcClient.once = (e, callback) => {
+      callback([
+        { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#baz', visibleUsersCount: 37, topic: '' }
+      ])
+    }
+
+    fakeIrcClient.listChannels = (mask) => {
+      if (mask[0] === '#ba') {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/list #ba', (s, m) => {})
+  })
+
+  it('/list <mask> -MIN #', function (done) {
+    let expectedHTML = '<table class="table-striped cmd-list-table">' +
+      '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+      '<tbody>' +
+      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
+      '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
+      '</tbody>' + 
+      '</table>'
+
+    let displayAction = (source, message) => {
+      if (message === expectedHTML) {
+        done()
+      } else {
+        assert.ok(false)
+      }
+    }
+
+    fakeIrcClient.once = (e, callback) => {
+      callback([
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
+        { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#baz', visibleUsersCount: 37, topic: '' }
+      ])
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/list * -MIN 20', displayAction)
+  })
+
+  it('/list <mask> -MIN # -MAX #', function (done) {
+    let expectedHTML = '<table class="table-striped cmd-list-table">' +
+      '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+      '<tbody>' +
+      '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
+      '</tbody>' + 
+      '</table>'
+
+    let displayAction = (source, message) => {
+      if (message === expectedHTML) {
+        done()
+      } else {
+        assert.ok(false, message)
+      }
+    }
+
+    fakeIrcClient.once = (e, callback) => {
+      callback([
+        { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
+        { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
+        { channelName: '#baz', visibleUsersCount: 37, topic: '' }
+      ])
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/list * -MIN 20 -MAX 27', displayAction)
   })
 })

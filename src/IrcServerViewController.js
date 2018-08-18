@@ -252,7 +252,7 @@ class IrcServerViewController extends EventEmitter {
     }
 
     if (IrcCommandHandler.isCommand(text)) {
-      this.commandHandler.handle(text.trim(), null, (source, text) => {
+      this.commandHandler.handle(text.trim(), (source, text) => {
         this.displayMessage(source, text)
       })
     } else {
