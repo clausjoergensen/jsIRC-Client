@@ -160,5 +160,8 @@
 
    "LIST_TH_CHANNEL": "Channel",
    "LIST_TH_USERS": "Users",
-   "LIST_TH_TOPIC": "Topic"
+   "LIST_TH_TOPIC": "Topic",
+
+   "CHANNEL_TOPIC_IS": "* Topic is %s",
+   "CHANNEL_TOPIC_TIME": "* Set by %s on %s"
 }

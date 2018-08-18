@@ -16,6 +16,7 @@ const Autolinker = require('autolinker')
 const inputhistory = require('./external/inputhistory.js')
 const tabComplete = require('./external/tabcomplete.js')
 
+const strftime = require('strftime')
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
@@ -60,6 +61,10 @@ class IrcChannelViewController extends EventEmitter {
 
     this.channel.on('topic', (source, newTopic) => {
       this.displayTopic(source, newTopic)
+    })
+
+    this.channel.on('topicSetBy', (nickName, time) => {
+      this.displayAction(null, __('CHANNEL_TOPIC_TIME', nickName, strftime('%a %b %d %H:%M:%S %Y', time)))
     })
 
     this.channel.once('userList', () => {
@@ -196,6 +201,8 @@ class IrcChannelViewController extends EventEmitter {
 
     if (source) {
       this.displayAction(source, __('USER_CHANGED_TOPIC', newTopic))
+    } else if (newTopic) {
+      this.displayAction(null, __('CHANNEL_TOPIC_IS', newTopic))
     }
   }
 
