@@ -192,7 +192,7 @@ class IrcCommandHandler extends EventEmitter {
           }
 
           let [mask] = content.split(' ', 1)
-          let [,minParam,maxParam] = content.split('-')
+          let [, minParam, maxParam] = content.split('-')
 
           let min, max
           if (minParam) {
@@ -210,31 +210,31 @@ class IrcCommandHandler extends EventEmitter {
               channels = channelList.filter(x => x.visibleUsersCount >= min)
             }
 
-            if (channels.length == 0) {
+            if (channels.length === 0) {
               displayMessage(null, 'Found no channels on the server.')
             } else {
               let rows = channels.map(channelInfo => {
                 return `<tr><td>${channelInfo.channelName.trim()}</td>` +
-                  `<td>${channelInfo.visibleUsersCount}</td>` + 
+                  `<td>${channelInfo.visibleUsersCount}</td>` +
                   `<td class="topic">${channelInfo.topic.trim()}</td></tr>`
               })
 
-              let table = '<table class="table-striped cmd-list-table">' + 
+              let table = '<table class="table-striped cmd-list-table">' +
                 '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
                 `<tbody>${rows.join('')}</tbody>` +
                 '</table>'
 
-              displayMessage(null, table)
+              displayMessage(null, table, { timestamp: false })
             }
           })
 
           let searchMask = mask
           if (mask.startsWith('-')) {
             searchMask = null
-          } else if (mask.length == 0) {
+          } else if (mask.length === 0) {
             searchMask = null
           } else {
-           searchMask = searchMask.split(',') 
+            searchMask = searchMask.split(',')
           }
           this.client.listChannels(searchMask)
         }

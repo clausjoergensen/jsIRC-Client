@@ -224,8 +224,8 @@ class IrcServerViewController extends EventEmitter {
     this.markAsUnread()
   }
 
-  displayMessage (source, text) {
-    let paragraph = IrcMessageFormatter.formatMessage(null, text, { isServer: true })
+  displayMessage (source, text, options) {
+    let paragraph = IrcMessageFormatter.formatMessage(null, text, $.extend({ isServer: true }, options))
     this.serverView.append(paragraph)
     this.displaySeperator()
     this.markAsUnread()
@@ -252,8 +252,8 @@ class IrcServerViewController extends EventEmitter {
     }
 
     if (IrcCommandHandler.isCommand(text)) {
-      this.commandHandler.handle(text.trim(), (source, text) => {
-        this.displayMessage(source, text)
+      this.commandHandler.handle(text.trim(), (source, text, options) => {
+        this.displayMessage(source, text, options)
       })
     } else {
       this.displayMessage(null, __('NOT_ON_A_CHANNEL'))

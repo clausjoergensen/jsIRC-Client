@@ -113,10 +113,11 @@ class IrcMessageFormatter {
       detectLinks: true,
       stripColors: false,
       highlight: false,
+      timestamp: true,
       class: '',
     }, options)
 
-    let senderName = ''
+    let senderName = null
     if (source) {
       if (source.nickName) {
         if (options.isNotice) {
@@ -133,7 +134,7 @@ class IrcMessageFormatter {
       }
     }
 
-    let senderClass = ''
+    let senderClass = null
     if (source) {
       if (source.nickName) {
         senderClass = source.isLocalUser ? 'sender-me' : 'sender-other'
@@ -198,13 +199,18 @@ class IrcMessageFormatter {
     if (options.highlight) {
       senderClass += ' highlight'
       messageClass += ' highlight'
-      timestampClass += ' highlight'      
+      timestampClass += ' highlight'
     }
 
-    let formattedText =
-      `<span class="${timestampClass}">[${strftime('%H:%M', new Date())}]</span> ` +
-      `<span class="${senderClass}">${senderName}</span> ` +
-      `<span class="${messageClass}">${message}</span>`
+    let formattedText = ""
+    if (options.timestamp) {
+      formattedText += `<span class="${timestampClass}">[${strftime('%H:%M', new Date())}]</span> `
+    }
+    if (senderName) {
+      formattedText += `<span class="${senderClass}">${senderName}</span> `
+    }
+
+    formattedText += `<span class="${messageClass}">${message}</span>`
 
     let paragraph = $('<p />')
 
