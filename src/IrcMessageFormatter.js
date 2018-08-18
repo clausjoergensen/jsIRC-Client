@@ -163,11 +163,14 @@ class IrcMessageFormatter {
 
     if (options.class) {
       messageClass += ' ' + options.class
-    }
+    }    
 
     if (options.stripColors) {
       // eslint-disable-next-line no-control-regex
       message = message.replace(/[\x00-\x1F]/g, '')
+    } else {
+      message = IrcMessageFormatter.colorifyMessage(message)
+      options.html = true
     }
 
     if (!options.html) {
@@ -188,10 +191,6 @@ class IrcMessageFormatter {
           }
         }
       })
-    }
-
-    if (!options.stripColors) {
-      message = IrcMessageFormatter.colorifyMessage(message)
     }
 
     let timestampClass = 'timestamp'
