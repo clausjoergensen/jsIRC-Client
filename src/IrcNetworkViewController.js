@@ -90,7 +90,7 @@ class IrcNetworkViewController extends EventEmitter {
         })
 
         channel.on('topic', (source, topic) => {
-          if (!source.isLocalUser) {
+          if (source && !source.isLocalUser) {
             this.setWindowTitleForChannel(channel)
             this.markAsUnread(channel)
           }
