@@ -74,17 +74,23 @@ class IrcNetworkViewController extends EventEmitter {
 
       client.localUser.on('joinedChannel', (channel) => {
         channel.on('message', (source, messageText) => {
-          this.channelNotification(messageText, source, channel)
-          this.markAsUnread(channel)
+          if (!source.isLocalUser) {
+            this.channelNotification(messageText, source, channel)
+            this.markAsUnread(channel)
+          }
         })
 
         channel.on('action', (source, messageText) => {
-          this.markAsUnread(channel)
+          if (!source.isLocalUser) {
+            this.markAsUnread(channel)
+          }
         })
 
         channel.on('topic', (source, topic) => {
-          this.setWindowTitleForChannel(channel)
-          this.markAsUnread(channel)
+          if (!source.isLocalUser) {
+            this.setWindowTitleForChannel(channel)
+            this.markAsUnread(channel)
+          }
         })
 
         this.addChannelToList(channel)
