@@ -9,7 +9,7 @@ const path = require('path')
 const events = require('events')
 const { EventEmitter } = events
 
-const { IrcServer } = require('jsIRC')
+const { IrcServer } = require('jsirc')
 
 const __ = require('./i18n.js')
 const $ = require('jquery')

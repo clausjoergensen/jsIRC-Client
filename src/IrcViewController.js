@@ -3,7 +3,7 @@
 
 const { remote, ipcRenderer } = require('electron')
 
-const { IrcClient, IrcFloodPreventer } = require('jsIRC')
+const { IrcClient, IrcFloodPreventer } = require('jsirc')
 
 const IrcNetworkListViewController = require('./IrcNetworkListViewController.js')
 const IrcChatListViewController = require('./IrcChatListViewController.js')
