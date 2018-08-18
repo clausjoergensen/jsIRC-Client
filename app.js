@@ -49,6 +49,8 @@ app.on('ready', () => {
     })
   }
 
+  let aboutWindow = null
+
   let template = [
     {
       label: 'File',
@@ -91,7 +93,30 @@ app.on('ready', () => {
           }
         },
         { type: 'separator' },
-        { role: 'about' }
+        { 
+          role: 'about', 
+          click: () => {
+            aboutWindow = new BrowserWindow({
+              'width': 400,
+              'height': 270,
+              'title-bar-style': 'hidden',
+              'resizable': false,
+              'modal': true,
+              'alwaysOnTop': true,
+              'parent': mainWindow,
+              'webPreferences': {
+                'devTools': !app.isPackaged
+              }
+            })
+
+            aboutWindow.setMenu(null)
+            aboutWindow.loadURL(path.join('file://', __dirname, '/src/about.html'))
+
+            aboutWindow.on('closed', (e) => {
+              aboutWindow = null
+            })
+          }
+        }
       ]
     }
   ]
