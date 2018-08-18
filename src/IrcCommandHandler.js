@@ -210,22 +210,18 @@ class IrcCommandHandler extends EventEmitter {
               channels = channelList.filter(x => x.visibleUsersCount >= min)
             }
 
-            if (channels.length === 0) {
-              displayMessage(null, 'Found no channels on the server.')
-            } else {
-              let rows = channels.map(channelInfo => {
-                return `<tr><td>${channelInfo.channelName.trim()}</td>` +
-                  `<td>${channelInfo.visibleUsersCount}</td>` +
-                  `<td class="topic">${channelInfo.topic.trim()}</td></tr>`
-              })
+            let rows = channels.map(channelInfo => {
+              return `<tr><td>${channelInfo.channelName.trim()}</td>` +
+                `<td>${channelInfo.visibleUsersCount}</td>` +
+                `<td class="topic">${channelInfo.topic.trim()}</td></tr>`
+            })
 
-              let table = '<table class="table-striped cmd-list-table">' +
-                '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
-                `<tbody>${rows.join('')}</tbody>` +
-                '</table>'
+            let table = '<table class="table-striped cmd-list-table">' +
+              '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
+              `<tbody>${rows.join('')}</tbody>` +
+              '</table>'
 
-              displayMessage(null, table, { timestamp: false })
-            }
+            displayMessage(null, table, { timestamp: false })
           })
 
           let searchMask = mask
