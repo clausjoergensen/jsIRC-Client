@@ -13,8 +13,8 @@ const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const Autolinker = require('autolinker')
 
-const inputhistory = require('./external/inputhistory.js')
-const tabComplete = require('./external/tabcomplete.js')
+const inputhistory = require('./external/inputhistory.js') // eslint-disable-line no-unused-vars
+const tabComplete = require('./external/tabcomplete.js') // eslint-disable-line no-unused-vars
 
 const strftime = require('strftime')
 const __ = require('./i18n.js')
@@ -172,7 +172,7 @@ class IrcChannelViewController extends EventEmitter {
   }
 
   displayMessage (source, text, isNotice = false) {
-    let highlight = text.toLowerCase().includes(this.client.localUser.nickName.toLowerCase())    
+    let highlight = text.toLowerCase().includes(this.client.localUser.nickName.toLowerCase())
     let paragraph = IrcMessageFormatter.formatMessage(source, text, { highlight: highlight })
     this.messageView.append(paragraph)
     this.scrollToBottom()
@@ -870,7 +870,5 @@ class IrcChannelViewController extends EventEmitter {
     message.focus()
   }
 }
-
-
 
 module.exports = IrcChannelViewController

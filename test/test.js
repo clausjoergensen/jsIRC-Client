@@ -450,7 +450,7 @@ describe('IrcCommandHandler Tests', function () {
       '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
       '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
       '<tr><td>#foo</td><td>17</td><td class="topic">Lorem ipsum</td></tr>' +
-      '</tbody>' + 
+      '</tbody>' +
       '</table>'
 
     let displayAction = (source, message) => {
@@ -461,8 +461,8 @@ describe('IrcCommandHandler Tests', function () {
       }
     }
 
-    fakeIrcClient.once = (e, callback) => {
-      callback([
+    fakeIrcClient.once = (e, channelListCallback) => {
+      channelListCallback([
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
         { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
@@ -474,8 +474,8 @@ describe('IrcCommandHandler Tests', function () {
   })
 
   it('/list mask', function (done) {
-    fakeIrcClient.once = (e, callback) => {
-      callback([
+    fakeIrcClient.once = (e, channelListCallback) => {
+      channelListCallback([
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
       ])
@@ -499,7 +499,7 @@ describe('IrcCommandHandler Tests', function () {
       '<tbody>' +
       '<tr><td>#baz</td><td>37</td><td class="topic"></td></tr>' +
       '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
-      '</tbody>' + 
+      '</tbody>' +
       '</table>'
 
     let displayAction = (source, message) => {
@@ -510,8 +510,8 @@ describe('IrcCommandHandler Tests', function () {
       }
     }
 
-    fakeIrcClient.once = (e, callback) => {
-      callback([
+    fakeIrcClient.once = (e, channelListCallback) => {
+      channelListCallback([
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
         { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }
@@ -527,7 +527,7 @@ describe('IrcCommandHandler Tests', function () {
       '<thead><tr><th>Channel</th><th>Users</th><th>Topic</th></tr></thead>' +
       '<tbody>' +
       '<tr><td>#bar</td><td>27</td><td class="topic">dolor sit amet</td></tr>' +
-      '</tbody>' + 
+      '</tbody>' +
       '</table>'
 
     let displayAction = (source, message) => {
@@ -538,8 +538,8 @@ describe('IrcCommandHandler Tests', function () {
       }
     }
 
-    fakeIrcClient.once = (e, callback) => {
-      callback([
+    fakeIrcClient.once = (e, channelListCallback) => {
+      channelListCallback([
         { channelName: '#bar', visibleUsersCount: 27, topic: 'dolor sit amet' },
         { channelName: '#foo', visibleUsersCount: 17, topic: 'Lorem ipsum' },
         { channelName: '#baz', visibleUsersCount: 37, topic: '' }

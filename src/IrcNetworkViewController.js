@@ -2,7 +2,7 @@
 'use strict'
 
 const { remote } = require('electron')
-const { Menu, BrowserWindow, app, nativeImage } = remote
+const { Menu, BrowserWindow, app } = remote
 
 const path = require('path')
 
@@ -48,7 +48,7 @@ class IrcNetworkViewController extends EventEmitter {
         this.userNotification(messageText, source)
         let user = this.users[source.nickName.toLowerCase()]
         if (user) {
-          if (this.selectedUser !== user.user) {            
+          if (this.selectedUser !== user.user) {
             this.users[source.nickName].userView.addClass('nav-unread')
           }
         } else {
@@ -191,7 +191,7 @@ class IrcNetworkViewController extends EventEmitter {
     notification.onclick = () => {
       remote.getCurrentWindow().show()
       app.focus()
-      this.viewUser(sender) 
+      this.viewUser(sender)
     }
   }
 
@@ -207,16 +207,16 @@ class IrcNetworkViewController extends EventEmitter {
     if (!store.get('channelNotifications')) {
       return
     }
-    
+
     let notification = new Notification(channel.name, {
       body: `${sender.nickName}: ${message}`,
       icon: path.join(__dirname, '/images/notification-chat.png')
     })
-    
+
     notification.onclick = () => {
       remote.getCurrentWindow().show()
       app.focus()
-      this.viewChannel(channel) 
+      this.viewChannel(channel)
     }
   }
 
@@ -396,7 +396,7 @@ class IrcNetworkViewController extends EventEmitter {
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
       let nickName = this.client.localUser ? this.client.localUser.nickName : this.client.registrationInfo.nickName
-      browserWindow.setTitle(__('WINDOW_TITLE_SERVER', 
+      browserWindow.setTitle(__('WINDOW_TITLE_SERVER',
         nickName, userModes, serverName, this.client.hostName, this.client.port))
     }
   }
@@ -409,7 +409,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL', 
+      browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL',
         channel.name, serverName, this.client.localUser.nickName, topic))
     }
   }
@@ -420,7 +420,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(__('WINDOW_TITLE_USER', 
+      browserWindow.setTitle(__('WINDOW_TITLE_USER',
         user.nickName, serverName, this.client.localUser.nickName))
     }
   }

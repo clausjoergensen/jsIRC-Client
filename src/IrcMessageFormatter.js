@@ -116,7 +116,7 @@ class IrcMessageFormatter {
       highlight: false,
       timestamp: true,
       preformatted: false,
-      class: '',
+      class: ''
     }, options)
 
     let senderName = null
@@ -171,7 +171,7 @@ class IrcMessageFormatter {
     }
 
     if (!options.html) {
-      message = htmlencode.htmlEncode(message)      
+      message = htmlencode.htmlEncode(message)
     }
 
     if (options.detectLinks) {
@@ -212,7 +212,7 @@ class IrcMessageFormatter {
       messageClass += 'preformatted'
     }
 
-    let formattedText = ""
+    let formattedText = ''
     if (options.timestamp) {
       formattedText += `<span class="${timestampClass}">[${strftime('%H:%M', new Date())}]</span> `
     }

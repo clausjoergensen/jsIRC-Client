@@ -34,15 +34,15 @@ class IrcViewController {
     let client = new IrcClient()
     client.floodPreventer = new IrcFloodPreventer(4, 2000)
 
-    ipcRenderer.on('close', function(e, data) {
+    ipcRenderer.on('close', (e, data) => {
       client.quit()
     })
 
-    ipcRenderer.on('reload', function(e, data) {
+    ipcRenderer.on('reload', (e, data) => {
       client.quit()
     })
 
-    ipcRenderer.on('view-preferences', function(e, data) {
+    ipcRenderer.on('view-preferences', (e, data) => {
       this.settingsWindow = new remote.BrowserWindow({
         'width': 380,
         'height': 315,
@@ -117,7 +117,7 @@ class IrcViewController {
   }
 
   reconnect (client) {
-    if (client.reconnectAttempts == 10) {
+    if (client.reconnectAttempts === 10) {
       return
     }
     client.reconnectAttempts++

@@ -11,7 +11,7 @@ const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const prettyMs = require('pretty-ms')
-const inputhistory = require('./external/inputhistory.js')
+const inputhistory = require('./external/inputhistory.js') // eslint-disable-line no-unused-vars
 const __ = require('./i18n.js')
 const $ = require('jquery')
 

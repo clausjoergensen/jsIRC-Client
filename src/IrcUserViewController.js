@@ -7,9 +7,7 @@ const { EventEmitter } = events
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
 const IrcCommandHandler = require('./IrcCommandHandler.js')
 
-const strftime = require('strftime')
-const Autolinker = require('autolinker')
-const inputhistory = require('./external/inputhistory.js')
+const inputhistory = require('./external/inputhistory.js') // eslint-disable-line no-unused-vars
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
@@ -42,7 +40,7 @@ class IrcUserViewController extends EventEmitter {
     this.commandHandler.on('clear', () => {
       this.userView.empty()
     })
-    
+
     global.broadcaster.on('clearAll', () => {
       this.userView.empty()
     })

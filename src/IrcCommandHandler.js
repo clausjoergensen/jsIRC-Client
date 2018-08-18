@@ -211,7 +211,7 @@ class IrcCommandHandler extends EventEmitter {
             }
 
             channels = channels.sort((a, b) => { // descending sort
-              if (a.visibleUsersCount == b.visibleUsersCount) {
+              if (a.visibleUsersCount === b.visibleUsersCount) {
                 return 0
               }
               return a.visibleUsersCount > b.visibleUsersCount ? -1 : 1
@@ -226,7 +226,7 @@ class IrcCommandHandler extends EventEmitter {
             let table = '<table class="table-striped cmd-list-table">' +
               '<thead>' +
               `<tr><th>${__('LIST_TH_CHANNEL')}</th>` +
-              `<th>${__('LIST_TH_USERS')}</th>` + 
+              `<th>${__('LIST_TH_USERS')}</th>` +
               `<th>${__('LIST_TH_TOPIC')}</th></tr>` +
               '</thead>' +
               `<tbody>${rows.join('')}</tbody>` +
