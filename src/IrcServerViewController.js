@@ -54,6 +54,10 @@ class IrcServerViewController extends EventEmitter {
           this.displayMessage(source, noticeText, true)
         }
       })
+      this.client.localUser.on('kicked', (source, channel, comment) => {
+        this.displayText(__('YOU_KICKED', channel, source.nickName, comment ? `(${comment})` : ''), 'client-action')
+        this.displaySeperator()
+      })
     })
 
     this.client.on('error', errorMessage => {

@@ -85,14 +85,22 @@ class IrcChannelViewController extends EventEmitter {
         this.displayUsers()
       })
       this.displayUsers()
+      this.displayAction(channelUser.user, __('USER_JOINED_CHANNEL', this.channel.name))
     })
 
     this.channel.on('userLeftChannel', (channelUser) => {
       this.displayUsers()
+      this.displayAction(channelUser.user, __('USER_LEFT_CHANNEL', this.channel.name))
     })
 
-    this.channel.on('userKicked', (_) => {
+    this.channel.on('userKicked', (source, channelUser, comment) => {
       this.displayUsers()
+      this.displayAction(channelUser.user, __('USER_KICKED', source.nickName, comment ? `(${comment})` : ''))
+    })
+
+    this.channel.on('userQuit', (channelUser, comment) => {
+      this.displayUsers()
+      this.displayAction(channelUser.user, __('USER_QUIT', comment ? `(${comment})` : ''))
     })
 
     this.channel.on('modes', (source, newModes, newModeParameters) => {

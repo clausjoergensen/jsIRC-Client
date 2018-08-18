@@ -148,5 +148,10 @@
    "CONNECT_NAME": "Name",
    "CONNECT_EMAIL": "Email",
    
-   "USER_SET_MODES": "%s sets mode %s"
+   "USER_SET_MODES": "%s sets mode %s",
+   "USER_JOINED_CHANNEL": " has joined %s",
+   "USER_LEFT_CHANNEL": " has left %s",
+   "USER_KICKED": " was kicked by %s %s",
+   "USER_QUIT": " Quit %s",
+   "YOU_KICKED": "You were kicked from %s by %s %s"
 }
