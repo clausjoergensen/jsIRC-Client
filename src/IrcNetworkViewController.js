@@ -9,6 +9,8 @@ const path = require('path')
 const events = require('events')
 const { EventEmitter } = events
 
+const { IrcServer } = require('jsIRC')
+
 const __ = require('./i18n.js')
 const $ = require('jquery')
 
@@ -110,6 +112,12 @@ class IrcNetworkViewController extends EventEmitter {
             }
           }
         }
+      })
+    })
+
+    client.on('registered', () => {
+      Object.keys(this.channels).forEach((key, i) => {
+        this.client.joinChannel(key)
       })
     })
 
