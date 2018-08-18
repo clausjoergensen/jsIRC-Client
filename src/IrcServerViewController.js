@@ -108,7 +108,7 @@ class IrcServerViewController extends EventEmitter {
       this.displayText(__('MOTD_TITLE', this.client.serverName), { preformatted: true })
       messageOfTheDay
         .split('\r\n')
-        .forEach(line => this.displayText(line, { preformatted: true }))
+        .forEach(line => this.displayText(line, { preformatted: true, stripColors: true }))
       this.displaySeperator()
     })
 
