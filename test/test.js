@@ -439,7 +439,7 @@ describe('IrcCommandHandler Tests', function () {
 
   it('/clearall', function (done) {
     let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient, {})
-    commandHandler.on('clearall', done)
+    global.broadcaster.on('clearAll', done)
     commandHandler.handle('/clearall')
   })
 })
