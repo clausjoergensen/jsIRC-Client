@@ -5,6 +5,7 @@ const events = require('events')
 const { EventEmitter } = events
 
 const IrcMessageFormatter = require('./IrcMessageFormatter.js')
+const IrcCommandHandler = require('./IrcCommandHandler.js')
 
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
@@ -33,6 +34,14 @@ class IrcUserViewController extends EventEmitter {
       if (source === this.user) {
         this.displayMessage(source, messageText)
       }
+    })
+
+    this.commandHandler = new IrcCommandHandler(this.client, this.ctcpClient)
+    this.commandHandler.on('clear', () => {
+      this.userView.empty()
+    })
+    this.commandHandler.on('clearAll', () => {
+      this.userView.empty()
     })
 
     this.createUserView()

@@ -23,6 +23,12 @@ class IrcServerViewController extends EventEmitter {
     this.ctcpClient = ctcpClient
 
     this.commandHandler = new IrcCommandHandler(this.client, this.ctcpClient)
+    this.commandHandler.on('clear', () => {
+      this.serverView.empty()
+    })
+    this.commandHandler.on('clearAll', () => {
+      this.serverView.empty()
+    })
 
     this.client.on('connecting', (hostName, port) => {
       this.displayText(__('CONNECTING_TO', hostName, port), 'client-event')

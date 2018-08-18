@@ -1,7 +1,14 @@
 // Copyright (c) 2018 Claus Jørgensen
 'use strict'
 
+const events = require('events')
+const { EventEmitter } = events
+
 const __ = require('./i18n.js')
+
+function equalsCaseInsensitive(a, b) {
+  return a.localeCompare(b, undefined, { sensitivity: 'base' }) === 0
+}
 
 /**
  * @callback displayMessage
@@ -9,8 +16,9 @@ const __ = require('./i18n.js')
  * @param {string} message
  */
 
-class IrcCommandHandler {
+class IrcCommandHandler extends EventEmitter {
   constructor (client, ctcpClient, channel = null) {
+    super()
     this.client = client
     this.ctcpClient = ctcpClient
     this.channel = channel
@@ -41,8 +49,12 @@ class IrcCommandHandler {
         {
           let [target] = content.split(' ', 1)
           let message = content.substring(target.length + 1)
-          if (message) {
-            this.client.sendMessage([target], message) // display 1:1 somehow?
+          if (message && !equalsCaseInsensitive(target, this.client.localUser.nickName)) {
+            this.client.sendMessage([target], message)
+            let user = this.client.getUserFromNickName(target)
+            if (user) {
+              this.emit('viewUser', user, message)
+            }
           }
         }
         break
@@ -50,7 +62,7 @@ class IrcCommandHandler {
         {
           let [target] = content.split(' ', 1)
           let notice = content.substring(target.length + 1)
-          if (notice) {
+          if (notice && !equalsCaseInsensitive(target, this.client.localUser.nickName)) {
             this.client.sendNotice([target], notice)
           }
         }
@@ -105,11 +117,11 @@ class IrcCommandHandler {
       case 'mode':
         {
           let match = content.match(/([#+!&].+) ([+-]{1})([pmsintlkqaohv]{1})[\s]?(.*)/)
-          if (this.channel && match && this.channel.name === match[1]) {
+          if (this.channel && match && equalsCaseInsensitive(this.channel.name, match[1])) {
             this.client.setChannelModes(this.channel, `${match[2]}${match[3]}`, [match[4]])
           } else {
             let [nickName, modes] = content.split(' ')
-            if (nickName === this.client.localUser.nickName && modes) {
+            if (modes && equalsCaseInsensitive(nickName, this.client.localUser.nickName)) {
               this.client.localUser.setModes(modes)
             }
           }
@@ -153,15 +165,21 @@ class IrcCommandHandler {
           this.client.sendRawMessage(content)
         }
         break
-      case 'server': 
+      case 'server':
         {
           if (!content || this.channel) {
             return
           }
-          let [hostName, port] = content.split(':')          
+          let [hostName, port] = content.split(':')
           this.client.disconnect()
           this.client.connect(hostName, parseInt(port) || 6667, this.client.registrationInfo)
         }
+        break
+      case 'clear':
+        this.emit('clear')
+        break
+      case 'clearall':
+        this.emit('clearall')
         break
       default:
         if (displayMessage) {

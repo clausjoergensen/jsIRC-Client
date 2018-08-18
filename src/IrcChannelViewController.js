@@ -37,6 +37,15 @@ class IrcChannelViewController extends EventEmitter {
     this.channel = channel
 
     this.commandHandler = new IrcCommandHandler(client, ctcpClient, channel)
+    this.commandHandler.on('viewUser', (user, message) => {
+      this.emit('viewUser', user, message)
+    })
+    this.commandHandler.on('clear', () => {
+      this.messageView.empty()
+    })
+    this.commandHandler.on('clearAll', () => {
+      this.messageView.empty()
+    })
 
     this.channel.on('message', (source, messageText) => {
       this.displayMessage(source, messageText)

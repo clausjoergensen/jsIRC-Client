@@ -35,20 +35,28 @@ class IrcChatViewController extends EventEmitter {
       this.client.localUser.on('joinedChannel', (channel) => {
         let channelViewController = new IrcChannelViewController(this.client, this.ctcpClient, channel)
 
-        channelViewController.on('viewUser', (user) => {
-          let userViewController = new IrcUserViewController(this.client, this.ctcpClient, user)
-          this.users[user.nickName] = userViewController
+        channelViewController.on('viewUser', (user, message) => {
+          let userViewController = this.users[user.nickName.toLowerCase()]
+          if (!userViewController) {
+            userViewController = new IrcUserViewController(this.client, this.ctcpClient, user)
+            this.users[user.nickName.toLowerCase()] = userViewController
+          }
+
           this.viewUser(user)
+
+          if (message) {
+            userViewController.displayMessage(this.client.localUser, message)
+          }
 
           this.emit('viewUser', this.client, user)
         })
 
-        this.channels[channel.name] = channelViewController
+        this.channels[channel.name.toLowerCase()] = channelViewController
       })
 
       this.client.localUser.on('partedChannel', (channel) => {
-        this.channels[channel.name].remove()
-        delete this.channels[channel.name]
+        this.channels[channel.name.toLowerCase()].remove()
+        delete this.channels[channel.name.toLowerCase()]
       })
 
       this.client.localUser.on('notice', (source, targets, noticeText) => {
@@ -58,12 +66,12 @@ class IrcChatViewController extends EventEmitter {
       })
 
       this.client.localUser.on('message', (source, targets, messageText) => {
-        if (this.users[source.nickName]) {
+        if (this.users[source.nickName.toLowerCase()]) {
           return
         }
         let userViewController = new IrcUserViewController(this.client, this.ctcpClient, source)
-        this.users[source.nickName] = userViewController
-        this.users[source.nickName].displayMessage(source, messageText)
+        this.users[source.nickName.toLowerCase()] = userViewController
+        this.users[source.nickName.toLowerCase()].displayMessage(source, messageText)
       })
     })
 
@@ -106,8 +114,8 @@ class IrcChatViewController extends EventEmitter {
       this.selectedUser.hide()
     }
 
-    if (this.channels[channel.name]) {
-      this.selectedChannel = this.channels[channel.name]
+    if (this.channels[channel.name.toLowerCase()]) {
+      this.selectedChannel = this.channels[channel.name.toLowerCase()]
       this.selectedChannel.show()
     }
   }
@@ -119,15 +127,15 @@ class IrcChatViewController extends EventEmitter {
       this.selectedChannel.hide()
     }
 
-    if (this.users[user.nickName]) {
-      this.selectedUser = this.users[user.nickName]
+    if (this.users[user.nickName.toLowerCase()]) {
+      this.selectedUser = this.users[user.nickName.toLowerCase()]
       this.selectedUser.show()
     }
   }
 
   hideUser (user) {
-    this.users[user.nickName].remove()
-    delete this.users[user.nickName]
+    this.users[user.nickName.toLowerCase()].remove()
+    delete this.users[user.nickName.toLowerCase()]
   }
 
   hideServer () {

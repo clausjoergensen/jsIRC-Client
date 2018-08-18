@@ -35,8 +35,8 @@ class IrcNetworkViewController extends EventEmitter {
 
       client.localUser.on('message', (source, targets, messageText) => {
         this.userNotification(messageText, source)
-        if (this.users[source.nickName]) {
-          let user = this.users[source.nickName]
+        let user = this.users[source.nickName.toLowerCase()]
+        if (user) {
           if (this.selectedUser !== user.user) {            
             this.users[source.nickName].userView.addClass('nav-unread')
           }
@@ -190,18 +190,19 @@ class IrcNetworkViewController extends EventEmitter {
     $('.channel').removeClass('channel-selected')
     $('.user').removeClass('user-selected')
 
-    this.users[user.nickName].userView.removeClass('nav-unread')
-    this.users[user.nickName].userView.addClass('user-selected')
+    let userView = this.users[user.nickName.toLowerCase()].userView
+    userView.removeClass('nav-unread')
+    userView.addClass('user-selected')
 
-    this.selectedView = this.users[user.name].userView
+    this.selectedView = userView
     this.setWindowTitleForUser(user)
 
     this.emit('viewUser', this.client, user)
   }
 
   hideUser (user) {
-    this.users[user.nickName].userView.remove()
-    delete this.users[user.nickName]
+    this.users[user.nickName.toLowerCase()].userView.remove()
+    delete this.users[user.nickName.toLowerCase()]
 
     let keys = Object.keys(this.channels)
     if (keys.length > 0) {
@@ -315,7 +316,7 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   addUserToList (user) {
-    if (this.users[user.nickName]) {
+    if (this.users[user.nickName.toLowerCase()]) {
       return
     }
 
@@ -341,7 +342,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     userView.data('user', user)
 
-    this.users[user.nickName] = {
+    this.users[user.nickName.toLowerCase()] = {
       'user': user,
       'userView': userView
     }
