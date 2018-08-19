@@ -163,7 +163,7 @@ class IrcMessageFormatter {
 
     if (options.class) {
       messageClass += ' ' + options.class
-    }    
+    }
 
     if (options.stripColors) {
       // eslint-disable-next-line no-control-regex
