@@ -92,11 +92,15 @@ class IrcNetworkListViewController extends EventEmitter {
     let keys = Object.keys(connection.channels)
     if (connection.selectedChannel) {
       let index = keys.indexOf(connection.selectedChannel.name)
-      let nextChannel = connection.channels[keys[index + 1]]
-      if (nextChannel) {
-        connection.viewChannel(nextChannel.channel)
-      } else {
+      if (index === -1) {
         this.viewNextServer()
+      } else {
+        let nextChannel = connection.channels[keys[index + 1]]
+        if (nextChannel) {
+          connection.viewChannel(nextChannel.channel)
+        } else {
+          this.viewNextServer()
+        }
       }
     } else {
       let firstChannel = connection.channels[keys[0]]
@@ -109,8 +113,9 @@ class IrcNetworkListViewController extends EventEmitter {
   }
 
   viewNextServer () {
+    let connection = this.selectedConnection
     let keys = Object.keys(this.connections)
-    let index = keys.indexOf(this.selectedConnection.client.id)
+    let index = keys.indexOf(connection.client.id)
 
     let nextConnection = null
     if (index === (keys.length - 1)) {
@@ -120,6 +125,7 @@ class IrcNetworkListViewController extends EventEmitter {
     }
 
     if (nextConnection) {
+      connection.deselect()
       nextConnection.viewServer()
     }
   }
