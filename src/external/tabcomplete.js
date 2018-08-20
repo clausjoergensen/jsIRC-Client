@@ -1,7 +1,5 @@
 /**
  * https://github.com/erming/jquery-tab-complete
- *
- * Copyright (c) 2014 Mattias Erming <mattias@mattiaserming.com>
  * Licensed under the MIT License.
  */
 const $ = require('jquery')

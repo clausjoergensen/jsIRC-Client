@@ -10,11 +10,9 @@ This project only been tested on Windows, but should run on MacOS and Linux as w
 
 # License
 
-[MIT License](LICENSE.md)
+[MIT License](LICENSE.txt)
 
 # Acknowledgements
-
-The project uses a range of Open Source components. 
 
 * [electron](https://github.com/electron/electron)
 * [node.js](https://github.com/nodejs/node)
