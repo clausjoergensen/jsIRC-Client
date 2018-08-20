@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "IRC Client",
   "main": "app.js",
+  "private": true,
   "scripts": {
     "start": "electron .",
     "test": "electron-mocha ./test",
