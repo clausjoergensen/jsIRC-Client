@@ -90,7 +90,7 @@ class IrcNetworkListViewController extends EventEmitter {
     let connection = this.selectedConnection
     let keys = Object.keys(connection.channels)
     if (connection.selectedChannel) {
-      let index = keys.indexOf(connection.selectedChannel.name)
+      let index = keys.indexOf(connection.selectedChannel.name.toLowerCase())
       if (index === -1) {
         this.viewNextServer()
       } else {
