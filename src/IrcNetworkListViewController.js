@@ -20,8 +20,6 @@ class IrcNetworkListViewController extends EventEmitter {
       if (e.ctrlKey) {
         if (e.keyCode === 78) { // ctrl+n
           this.viewNextChannel()
-        } else if (e.keyCode === 87) { // ctrl+w
-          this.partCurrentChannel()
         }
       }
     })
