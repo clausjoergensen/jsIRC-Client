@@ -77,6 +77,12 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('joinedChannel', (channel) => {
+        let existingChannel = this.channels[channel.name.toLowerCase()]
+        if (existingChannel) {
+          existingChannel.channelView.remove()
+          delete this.channels[channel.name.toLowerCase()]
+        }
+
         channel.on('message', (source, messageText) => {
           if (!source.isLocalUser) {
             this.channelNotification(messageText, source, channel)

@@ -36,6 +36,11 @@ class IrcChatViewController extends EventEmitter {
 
     this.client.on('connected', () => {
       this.client.localUser.on('joinedChannel', (channel) => {
+        if (this.channels[channel.name.toLowerCase()]) {
+          this.channels[channel.name.toLowerCase()].remove()
+          delete this.channels[channel]
+        }
+
         let channelViewController = new IrcChannelViewController(this.client, this.ctcpClient, channel)
 
         channelViewController.on('viewUser', (user, message) => {
