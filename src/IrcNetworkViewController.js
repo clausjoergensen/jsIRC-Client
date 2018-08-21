@@ -77,10 +77,9 @@ class IrcNetworkViewController extends EventEmitter {
       })
 
       client.localUser.on('joinedChannel', (channel) => {
-        let existingChannel = this.channels[channel.name.toLowerCase()]
-        if (existingChannel) {
-          existingChannel.channelView.remove()
-          delete this.channels[channel.name.toLowerCase()]
+        if (this.channels[channel.name.toLowerCase()]) {
+          this.viewChannel(channel)
+          return;
         }
 
         channel.on('message', (source, messageText) => {
@@ -327,10 +326,6 @@ class IrcNetworkViewController extends EventEmitter {
   }
 
   addChannelToList (channel) {
-    if (this.channels[channel.name.toLowerCase()]) {
-      return
-    }
-
     const channelMenu = Menu.buildFromTemplate([{
       label: __('CHANNEL_MENU_LEAVE'),
       click: () => {
