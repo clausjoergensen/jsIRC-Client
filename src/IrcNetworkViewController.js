@@ -299,8 +299,9 @@ class IrcNetworkViewController extends EventEmitter {
       },
       'contextmenu': (e) => {
         e.preventDefault()
+        let networkName = this.client.serverSupportedFeatures['NETWORK'] || this.client.serverName || this.client.hostName;
         let serverMenu = Menu.buildFromTemplate([{
-          label: __('NETWORK_MENU_LEAVE', this.client.serverSupportedFeatures['NETWORK'] || this.client.serverName),
+          label: __('NETWORK_MENU_LEAVE', networkName),
           click: () => {
             this.client.quit()
             this.serverView.remove()
