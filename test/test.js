@@ -550,4 +550,58 @@ describe('IrcCommandHandler Tests', function () {
     let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
     commandHandler.handle('/list * -MIN 20 -MAX 27', displayAction)
   })
+
+  it('/who', function (done) {
+    let expectedHTML = '<table class="table-striped cmd-list-table">' +
+      '<thead><tr><th>Channel</th><th>User</th><th>Status</th></tr></thead>' +
+      '<tbody>' +
+      '<tr><td>#bar</td><td>Twoflower</td><td>Online</td></tr>' +
+      '<tr><td>#foo</td><td>Rincewind</td><td>Away</td></tr>' +
+      '</tbody>' +
+      '</table>'
+
+    let displayAction = (source, message) => {
+      if (message === expectedHTML) {
+        done()
+      } else {
+        assert.ok(false, message)
+      }
+    }
+
+    fakeIrcClient.once = (e, userListCallback) => {
+      userListCallback([
+        { channel: { name: '#bar' }, user: { nickName: 'Twoflower', isAway: false } },
+        { channel: { name: '#foo' }, user: { nickName: 'Rincewind', isAway: true } },
+      ])
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/who', displayAction)
+  })
+
+  it('/who <mask>', function (done) {
+    let expectedHTML = '<table class="table-striped cmd-list-table">' +
+      '<thead><tr><th>Channel</th><th>User</th><th>Status</th></tr></thead>' +
+      '<tbody>' +
+      '<tr><td>#bar</td><td>Twoflower</td><td>Online</td></tr>' +
+      '</tbody>' +
+      '</table>'
+
+    let displayAction = (source, message) => {
+      if (message === expectedHTML) {
+        done()
+      } else {
+        assert.ok(false, message)
+      }
+    }
+
+    fakeIrcClient.once = (e, userListCallback) => {
+      userListCallback([
+        { channel: { name: '#bar' }, user: { nickName: 'Twoflower', isAway: false } }
+      ])
+    }
+
+    let commandHandler = new IrcCommandHandler(fakeIrcClient, fakeCtcpClient)
+    commandHandler.handle('/who Twoflower', displayAction)
+  })
 })

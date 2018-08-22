@@ -247,6 +247,38 @@ class IrcCommandHandler extends EventEmitter {
           this.client.listChannels(searchMask)
         }
         break
+        case 'who':
+        {
+          if (!displayMessage) {
+            return
+          }
+
+          if (this.channel) {
+            return
+          }
+
+          this.client.once('whoReply', (userInfoList) => {
+            let rows = userInfoList.map(userInfo => {
+              return `<tr><td>${userInfo.channel.name}</td>` +
+                     `<td>${userInfo.user.nickName}</td>` +
+                     `<td>${userInfo.user.isAway ? 'Away' : 'Online'}</td></tr>`
+            })
+
+            let table = '<table class="table-striped cmd-list-table">' +
+              '<thead>' +
+              `<tr><th>Channel</th>` +
+              `<th>User</th>` +
+              `<th>Status</th></tr>` +
+              '</thead>' +
+              `<tbody>${rows.join('')}</tbody>` +
+              '</table>'
+
+            displayMessage(null, table, { timestamp: false, html: true })
+          })
+
+          this.client.queryWho(content)
+        }
+        break
       default:
         if (displayMessage) {
           displayMessage(null, __('UNKNOWN_COMMAND'))
