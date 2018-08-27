@@ -2,6 +2,8 @@
 // This code is licensed under MIT license (see LICENSE.txt for details)
 'use strict'
 
+const spotify = require('./modules/spotify.js')
+
 const strftime = require('strftime')
 const Autolinker = require('autolinker')
 const htmlencode = require('htmlencode')
@@ -192,6 +194,10 @@ class IrcMessageFormatter {
           }
         }
       })
+    }
+
+    if (spotify.validateURI(message)) {
+      message = spotify.toHTML(message)
     }
 
     let timestampClass = 'timestamp'

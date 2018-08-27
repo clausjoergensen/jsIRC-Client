@@ -2,9 +2,10 @@
 // This code is licensed under MIT license (see LICENSE.txt for details)
 'use strict'
 
-const { app, shell, BrowserWindow, Menu, ipcMain, globalShortcut } = require('electron')
+const { app, shell, BrowserWindow, Menu, globalShortcut } = require('electron')
 const path = require('path')
 const __ = require('./src/i18n.js')
+const URL = require('url').URL
 
 let mainWindow = null
 
@@ -44,11 +45,19 @@ app.on('ready', () => {
   })
 
   if (!app.isPackaged) {
-    globalShortcut.register('CommandOrControl+R', function(e) {
+    globalShortcut.register('CommandOrControl+R', function (e) {
       mainWindow.webContents.send('reload', e)
       setTimeout(() => mainWindow.reload(), 100)
     })
   }
+
+  mainWindow.webContents.on('new-window', function (e, url) {
+    if (url.startsWith('https://open.spotify.com/go?uri=')) {
+      let spotifyURL = new URL(url)
+      shell.openExternal(spotifyURL.searchParams.get('uri'))
+      e.preventDefault()
+    }
+  })
 
   let aboutWindow = null
 
@@ -56,11 +65,11 @@ app.on('ready', () => {
     {
       label: __('MENU_FILE'),
       submenu: [
-        { 
+        {
           label: __('MENU_PREFERENCES'),
           click: (e) => {
             mainWindow.webContents.send('view-preferences', e)
-          } 
+          }
         },
         { role: 'quit' }
       ]
@@ -96,12 +105,12 @@ app.on('ready', () => {
         {
           label: __('MENU_REPORT_ISSUE'),
           click: () => {
-            shell.openExternal('https://github.com/clausjoergensen/jsIRC/issues/new/choose');
+            shell.openExternal('https://github.com/clausjoergensen/jsIRC/issues/new/choose')
           }
         },
         { type: 'separator' },
-        { 
-          role: 'about', 
+        {
+          role: 'about',
           click: () => {
             aboutWindow = new BrowserWindow({
               'width': 400,
