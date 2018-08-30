@@ -261,14 +261,14 @@ class IrcCommandHandler extends EventEmitter {
             let rows = userInfoList.map(userInfo => {
               return `<tr><td>${userInfo.channel.name}</td>` +
                      `<td>${userInfo.user.nickName}</td>` +
-                     `<td>${userInfo.user.isAway ? 'Away' : 'Online'}</td></tr>`
+                     `<td>${userInfo.user.isAway ? __('USER_AWAY') : __('USER_ONLINE')}</td></tr>`
             })
 
             let table = '<table class="table-striped cmd-list-table">' +
               '<thead>' +
-              `<tr><th>Channel</th>` +
-              `<th>User</th>` +
-              `<th>Status</th></tr>` +
+              `<tr><th>${__('WHO_TH_CHANNEL')}</th>` +
+              `<th>${__('WHO_TH_USER')}</th>` +
+              `<th>${__('WHO_TH_STATUS')}</th></tr>` +
               '</thead>' +
               `<tbody>${rows.join('')}</tbody>` +
               '</table>'

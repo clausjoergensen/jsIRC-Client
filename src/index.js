@@ -8,4 +8,18 @@ let viewController = null // eslint-disable-line no-unused-vars
 
 document.addEventListener('DOMContentLoaded', function (event) {
   viewController = new IrcViewController()
+  
+  viewController.connectToServer('localhost', 6667, {
+    nickName: 'Twoflower',
+    userName: 'Twoflower',
+    realName: 'Twoflower',
+    userModes: []
+  })
+  let clientId = Object.keys(viewController.chatListViewController.connections)[0]
+  let client = viewController.chatListViewController.connections[clientId].client
+  client.once('registered', () => {
+    client.joinChannel('#foo')
+    client.joinChannel('#bar')
+    client.joinChannel('#baz')
+  })
 })

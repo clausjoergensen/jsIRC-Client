@@ -166,5 +166,12 @@
    "LIST_TH_TOPIC": "Topic",
 
    "CHANNEL_TOPIC_IS": "* Topic is %s",
-   "CHANNEL_TOPIC_TIME": "* Set by %s on %s"
+   "CHANNEL_TOPIC_TIME": "* Set by %s on %s",
+
+   "WHO_TH_CHANNEL": "Channel",
+   "WHO_TH_USER": "User",
+   "WHO_TH_STATUS": "Status",
+
+   "USER_ONLINE": "Online",
+   "USER_AWAY": "Away"
 }
