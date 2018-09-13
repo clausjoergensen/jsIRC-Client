@@ -150,6 +150,13 @@ class IrcNetworkViewController extends EventEmitter {
               this.viewServer()
             }
           }
+        } else {
+          let nextChannel = this.getNextChannel(channel)
+          if (nextChannel) {
+            this.viewChannel(nextChannel)
+          } else {
+            this.viewServer()
+          }
         }
       })
     })
