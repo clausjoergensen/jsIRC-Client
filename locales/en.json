@@ -91,9 +91,11 @@
    "SERVER_MENU_MOTD": "Message of the Day",
    "SERVER_MENU_QUIT": "Quit jsIRC",
    
-   "WINDOW_TITLE_SERVER": "jsIRC - [Status: %s %s on %s (%s:%d)]",
-   "WINDOW_TITLE_CHANNEL": "jsIRC - [%s (%s, %s)%s]",
-   "WINDOW_TITLE_USER": "jsIRC - [%s %s, %s)]",
+   "WINDOW_TITLE_SERVER": "%s (%s)",
+   "WINDOW_TITLE_CHANNEL": "%s - %s",
+   "WINDOW_TITLE_CHANNEL_ONE": "%s - %s (%d user) %s",
+   "WINDOW_TITLE_CHANNEL_MANY": "%s - %s (%d users) %s",
+   "WINDOW_TITLE_USER": "%s - %s",
    
    "USER_SET_CHANNEL_MODE": "sets mode %s %s",
    "USER_CHANGED_TOPIC": "changed topic to '%s'",

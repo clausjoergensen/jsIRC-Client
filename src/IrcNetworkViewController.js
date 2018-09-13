@@ -95,6 +95,30 @@ class IrcNetworkViewController extends EventEmitter {
           }
         })
 
+        channel.on('userJoinedChannel', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
+        channel.on('userLeftChannel', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
+        channel.on('userQuit', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
+        channel.on('userKicked', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
+        channel.on('userList', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
+        channel.on('modes', (source, topic) => {
+          this.setWindowTitleForChannel(channel)
+        })
+
         channel.on('topic', (source, topic) => {
           if (source && !source.isLocalUser) {
             this.setWindowTitleForChannel(channel)
@@ -141,7 +165,7 @@ class IrcNetworkViewController extends EventEmitter {
       if (networkName) {
         this.networkName = networkName
         this.serverTitle.text(`${this.networkName} (${this.client.localUser.nickName})`)
-        this.setWindowTitleForServer(this.networkName)
+        this.setWindowTitleForServer()
       }
     })
   }
@@ -387,20 +411,20 @@ class IrcNetworkViewController extends EventEmitter {
     }
   }
 
-  setWindowTitleForServer (networkName = null) {
+  setWindowTitleForServer () {
     let userModes = ''
     if (this.client.localUser) {
       userModes = this.client.localUser.modes.join('')
-      userModes = userModes.length > 0 ? `[+${userModes}]` : ''
+      userModes = userModes.length > 0 ? `+${userModes}` : ''
     }
 
-    let serverName = networkName || this.client.serverName
+    let serverName = this.client.serverSupportedFeatures['NETWORK']
+    serverName = serverName || this.client.serverName
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
       let nickName = this.client.localUser ? this.client.localUser.nickName : this.client.registrationInfo.nickName
-      browserWindow.setTitle(__('WINDOW_TITLE_SERVER',
-        nickName, userModes, serverName, this.client.hostName, this.client.port))
+      browserWindow.setTitle(__('WINDOW_TITLE_SERVER', serverName, userModes))
     }
   }
 
@@ -410,10 +434,23 @@ class IrcNetworkViewController extends EventEmitter {
     let serverName = this.client.serverSupportedFeatures['NETWORK']
     serverName = serverName || this.client.serverName
 
+    let channelModes = ''
+    if (channel.modes.length > 0) {
+      channelModes = `(+${channel.modes.join('')})`
+    }
+
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL',
-        channel.name, serverName, this.client.localUser.nickName, topic))
+      if (channel.users.length == 1) {
+        browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL_ONE',
+          serverName, channel.name, channel.users.length, channelModes))
+      } else if (channel.users.length > 1) {
+        browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL_MANY',
+          serverName, channel.name, channel.users.length, channelModes))
+      } else {
+        browserWindow.setTitle(__('WINDOW_TITLE_CHANNEL',
+          serverName, channel.name))
+      }
     }
   }
 
@@ -423,8 +460,7 @@ class IrcNetworkViewController extends EventEmitter {
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
-      browserWindow.setTitle(__('WINDOW_TITLE_USER',
-        user.nickName, serverName, this.client.localUser.nickName))
+      browserWindow.setTitle(__('WINDOW_TITLE_USER', serverName, user.nickName))
     }
   }
 
