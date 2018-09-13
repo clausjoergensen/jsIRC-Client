@@ -140,6 +140,7 @@
    "MENU_FILE": "File",
    "MENU_PREFERENCES": "Preferences…",
    
+   "CHANNEL_MODES": "Channel Modes",
    "CHANNEL_MODE_OPSTOPIC": "Only ops can change topic",
    "CHANNEL_MODE_LABEL": "Channel Modes",
    "CHANNEL_MODE_SECRET": "Secret",

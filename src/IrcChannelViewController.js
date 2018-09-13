@@ -422,7 +422,7 @@ class IrcChannelViewController extends EventEmitter {
     // Title
     $('<div />', {
       'class': 'prompt-title',
-      'text': `${this.channel.name}`
+      'text': __('CHANNEL_MODES')
     }).append(
       $('<span />', {
         'class': 'close',
