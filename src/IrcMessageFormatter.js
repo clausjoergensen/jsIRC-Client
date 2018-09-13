@@ -234,6 +234,10 @@ class IrcMessageFormatter {
       paragraph.addClass('user-message')
     } else if (options.isServer) {
       paragraph.addClass('server-message')
+    } else if (options.isNotice) {
+      paragraph.addClass('channel-notice')
+    } else if (options.isAction) {
+      paragraph.addClass('channel-action')
     } else {
       paragraph.addClass('channel-message')
     }

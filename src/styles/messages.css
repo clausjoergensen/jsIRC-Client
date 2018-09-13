@@ -21,7 +21,7 @@ p.user-message {
     margin-right: 0px
 }
 
-p.channel-message {
+p.channel-message, p.channel-notice, p.channel-action {
     margin-top: 0px;
     margin-bottom: 3px;
     margin-left: 0px;
@@ -65,12 +65,20 @@ span.message-by-server {
 }
 
 /** Special styling */
+p.channel-notice, p.channel-notice > span.timestamp, p.channel-notice > span.sender-other, p.channel-notice > span.notice-by-other {
+    color: #884848;
+}
+
+p.channel-action, p.channel-action > span.timestamp, p.channel-action > span.sender-me, p.channel-action > span.sender-other, p.channel-action > span.action-by-other, p.channel-action > span.action-by-me {
+    color: #2B5932;
+}
+
 span.client-event {
     color: #0000A8;
 }
 
 span.client-action {
-    color: #009933;
+    color: #2B5932;
 }
 
 span.highlight {

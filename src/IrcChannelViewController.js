@@ -56,6 +56,10 @@ class IrcChannelViewController extends EventEmitter {
       this.displayMessage(source, messageText)
     })
 
+    this.channel.on('notice', (source, messageText) => {
+      this.displayNotice(source, messageText)
+    })
+
     this.channel.on('action', (source, messageText) => {
       this.displayMessage(null, `* ${source.nickName} ${messageText}`)
     })

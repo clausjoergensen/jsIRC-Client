@@ -34,8 +34,10 @@ class IrcChatListViewController extends EventEmitter {
   }
 
   quitServer (client) {
-    this.connections[client.id].remove()
-    delete this.connections[client.id]
+    if (this.connections[client.id]) {
+      this.connections[client.id].remove()
+      delete this.connections[client.id]
+    }
   }
 
   viewServer (client, serverName) {

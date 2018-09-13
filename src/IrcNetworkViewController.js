@@ -38,7 +38,7 @@ class IrcNetworkViewController extends EventEmitter {
         if (this.serverView) {
           this.serverTitle.text(`${this.networkName || this.client.serverName} (${this.client.localUser.nickName})`)
         }
-        this.setWindowTitleForServer(this.networkName)
+        this.setWindowTitleForServer()
       })
 
       client.localUser.on('message', (source, targets, messageText) => {
@@ -415,11 +415,13 @@ class IrcNetworkViewController extends EventEmitter {
     let userModes = ''
     if (this.client.localUser) {
       userModes = this.client.localUser.modes.join('')
-      userModes = userModes.length > 0 ? `+${userModes}` : ''
+      userModes = userModes.length > 0 ? `(+${userModes})` : ''
     }
 
     let serverName = this.client.serverSupportedFeatures['NETWORK']
     serverName = serverName || this.client.serverName
+    serverName = serverName || this.networkName
+    serverName = serverName || this.client.hostName
 
     let browserWindow = BrowserWindow.getFocusedWindow()
     if (browserWindow) {
