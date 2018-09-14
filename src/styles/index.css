@@ -16,7 +16,10 @@ html, body {
 :not(input):not(textarea), :not(input):not(textarea)::after, :not(input):not(textarea)::before {
     -webkit-user-select: none;
     user-select: none;
-    cursor: default;
+}
+
+a[href^="http"] {
+    user-select: text;
 }
 
 table#window-content {
@@ -55,6 +58,10 @@ div.channel-title-label {
     text-overflow: ellipsis;
     user-select: none;
     cursor: default;
+}
+
+div.channel-title-label > span > a {
+    user-select: none;
 }
 
 div.channel-message-view {
