@@ -86,6 +86,8 @@ div.server-view {
     padding: 10px;
     font-size: 10pt;
     background-color: white;
+    white-space: pre;
+    font-family: 'Inconsolata';
 }
 
 div.server-view > p > span {
